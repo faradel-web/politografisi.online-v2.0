@@ -1,31 +1,51 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic"; 
 import { Loader2 } from "lucide-react";
+// Переконайтеся, що стилі Leaflet підключені (зазвичай у globals.css або тут)
+import "leaflet/dist/leaflet.css"; 
 
-// --- НОВИЙ ТИП ДЛЯ ТОЧКИ ---
+// --- ТИП ДЛЯ ТОЧКИ ---
 export interface MapMarker {
   lat: number;
   lng: number;
-  label?: string; // Назва точки (наприклад, "Афіни")
+  label?: string; // Якщо label є - відображаємо підпис. Якщо немає - тільки точку.
+  color?: 'red' | 'green' | 'blue'; // Колір маркера
 }
 
 const MapCore = dynamic(
   async () => {
-    // Додаємо Popup для відображення назв
-    const { MapContainer, ImageOverlay, Marker, Popup, useMapEvents } = await import("react-leaflet");
+    const { MapContainer, ImageOverlay, Marker, Tooltip, useMapEvents } = await import("react-leaflet");
     const L = await import("leaflet");
 
-    // 1. Кастомний маркер
-    const customIcon = L.divIcon({
-      className: "bg-transparent",
-      html: `<div style="width: 24px; height: 24px; background-color: #dc2626; border: 3px solid white; border-radius: 50%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);"></div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-    });
+    // --- 1. ГЕНЕРАТОР ІКОНОК (Різні кольори) ---
+    const createIcon = (color: string) => {
+      // Визначаємо HEX коди кольорів
+      const colors: Record<string, string> = {
+        red: "#dc2626",   // Червоний (помилка)
+        green: "#10b981", // Зелений (успіх)
+        blue: "#2563eb",  // Синій (нейтральний/вибір)
+      };
 
-    // 2. Обробник кліків
+      const selectedColor = colors[color] || colors.blue;
+
+      return L.divIcon({
+        className: "bg-transparent",
+        // Малюємо кружечок потрібного кольору з білою обводкою
+        html: `<div style="
+          width: 16px; 
+          height: 16px; 
+          background-color: ${selectedColor}; 
+          border: 2px solid white; 
+          border-radius: 50%; 
+          box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        "></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8], // Центруємо іконку по координатах
+      });
+    };
+
+    // --- 2. ОБРОБНИК КЛІКІВ ---
     const ClickHandler = ({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) => {
       useMapEvents({
         click(e) {
@@ -35,7 +55,7 @@ const MapCore = dynamic(
       return null;
     };
 
-    // 3. Тіло карти (Приймає масив markers)
+    // --- 3. ТІЛО КАРТИ ---
     return function Map({ 
       markers = [], 
       onPointSelect 
@@ -62,25 +82,34 @@ const MapCore = dynamic(
             bounds={bounds as any}
             opacity={1}
             zIndex={10}
-            eventHandlers={{
-              error: (e) => console.error("ПОМИЛКА ЗАВАНТАЖЕННЯ КАРТИ:", e)
-            }}
           />
 
-          {/* Дозволяємо клікати тільки якщо передана функція onPointSelect */}
+          {/* Дозволяємо клікати тільки якщо передана функція */}
           {onPointSelect && <ClickHandler onMapClick={onPointSelect} />}
 
-          {/* Рендеримо ВСІ маркери зі списку */}
+          {/* Рендеримо маркери */}
           {markers.map((marker, idx) => (
             <Marker 
               key={idx}
               position={[marker.lat, marker.lng]} 
-              icon={customIcon}
+              icon={createIcon(marker.color || 'blue')} // Вибираємо колір
             >
+              {/* Якщо є Label -> показуємо Tooltip. Якщо немає -> тільки точка */}
               {marker.label && (
-                <Popup autoClose={false} closeButton={false}>
-                  <span className="font-bold text-slate-900 text-sm">{marker.label}</span>
-                </Popup>
+                <Tooltip 
+                  permanent // Текст видно завжди, без наведення
+                  direction="top" 
+                  offset={[0, -10]}
+                  opacity={1}
+                  className={`
+                    font-bold text-xs px-2 py-1 rounded shadow-sm border border-slate-200
+                    ${marker.color === 'green' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : ''}
+                    ${marker.color === 'red' ? 'text-red-700 bg-red-50 border-red-200' : ''}
+                    ${!marker.color || marker.color === 'blue' ? 'text-slate-700 bg-white' : ''}
+                  `}
+                >
+                  {marker.label}
+                </Tooltip>
               )}
             </Marker>
           ))}
@@ -100,14 +129,13 @@ const MapCore = dynamic(
 );
 
 interface GreeceMapProps {
-  markers?: MapMarker[]; // Тепер приймаємо масив
+  markers?: MapMarker[]; 
   onSelect?: (coords: { lat: number; lng: number }) => void;
 }
 
 export default function GreeceMap({ markers = [], onSelect }: GreeceMapProps) {
-  // Ми прибрали внутрішній стан `point`, тепер карта повністю керована батьківським компонентом
   return (
-    <div className="w-full h-[600px] border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm relative z-0 bg-slate-50">
+    <div className="w-full h-full min-h-[500px] border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm relative z-0 bg-slate-50">
        <MapCore 
           markers={markers} 
           onPointSelect={onSelect ? (lat, lng) => onSelect({lat, lng}) : undefined} 
