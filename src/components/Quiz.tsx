@@ -34,7 +34,7 @@ export interface Question {
   isTrue?: boolean;
 
   // Map
-  points?: {id?: string, lat: number, lng: number, label: string}[];
+  points?: {lat: number, lng: number, label: string}[];
   tolerance?: number;
 
   // Open
@@ -304,6 +304,7 @@ export default function Quiz({
     );
   };
 
+  // --- 🔥 ЗМІНА 1: ВІДОБРАЖЕННЯ ПРОПУСКІВ З ВІДПОВІДДЮ ---
   const renderFillGap = (q: Question, idx: number) => {
     const questionType = (q.type || 'SINGLE').toUpperCase();
     const parts = q.textParts || [];
@@ -320,14 +321,24 @@ export default function Quiz({
                ))}
             </div>
          )}
+         
          <div className="space-y-6">
             {parts.map((text, partIdx) => {
                const userVal = userMap[partIdx] || "";
+               
+               let correctVal = "";
+               let isCorrect = false;
+               
+               if (isQChecked) {
+                  correctVal = q.correctAnswers ? (q.correctAnswers[partIdx] || q.correctAnswers[String(partIdx)]) : "";
+                  isCorrect = String(userVal).trim().toLowerCase() === String(correctVal).trim().toLowerCase();
+               }
+
                let style = "border-slate-200 focus:border-blue-500 focus:bg-white bg-slate-50";
                if (isQChecked) {
-                  const correctVal = q.correctAnswers ? (q.correctAnswers[partIdx] || q.correctAnswers[String(partIdx)]) : "";
-                  const isCorrect = String(userVal).trim().toLowerCase() === String(correctVal).trim().toLowerCase();
-                  style = isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-900" : "border-red-500 bg-red-50 text-red-900";
+                  style = isCorrect 
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-900" 
+                    : "border-red-500 bg-red-50 text-red-900";
                }
 
                return (
@@ -335,7 +346,8 @@ export default function Quiz({
                     <p className="font-serif text-lg leading-relaxed text-slate-800 flex-1">
                         {text.includes('(') ? text : <><span className="font-sans font-bold text-slate-400 mr-2">{partIdx+1}.</span>{text}</>}
                     </p>
-                    <div className="w-full md:w-auto min-w-[200px]">
+                    
+                    <div className="w-full md:w-auto min-w-[200px] flex flex-col gap-2">
                         {isInline ? (
                            <select 
                               value={userVal}
@@ -347,7 +359,21 @@ export default function Quiz({
                               {q.inlineChoices?.[String(partIdx+1)]?.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
                            </select>
                         ) : (
-                           <input type="text" value={userVal} onChange={(e) => handleSelect(idx, {...userMap, [partIdx]: e.target.value})} disabled={isQChecked} className={`w-full p-3 rounded-xl border-2 font-bold outline-none ${style}`} placeholder="Γράψτε εδώ..." />
+                           <input 
+                              type="text" 
+                              value={userVal} 
+                              onChange={(e) => handleSelect(idx, {...userMap, [partIdx]: e.target.value})} 
+                              disabled={isQChecked} 
+                              className={`w-full p-3 rounded-xl border-2 font-bold outline-none ${style}`} 
+                              placeholder="Γράψτε εδώ..." 
+                           />
+                        )}
+
+                        {isQChecked && !isCorrect && correctVal && (
+                           <div className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100 flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
+                              <CheckCircle2 size={14} />
+                              <span>Σωστό: <span className="underline decoration-2 underline-offset-2">{correctVal}</span></span>
+                           </div>
                         )}
                     </div>
                  </div>
@@ -358,41 +384,35 @@ export default function Quiz({
     );
   };
 
-  // --- 🔥 RENDER MAP (З ЛОГІКОЮ ПЕРЕВІРКИ ТА КОЛЬОРІВ) ---
+  // --- 🔥 ЗМІНА 2: ІНТЕРАКТИВНА КАРТА (замість заглушки) ---
   const renderMap = (q: Question, idx: number) => {
-     // Відповідь студента: масив точок
      const userPlacedPoints = (answers[idx] as {lat:number, lng:number}[]) || [];
      const requiredPoints = q.points || [];
      const isQChecked = isChecked(idx);
  
-     // Логіка кроків
      const currentStepIndex = userPlacedPoints.length;
      const isFinished = currentStepIndex >= requiredPoints.length;
      const currentTarget = !isFinished ? requiredPoints[currentStepIndex] : null;
  
-     // ОБРОБНИК КЛІКУ
      const handleMapClick = (coords: {lat: number, lng: number}) => {
          if (isFinished || isQChecked) return;
          const newAnswerArray = [...userPlacedPoints, coords];
          handleSelect(idx, newAnswerArray);
      };
  
-     // СКИДАННЯ
      const handleResetMap = () => {
          if (isQChecked) return;
          handleSelect(idx, []); 
      };
  
-     // --- ФОРМУВАННЯ МАРКЕРІВ ---
      const markersToRender: MapMarker[] = [];
  
-     // 1. ТОЧКИ СТУДЕНТА (Сині під час вибору, Зелені/Червоні після перевірки)
      userPlacedPoints.forEach((userPt, i) => {
          const targetPt = requiredPoints[i]; 
          if (!targetPt) return;
  
-         let label: string | undefined = `${i + 1}. ${targetPt.label}`; // За замовчуванням: "1. Назва"
-         let color: 'red' | 'green' | 'blue' = 'blue'; // Синій поки не перевірили
+         let label: string | undefined = `${i + 1}. ${targetPt.label}`; 
+         let color: 'red' | 'green' | 'blue' = 'blue'; 
  
          if (isQChecked) {
              const tolerance = q.tolerance || 30;
@@ -401,10 +421,10 @@ export default function Quiz({
              
              if (isCorrect) {
                  color = 'green';
-                 label = `✅ ${targetPt.label}`; // Вірно -> показуємо назву з галочкою
+                 label = `✅ ${targetPt.label}`;
              } else {
                  color = 'red';
-                 label = undefined; // НЕВІРНО -> ПРИБИРАЄМО НАЗВУ (Тільки червона крапка)
+                 label = undefined; // Тільки точка (без підпису)
              }
          }
  
@@ -412,11 +432,10 @@ export default function Quiz({
              lat: userPt.lat,
              lng: userPt.lng,
              label: label, 
-             color: color // Передаємо колір
+             color: color 
          });
      });
  
-     // 2. "ПРИВИДИ" ПРАВИЛЬНИХ ВІДПОВІДЕЙ (Якщо помилився)
      if (isQChecked) {
          requiredPoints.forEach((targetPt, i) => {
              const userPt = userPlacedPoints[i];
@@ -424,12 +443,11 @@ export default function Quiz({
                  const tolerance = q.tolerance || 30;
                  const dist = Math.sqrt(Math.pow(userPt.lat - targetPt.lat, 2) + Math.pow(userPt.lng - targetPt.lng, 2));
                  
-                 // Якщо студент помилився - малюємо правильне місце зеленим
                  if (dist > tolerance) {
                       markersToRender.push({
                           lat: targetPt.lat,
                           lng: targetPt.lng,
-                          label: `(Σωστό: ${targetPt.label})`, // "Правильно: Назва"
+                          label: `(Σωστό: ${targetPt.label})`, 
                           color: 'green'
                       });
                  }
@@ -439,18 +457,15 @@ export default function Quiz({
  
      return (
        <div className="w-full flex flex-col gap-6">
-         
          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
              <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">Σημεία προς εύρεση (Точки):</h4>
              <div className="flex flex-wrap gap-2">
                  {requiredPoints.map((pt, i) => {
                      const isPlaced = i < userPlacedPoints.length;
                      const isCurrent = i === currentStepIndex;
-                     
                      let style = "bg-slate-50 text-slate-400 border-slate-200"; 
                      if (isPlaced) style = "bg-blue-100 text-blue-800 border-blue-200"; 
                      if (isCurrent && !isFinished && !isQChecked) style = "bg-slate-900 text-white border-slate-900 ring-4 ring-blue-200 animate-pulse"; 
- 
                      return (
                          <div key={i} className={`px-4 py-2 rounded-lg text-sm font-bold border ${style} transition-all`}>
                              {i + 1}. {pt.label}
@@ -535,9 +550,65 @@ export default function Quiz({
       return <div>Unknown type</div>;
   };
 
+  // --- LIST LAYOUT ---
+  if (layout === 'list') {
+      return (
+          <div className="w-full max-w-4xl mx-auto pb-10">
+              <div className="space-y-12">
+                  {questions.map((q, i) => (
+                      <div key={q.id || i} className="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+                          <div className="absolute top-0 left-0 bg-slate-100 px-4 py-2 rounded-br-2xl text-xs font-black text-slate-500 uppercase tracking-widest">
+                              Ερώτηση {i + 1}
+                          </div>
+                          
+                          <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 mt-6 leading-snug">
+                              {q.question}
+                          </h3>
+
+                          {q.imageUrl && !q.type?.includes('TRUE') && !q.type?.includes('MAP') && (
+                              <div className="mb-6 rounded-xl overflow-hidden border border-slate-100">
+                                  <img src={q.imageUrl} className="w-full max-h-64 object-contain bg-slate-50" alt=""/>
+                              </div>
+                          )}
+
+                          {renderQuestionContent(q, i)}
+                      </div>
+                  ))}
+              </div>
+
+              {!readOnlyMode && !hideSubmit && (
+                  <div className="mt-10 flex justify-center pb-6">
+                      {!isListSubmitted ? (
+                          <button 
+                              onClick={handleCheckList} 
+                              className="bg-slate-900 text-white px-10 py-4 rounded-full font-black shadow-xl hover:bg-slate-800 hover:scale-105 transition-all flex items-center gap-3"
+                          >
+                              <ListChecks size={24}/> Έλεγχος Απαντήσεων
+                          </button>
+                      ) : (
+                          <div className="flex gap-4 flex-wrap justify-center">
+                              <div className="bg-emerald-500 text-white px-8 py-4 rounded-full font-black shadow-xl flex items-center gap-2 cursor-default">
+                                  <CheckCircle2 size={24}/> Ολοκληρώθηκε
+                              </div>
+                              <button 
+                                  onClick={handleRetryList} 
+                                  className="bg-white text-slate-700 px-6 py-4 rounded-full font-bold shadow-lg border border-slate-200 hover:bg-slate-50 flex items-center gap-2"
+                              >
+                                  <RotateCcw size={20}/> Επανάληψη
+                              </button>
+                          </div>
+                      )}
+                  </div>
+              )}
+          </div>
+      );
+  }
+
+  // --- STEPPER LAYOUT ---
   const currentQ = questions[currentIndex];
   const currentAnswer = answers[currentIndex];
   
+  // Додано перевірку: чи це карта? якщо так - чи всі точки розставлені?
   const hasMapFinished = currentQ.type?.includes('MAP') && Array.isArray(currentAnswer) && currentAnswer.length === (currentQ.points?.length || 0);
 
   const hasAnswer = currentAnswer !== undefined && currentAnswer !== null && (
@@ -566,6 +637,7 @@ export default function Quiz({
   };
 
   const isMainButtonDisabled = () => {
+      // Блокуємо кнопку, якщо відповідь не дана (для карти - не повна)
       if (mode === 'practice' && !readOnlyMode && !isQCheckedStepper && !hasAnswer) return true;
       return false;
   };
