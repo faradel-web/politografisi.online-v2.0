@@ -9,13 +9,13 @@ import {
   PlayCircle, HelpCircle,
   ChevronLeft, ChevronRight, GraduationCap,
   Mic, Lock, MapPin, AlignLeft, Bot, Sparkles, PenTool, Headphones, Eye, EyeOff,
-  ListChecks // Додано іконку для вкладок
+  ListChecks 
 } from "lucide-react";
 import Quiz, { Question } from "@/components/Quiz"; 
 import { useAuth } from "@/lib/auth-context";
 import { GUEST_LIMITS } from "@/lib/constants";
 import AudioRecorder from "@/components/AudioRecorder";
-import { gradeSpeaking, gradeEssay } from "@/lib/gemini";
+import { gradeSpeaking, gradeEssay, gradeShortAnswer } from "@/lib/gemini";
 
 const COLLECTION_MAP: Record<string, string> = {
   'history': 'questions_history',
@@ -27,7 +27,6 @@ const COLLECTION_MAP: Record<string, string> = {
   'speaking': 'lessons_speaking'
 };
 
-// Тип для мобільних вкладок
 type MobileView = 'content' | 'questions';
 
 export default function StudyLessonPage({ params }: { params: Promise<{ category: string, id: string }> }) {
@@ -44,7 +43,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
 
   // UI States
   const [showTranscript, setShowTranscript] = useState(false);
-  // Mobile View State (New)
   const [mobileView, setMobileView] = useState<MobileView>('content');
   
   // AI States
@@ -56,7 +54,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
   const [isGradingEssay, setIsGradingEssay] = useState(false);
   const [essayFeedback, setEssayFeedback] = useState<any>(null);
 
-  // LOAD DATA
   useEffect(() => {
     async function fetchData() {
       if (authLoading) return;
@@ -90,7 +87,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     fetchData();
   }, [category, id, authLoading, isRestricted, LIMIT]);
 
-  // NAVIGATION
   const goToLesson = (index: number) => {
     if (index < 0 || index >= allLessons.length) return;
     if (isRestricted && index >= LIMIT) return alert("Διαθέσιμο μόνο για Premium χρήστες"); 
@@ -100,13 +96,12 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     setCurrentIndex(index);
     setLesson(nextLesson);
     
-    // Reset States
     setSpeakingUrl(null); 
     setSpeakingFeedback(null); 
     setEssay(""); 
     setEssayFeedback(null);
     setShowTranscript(false);
-    setMobileView('content'); // Reset mobile view to content
+    setMobileView('content');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -133,7 +128,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
       finally { setIsGradingEssay(false); }
   };
 
-  // --- NORMALIZER ---
   const normalizeQuestion = (q: any): Question => {
       let type = (q.type || 'SINGLE').toUpperCase();
       
@@ -144,6 +138,8 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
       if (type.includes('FILL') || type.includes('TEXT')) type = 'FILL_GAP';
       if (type.includes('MATCH')) type = 'MATCHING';
       if (type.includes('MAP')) type = 'MAP';
+      
+      if (type === 'OPEN' || type.includes('ESSAY') || type.includes('SHORT')) type = 'OPEN';
 
       let questionText = q.question || q.question_text || q.prompt || "";
       let textParts = q.textParts || (q.sentence ? [q.sentence] : undefined);
@@ -188,7 +184,8 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
           inlineChoices: q.inlineChoices || q.choices,
           correctAnswers: q.correctAnswers,
           points: q.points,
-          tolerance: q.tolerance
+          tolerance: q.tolerance,
+          modelAnswer: q.modelAnswer || q.correctAnswer
       };
 
       if (type === 'TRUE_FALSE' && !norm.items) {
@@ -212,7 +209,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
 
   const isNextLocked = isRestricted && (currentIndex + 1) >= LIMIT;
 
-  // --- HELPER COMPONENT: MOBILE TABS ---
   const MobileTabs = () => (
       <div className="lg:hidden flex border-b border-slate-200 mb-6 bg-white sticky top-[73px] z-30 shadow-sm">
           <button 
@@ -230,9 +226,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
       </div>
   );
 
-  // --- RENDERERS ---
-
-  // 1. LISTENING
   const renderListening = () => {
       let questionsA: Question[] = [];
       let questionsB: Question[] = [];
@@ -247,10 +240,8 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
           <>
           <MobileTabs />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-auto lg:h-[calc(100vh-100px)]">
-              {/* LEFT SIDE: Minimal Player & Transcript Card */}
               <div className={`h-full flex flex-col lg:sticky lg:top-24 gap-4 ${mobileView === 'content' ? 'block' : 'hidden'} lg:flex`}>
                   
-                  {/* 1. Compact Player Card */}
                   <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm shrink-0">
                       <div className="flex items-center gap-4 mb-4">
                           <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 shrink-0 shadow-inner">
@@ -271,7 +262,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                       )}
                   </div>
 
-                  {/* 2. Transcript Card with Toggle */}
                   {lesson.transcript && (
                       <div className={`bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col relative transition-all duration-300 ease-in-out ${showTranscript ? 'flex-1 overflow-hidden min-h-0' : 'flex-none'}`}>
                           
@@ -299,7 +289,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                   )}
               </div>
 
-              {/* RIGHT SIDE: Questions */}
               <div className={`overflow-y-auto custom-scrollbar pr-2 pb-20 space-y-12 ${mobileView === 'questions' ? 'block' : 'hidden'} lg:block`}>
                   
                   {questionsA.length > 0 && (
@@ -325,7 +314,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
       );
   };
 
-  // 2. READING
   const renderReading = () => {
       const pA_Text = lesson.parts?.partA?.[0]?.text_content 
                    || lesson.textContent 
@@ -348,7 +336,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
           <>
           <MobileTabs />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-auto lg:h-[calc(100vh-100px)]">
-              {/* Text Side */}
               <div className={`bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm lg:overflow-y-auto custom-scrollbar ${mobileView === 'content' ? 'block' : 'hidden'} lg:block`}>
                   <div className="flex items-center gap-3 mb-6 text-blue-600 border-b border-blue-50 pb-4">
                       <BookOpen size={24}/><h2 className="font-black uppercase tracking-widest text-sm">Κείμενο</h2>
@@ -357,7 +344,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                   <div className="prose prose-lg prose-slate max-w-none font-serif leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{__html: pA_Text || ""}} />
               </div>
 
-              {/* Questions Side */}
               <div className={`lg:overflow-y-auto custom-scrollbar pr-2 space-y-12 pb-20 ${mobileView === 'questions' ? 'block' : 'hidden'} lg:block`}>
                   
                   {questionsA.length > 0 && (
@@ -413,7 +399,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
       );
   };
 
-  // 3. SPEAKING
   const renderSpeaking = () => {
       const prompt = lesson.prompt || lesson.content;
       const images = lesson.imageUrls || lesson.images || [];
@@ -492,6 +477,8 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                     mode="practice" 
                     showResultCard={false} 
                     onComplete={handleQuizComplete} 
+                    // 🔥 AI CHECK FIX: Pass empty string if modelAnswer is undefined
+                    onAICheck={(q, a, m) => gradeShortAnswer(q, a, m || "")}
                  />
               </div>
               

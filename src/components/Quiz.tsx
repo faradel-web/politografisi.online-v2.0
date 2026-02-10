@@ -3,11 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { 
   Check, X, ChevronRight, ChevronLeft, 
-  MapPin, CheckCircle2, RotateCcw, ListChecks, Undo2 
+  MapPin, CheckCircle2, RotateCcw, ListChecks, Undo2,
+  Sparkles, Loader2, Bot, AlertTriangle 
 } from "lucide-react";
 import GreeceMap, { MapMarker } from "./GreeceMap"; 
 
-// --- ТИПІЗАЦІЯ ---
+// --- ΤΥΠΟΠΟΙΗΣΗ (TYPING) ---
 export interface Question {
   id?: string;
   type?: string; 
@@ -45,6 +46,7 @@ interface QuizProps {
   questions: Question[];
   onComplete?: (results?: any) => void;
   onAnswerUpdate?: (answers: Record<number, any>) => void;
+  onAICheck?: (question: string, answer: string, modelAnswer?: string) => Promise<any>;
   readOnlyMode?: boolean; 
   savedAnswers?: Record<number, any>; 
   showResultCard?: boolean; 
@@ -57,6 +59,7 @@ export default function Quiz({
   questions = [], 
   onComplete, 
   onAnswerUpdate,
+  onAICheck, 
   readOnlyMode = false, 
   savedAnswers = {},
   mode = 'practice',
@@ -70,11 +73,43 @@ export default function Quiz({
   const [checkedQuestions, setCheckedQuestions] = useState<Record<number, boolean>>({});
   const [isListSubmitted, setIsListSubmitted] = useState(false); 
 
+  // --- ΚΑΤΑΣΤΑΣΕΙΣ AI (AI STATES) ---
+  const [aiFeedback, setAiFeedback] = useState<Record<number, any>>({});
+  const [isAiLoading, setIsAiLoading] = useState<Record<number, boolean>>({});
+
+  // --- ΚΑΤΑΣΤΑΣΗ ΓΙΑ ΤΥΧΑΙΑ ΣΕΙΡΑ MATCHING ---
+  const [matchingOrder, setMatchingOrder] = useState<Record<number, number[]>>({});
+
   useEffect(() => {
     if (savedAnswers && Object.keys(savedAnswers).length > 0) {
         setAnswers(savedAnswers);
     }
   }, [savedAnswers]);
+
+  // --- ΔΗΜΙΟΥΡΓΙΑ ΤΥΧΑΙΑΣ ΣΕΙΡΑΣ ΓΙΑ ΤΟ MATCHING ---
+  useEffect(() => {
+    setMatchingOrder(prevOrder => {
+      const newOrder = { ...prevOrder };
+      let hasChanges = false;
+
+      questions.forEach((q, idx) => {
+        if (newOrder[idx]) return;
+
+        if ((q.type === 'MATCHING' || q.type?.includes('MATCH')) && q.pairs && q.pairs.length > 0) {
+            const indices = q.pairs.map((_, i) => i);
+            // Fisher-Yates Shuffle
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            newOrder[idx] = indices;
+            hasChanges = true;
+        }
+      });
+
+      return hasChanges ? newOrder : prevOrder;
+    });
+  }, [questions]); 
 
   if (!questions || questions.length === 0) {
     return <div className="p-8 text-center text-slate-400 italic">Δεν υπάρχουν διαθέσιμες ερωτήσεις.</div>;
@@ -119,7 +154,26 @@ export default function Quiz({
   const handleRetryList = () => {
       setIsListSubmitted(false);
       setAnswers({});
+      setAiFeedback({}); 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // --- ΧΕΙΡΙΣΜΟΣ AI BUTTON ---
+  const handleAICheckClick = async (q: Question, idx: number) => {
+      const userAnswer = answers[idx];
+      if (!userAnswer || !onAICheck) return;
+
+      setIsAiLoading(prev => ({ ...prev, [idx]: true }));
+      try {
+          const result = await onAICheck(q.question || "", userAnswer, q.modelAnswer);
+          setAiFeedback(prev => ({ ...prev, [idx]: result }));
+          // 🔥 Mark question as checked after AI response
+          setCheckedQuestions(prev => ({ ...prev, [idx]: true }));
+      } catch (error) {
+          console.error("AI Check Failed", error);
+      } finally {
+          setIsAiLoading(prev => ({ ...prev, [idx]: false }));
+      }
   };
 
   // --- RENDERERS ---
@@ -261,42 +315,31 @@ export default function Quiz({
     );
   };
 
-  // --- 🔥 ЗМІНЕНИЙ MATCHING: РАНДОМІЗАЦІЯ ПРАВОЇ ЧАСТИНИ ---
   const renderMatching = (q: Question, idx: number) => {
     const pairs = q.pairs || [];
     const userMap = answers[idx] || {}; 
     const isQChecked = isChecked(idx);
     
-    // --- РАНДОМІЗАЦІЯ ---
-    // Використовуємо useMemo, щоб перемішати варіанти один раз при завантаженні питання.
-    // Це гарантує, що список буде випадковим, але не буде змінюватися при кожному кліку.
-    const rightOptions = useMemo(() => {
-        // 1. Створюємо копію масиву варіантів
-        const options = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
-        
-        // 2. Перемішуємо алгоритмом Фішера-Єйтса (найнадійніший метод)
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
-        }
-        
-        return options;
-    }, [pairs]); // Перемішуємо тільки якщо змінилися дані питання
+    const orderIndices = matchingOrder[idx] || pairs.map((_, i) => i);
+    const rightOptions = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
 
     return (
       <div className="space-y-3">
-        {pairs.map((p, pIdx) => {
-           const userVal = userMap[pIdx];
+        {orderIndices.map((originalIdx) => {
+           const p = pairs[originalIdx];
+           const userVal = userMap[originalIdx];
            const isCorrect = userVal === p.right;
+           
            let style = "bg-white border-slate-200";
            if (isQChecked && userVal) style = isCorrect ? "bg-emerald-50 border-emerald-300" : "bg-red-50 border-red-300";
            const isLeftImage = typeof p.left === 'string' && (p.left.startsWith('http') || p.left.startsWith('/'));
 
            return (
-             <div key={pIdx} className={`p-4 rounded-xl border-2 flex flex-col md:flex-row md:items-center justify-between gap-4 ${style}`}>
+             <div key={originalIdx} className={`p-4 rounded-xl border-2 flex flex-col md:flex-row md:items-center justify-between gap-4 ${style}`}>
                 <div className="flex items-center gap-4 flex-1 overflow-hidden">
-                   {/* Ліва частина залишається по порядку 1, 2, 3... */}
-                   <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black border border-slate-200">{pIdx+1}</span>
+                   <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black border border-slate-200">
+                      •
+                   </span>
                    {p.leftImg ? <img src={p.leftImg} className="w-24 h-24 rounded-lg object-cover border bg-white" alt=""/> : 
                     isLeftImage ? <img src={p.left} className="w-32 h-24 rounded-lg object-cover border bg-white" alt=""/> : 
                     <span className="font-bold text-slate-800 leading-snug">{p.left}</span>}
@@ -304,12 +347,11 @@ export default function Quiz({
                 <div className="w-full md:w-1/2">
                     <select 
                       value={userVal || ""}
-                      onChange={(e) => handleSelect(idx, {...userMap, [pIdx]: e.target.value})}
+                      onChange={(e) => handleSelect(idx, {...userMap, [originalIdx]: e.target.value})}
                       disabled={isQChecked}
                       className="w-full p-3 rounded-xl bg-slate-50 border-2 border-slate-200 font-bold text-sm outline-none cursor-pointer focus:border-blue-400 text-slate-700 truncate"
                     >
                        <option value="">-- Επιλογή --</option>
-                       {/* Тут виводимо ПЕРЕМІШАНІ варіанти */}
                        {rightOptions.map((opt, i) => (
                           <option key={i} value={opt.val}>{opt.val || `Επιλογή ${i+1}`}</option>
                        ))}
@@ -474,7 +516,7 @@ export default function Quiz({
      return (
        <div className="w-full flex flex-col gap-6">
          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-             <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">Σημεία προς εύρεση (Точки):</h4>
+             <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">Σημεία προς εύρεση:</h4>
              <div className="flex flex-wrap gap-2">
                  {requiredPoints.map((pt, i) => {
                      const isPlaced = i < userPlacedPoints.length;
@@ -496,7 +538,7 @@ export default function Quiz({
                           <MapPin className="animate-bounce w-6 h-6 text-blue-600"/>
                      </div>
                      <div>
-                         <p className="text-xs uppercase font-bold text-blue-400 mb-1">Τρέχον βήμα (Зараз шукаємо):</p>
+                         <p className="text-xs uppercase font-bold text-blue-400 mb-1">Τρέχον βήμα:</p>
                          <p className="font-black text-xl leading-none">
                              {currentTarget.label}
                          </p>
@@ -506,7 +548,7 @@ export default function Quiz({
              
              {!isQChecked && userPlacedPoints.length > 0 && (
                  <button onClick={handleResetMap} className="text-xs font-bold text-slate-500 hover:text-red-500 flex items-center gap-1 transition-colors">
-                     <Undo2 size={14}/> Επαναφορά (Почати спочатку)
+                     <Undo2 size={14}/> Επαναφορά
                  </button>
              )}
          </div>
@@ -545,15 +587,85 @@ export default function Quiz({
      );
    };
   
-  const renderOpen = (q: Question, idx: number) => (
-     <textarea 
-        value={answers[idx] || ""}
-        onChange={(e) => handleSelect(idx, e.target.value)}
-        disabled={isChecked(idx)}
-        className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 outline-none focus:border-purple-400 font-medium"
-        placeholder="Η απάντησή σας..."
-     />
-  );
+  // --- 🔥 ΠΛΗΡΗΣ ΛΟΚΑΛΙΖΑΣΙΟΝ (OPEN QUESTION & AI) ---
+  const renderOpen = (q: Question, idx: number) => {
+     const loading = isAiLoading[idx];
+     const feedback = aiFeedback[idx];
+     const textAnswer = answers[idx] || "";
+
+     let colorClass = "bg-slate-50 border-slate-100";
+     let textClass = "text-slate-800";
+     let icon = <Bot size={20}/>;
+
+     if (feedback) {
+         if (feedback.score === 2) {
+             colorClass = "bg-emerald-50 border-emerald-200";
+             textClass = "text-emerald-800";
+             icon = <Sparkles size={20} className="text-emerald-600"/>;
+         } else if (feedback.score === 1) {
+             colorClass = "bg-amber-50 border-amber-200";
+             textClass = "text-amber-800";
+             icon = <AlertTriangle size={20} className="text-amber-600"/>;
+         } else {
+             colorClass = "bg-red-50 border-red-200";
+             textClass = "text-red-800";
+             icon = <X size={20} className="text-red-600"/>;
+         }
+     }
+
+     return (
+        <div className="space-y-4">
+            <textarea 
+                value={textAnswer}
+                onChange={(e) => handleSelect(idx, e.target.value)}
+                disabled={isChecked(idx) || loading}
+                className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 outline-none focus:border-purple-400 font-medium disabled:bg-slate-50"
+                placeholder="Η απάντησή σας..."
+            />
+            
+            {/* Κουμπί ελέγχου AI - εξαφανίζεται όταν έρθει η απάντηση */}
+            {!feedback && onAICheck && (
+                <div className="flex justify-end">
+                    <button 
+                        onClick={() => handleAICheckClick(q, idx)}
+                        disabled={loading || textAnswer.length < 3}
+                        className="bg-purple-600 text-white px-6 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-purple-700 disabled:opacity-50 transition-all shadow-md"
+                    >
+                        {loading ? <Loader2 className="animate-spin h-5 w-5"/> : <Bot size={20}/>}
+                        Έλεγχος με AI
+                    </button>
+                </div>
+            )}
+
+            {feedback && (
+                <div className={`p-5 rounded-2xl border-2 ${colorClass} animate-in fade-in slide-in-from-top-2`}>
+                    <div className="flex items-start gap-4">
+                        <div className="p-2 bg-white rounded-full shrink-0 shadow-sm">
+                            {icon}
+                        </div>
+                        <div className="space-y-2 w-full">
+                            <div className="flex items-center justify-between">
+                                <h4 className={`font-black text-lg ${textClass}`}>
+                                    Βαθμολογία: {feedback.score}/2
+                                </h4>
+                                {feedback.score === 2 && <span className="px-3 py-1 bg-white rounded-full text-xs font-bold text-emerald-600 shadow-sm border border-emerald-100">Σωστά</span>}
+                            </div>
+                            
+                            <p className="text-slate-700 font-medium leading-relaxed">{feedback.feedback}</p>
+                            
+                            {feedback.score < 2 && feedback.improvedAnswer && (
+                                <div className="mt-3 p-4 bg-white/60 rounded-xl text-sm border border-black/5">
+                                    <span className="font-bold text-slate-500 block mb-1 uppercase tracking-wider text-xs">Σωστή απάντηση (Πρότυπο):</span>
+                                    <span className="text-slate-800 font-serif italic text-lg">«{feedback.improvedAnswer}»</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+     );
+  };
 
   const renderQuestionContent = (q: Question, idx: number) => {
       const qType = (q.type || 'SINGLE').toUpperCase();
@@ -563,7 +675,7 @@ export default function Quiz({
       if (qType.includes('FILL') || qType === 'INLINE-CHOICE') return renderFillGap(q, idx);
       if (qType.includes('MAP')) return renderMap(q, idx);
       if (qType.includes('OPEN')) return renderOpen(q, idx);
-      return <div>Unknown type</div>;
+      return <div>Άγνωστος τύπος ερώτησης</div>;
   };
 
   // --- LIST LAYOUT ---
@@ -624,7 +736,7 @@ export default function Quiz({
   const currentQ = questions[currentIndex];
   const currentAnswer = answers[currentIndex];
   
-  // Додано перевірку: чи це карта? якщо так - чи всі точки розставлені?
+  // Map validation
   const hasMapFinished = currentQ.type?.includes('MAP') && Array.isArray(currentAnswer) && currentAnswer.length === (currentQ.points?.length || 0);
 
   const hasAnswer = currentAnswer !== undefined && currentAnswer !== null && (
@@ -653,10 +765,15 @@ export default function Quiz({
   };
 
   const isMainButtonDisabled = () => {
-      // Блокуємо кнопку, якщо відповідь не дана (для карти - не повна)
       if (mode === 'practice' && !readOnlyMode && !isQCheckedStepper && !hasAnswer) return true;
       return false;
   };
+
+  // 🔥 ΛΟΓΙΚΗ ΓΙΑ ΤΟ ΚΟΥΜΠΙ ΚΑΤΩ (Main Footer Button):
+  // Αν είναι ερώτηση τύπου OPEN, έχουμε AI λειτουργία και ΔΕΝ έχει ελεγχθεί ακόμα,
+  // τότε ΚΡΥΒΟΥΜΕ το κάτω κουμπί. Θα εμφανιστεί ξανά ως "Επόμενο" όταν το AI απαντήσει.
+  const isPendingAIQuestion = currentQ.type === 'OPEN' && !!onAICheck && !checkedQuestions[currentIndex];
+  const showMainFooterButton = !hideSubmit && !isPendingAIQuestion;
 
   return (
     <div className="max-w-3xl mx-auto w-full">
@@ -685,7 +802,7 @@ export default function Quiz({
             </button>
           ) : <div/>}
 
-          {!hideSubmit && (
+          {showMainFooterButton && (
               <button 
                 onClick={handleMainAction}
                 disabled={isMainButtonDisabled()}
