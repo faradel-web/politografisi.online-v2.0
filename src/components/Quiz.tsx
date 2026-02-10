@@ -167,7 +167,7 @@ export default function Quiz({
       try {
           const result = await onAICheck(q.question || "", userAnswer, q.modelAnswer);
           setAiFeedback(prev => ({ ...prev, [idx]: result }));
-          // 🔥 Mark question as checked after AI response
+          // 🔥 ВАЖЛИВО: Позначаємо питання як перевірене, щоб з'явилася кнопка "Далі"
           setCheckedQuestions(prev => ({ ...prev, [idx]: true }));
       } catch (error) {
           console.error("AI Check Failed", error);
@@ -320,6 +320,7 @@ export default function Quiz({
     const userMap = answers[idx] || {}; 
     const isQChecked = isChecked(idx);
     
+    // Αριστερό μέρος (Τυχαία σειρά)
     const orderIndices = matchingOrder[idx] || pairs.map((_, i) => i);
     const rightOptions = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
 
