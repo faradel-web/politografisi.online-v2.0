@@ -13,12 +13,13 @@ const firebaseConfig = {
   appId: "1:934225612116:web:64671f0955400d0d090cc1"
 };
 
-// Перевірка, чи ви вставили ключі
+// Перевірка ключів (локалізовано грецькою)
 if (firebaseConfig.apiKey.includes("ВАШ_РЕАЛЬНИЙ")) {
-  console.error("🔴 ПОМИЛКА: Ви забули вставити реальні ключі у src/lib/firebase.ts!");
+  console.error("🔴 ΣΦΑΛΜΑ: Ξεχάσατε να εισάγετε τα πραγματικά κλειδιά στο src/lib/firebase.ts!");
 }
 
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+// ✅ ВИПРАВЛЕНО: Додано 'export', щоб app був доступний у crm/page.tsx
+export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);

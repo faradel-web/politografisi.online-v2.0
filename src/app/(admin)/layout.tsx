@@ -12,7 +12,8 @@ import {
   Upload,      
   Library,     
   FileText,
-  Loader2 
+  Loader2,
+  Database // ✅ Додано іконку
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -22,9 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // --- 6. ГОЛОВНИЙ ОХОРОНЕЦЬ (Оновлена логіка) ---
   useEffect(() => {
-    // Чекаємо завантаження Auth
     if (!loading) {
-        // 1. Якщо користувач НЕ залогінений -> на Головну сторінку (Вхід)
         if (!user) {
             router.push("/");
             return;
@@ -32,12 +31,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         const role = (user as any)?.role;
         
-        // 2. Якщо залогінений, але НЕ Адмін і НЕ Редактор -> на Дашборд
         if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) {
             router.push("/dashboard");
         }
     }
   }, [user, loading, router]);
+
+  // ✅ ФУНКЦІЯ ПЕРЕХОДУ В CRM (Оновлена для Localhost)
+  const handleCrmAccess = () => {
+    const isLocal = window.location.hostname === "localhost";
+    const protocol = window.location.protocol;
+    const host = window.location.host; 
+    
+    let newUrl;
+    
+    if (isLocal) {
+        // На localhost додаємо параметр доступу, бо кукі не шаряться між піддоменами
+        newUrl = `${protocol}//crm.localhost:3000?crm_access=true`; 
+    } else {
+        // На проді формуємо піддомен
+        const cleanHost = host.replace("www.", "");
+        // Також додаємо параметр для надійності
+        newUrl = `${protocol}//crm.${cleanHost}?crm_access=true`;
+    }
+
+    // Перехід
+    window.location.href = newUrl;
+  };
 
   // --- 7. Лоадер ---
   if (loading) {
@@ -48,16 +68,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       );
   }
 
-  // --- 8. Захист від рендерингу (Double Check) ---
-  // Якщо ми ще тут, але користувача немає або права не ті - нічого не показуємо
-  // (це запобігає "миготінню" адмін-панелі перед редіректом)
-  
-  if (!user) return null; // Не залогінений -> пустий екран (чекаємо редірект на /)
+  // --- 8. Захист від рендерингу ---
+  if (!user) return null; 
 
   const role = (user as any)?.role;
-  if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) return null; // Немає прав -> пустий екран (чекаємо редірект на /dashboard)
+  if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) return null;
 
-  // --- ОРИГІНАЛЬНЕ МЕНЮ БЕЗ ЗМІН ---
   const menuItems = [
     {
       title: "Αρχική", 
@@ -118,7 +134,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         {/* Footer Sidebar */}
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-800 space-y-1">
+          
+          {/* ✅ КНОПКА CRM (ТІЛЬКИ ДЛЯ АДМІНА) */}
+          {role === USER_ROLES.ADMIN && (
+            <button 
+              onClick={handleCrmAccess}
+              className="w-full flex items-center gap-3 px-4 py-3 text-indigo-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1 text-left font-bold"
+            >
+               <Database className="h-5 w-5" />
+               CRM (Leads)
+            </button>
+          )}
+
           <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-emerald-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1">
              <FileText className="h-5 w-5" />
              Προβολή Site

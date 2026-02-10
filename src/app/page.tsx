@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import ContactForm from "@/components/landing/ContactForm"; // ✅ Імпорт нової форми
 import { 
   BookOpen, GraduationCap, Headphones, Users, ArrowRight, ShieldCheck, 
-  Laptop, Check, Mail, MessageSquare, Send, MonitorPlay, Bot, Mic, PenTool,
+  Laptop, Check, Mail, MessageSquare, MonitorPlay, Bot, Mic, PenTool,
   Repeat, ChevronDown
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -235,7 +236,7 @@ export default function Home() {
 
              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
                
-               {/* 1. FREE */}
+               {/* 1. FREE - Залишається посилання на /register */}
                <div className="bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-blue-200 transition-colors relative h-fit">
                  <h4 className="text-xl font-bold text-blue-900 mb-4">Δοκιμαστικό</h4>
                  <div className="mb-6"><span className="text-4xl font-black text-blue-950">ΔΩΡΕΑΝ</span></div>
@@ -250,7 +251,7 @@ export default function Home() {
                  <Link href="/register" className="block w-full py-3 border-2 border-blue-100 text-blue-600 text-center rounded-xl font-bold hover:bg-blue-50 transition-colors">Δωρεάν Εγγραφή</Link>
                </div>
 
-               {/* 2. 3 MONTHS - BEST VALUE (HIGHLIGHTED) */}
+               {/* 2. 3 MONTHS - ✅ UPDATE: Scroll to form with params */}
                <div className="bg-blue-950 text-white rounded-3xl p-8 border-2 border-blue-900 shadow-2xl relative transform md:-translate-y-6 z-10">
                  <div className="absolute top-0 inset-x-0 -mt-4 flex justify-center"><span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg uppercase tracking-wider">Δημοφιλεστερο</span></div>
                  <h4 className="text-xl font-bold mb-4">3 Μήνες</h4>
@@ -264,10 +265,11 @@ export default function Home() {
                    <li className="flex items-center gap-3"><Check className="h-5 w-5 text-cyan-400"/> AI Καθηγητής (Έκθεση/Ομιλία)</li>
                    <li className="flex items-center gap-3"><Check className="h-5 w-5 text-cyan-400"/> Απεριόριστα Τεστ</li>
                  </ul>
-                 <Link href="/register" className="block w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-center rounded-xl font-bold hover:brightness-110 transition-all shadow-lg text-lg">Επιλογή Πακέτου</Link>
+                 {/* Link to Contact Form with Topic */}
+                 <Link href="/?topic=pack_3_months#contact" className="block w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-center rounded-xl font-bold hover:brightness-110 transition-all shadow-lg text-lg">Επιλογή Πακέτου</Link>
                </div>
 
-               {/* 3. 1 MONTH - STANDARD */}
+               {/* 3. 1 MONTH - ✅ UPDATE: Scroll to form with params */}
                <div className="bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-blue-200 transition-colors relative h-fit">
                  <h4 className="text-xl font-bold text-blue-900 mb-4">1 Μήνας</h4>
                  <div className="mb-6 flex items-baseline gap-1"><span className="text-4xl font-black text-blue-950">€100</span><span className="text-slate-500">/ εφάπαξ</span></div>
@@ -279,7 +281,8 @@ export default function Home() {
                    <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600"/> AI Καθηγητής</li>
                    <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600"/> Απεριόριστα Τεστ</li>
                  </ul>
-                 <Link href="/register" className="block w-full py-3 bg-blue-50 text-blue-700 text-center rounded-xl font-bold hover:bg-blue-100 transition-colors">Επιλογή Πακέτου</Link>
+                 {/* Link to Contact Form with Topic */}
+                 <Link href="/?topic=pack_1_month#contact" className="block w-full py-3 bg-blue-50 text-blue-700 text-center rounded-xl font-bold hover:bg-blue-100 transition-colors">Επιλογή Πακέτου</Link>
                </div>
 
              </div>
@@ -368,28 +371,8 @@ export default function Home() {
                     </div>
                  </div>
 
-                 {/* Δεξιά Στήλη: Φόρμα */}
-                 <div className="p-10 md:p-16 md:w-3/5">
-                    <form className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-blue-900 uppercase">Ονοματεπώνυμο</label>
-                                <input type="text" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Το όνομά σας"/>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-blue-900 uppercase">E-mail</label>
-                                <input type="email" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="email@example.com"/>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-blue-900 uppercase">Μήνυμα</label>
-                            <textarea rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Το μήνυμά σας..."></textarea>
-                        </div>
-                        <button type="button" className="w-full py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
-                            <Send className="h-5 w-5"/> Αποστολή Μηνύματος
-                        </button>
-                    </form>
-                 </div>
+                 {/* Δεξιά Στήλη: New Contact Form Component */}
+                 <ContactForm />
 
               </div>
            </div>
