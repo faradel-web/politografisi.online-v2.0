@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   Check, X, ChevronRight, ChevronLeft, 
   MapPin, CheckCircle2, RotateCcw, ListChecks, Undo2 
@@ -34,7 +34,7 @@ export interface Question {
   isTrue?: boolean;
 
   // Map
-  points?: {lat: number, lng: number, label: string}[];
+  points?: {id?: string, lat: number, lng: number, label: string}[];
   tolerance?: number;
 
   // Open
@@ -261,11 +261,27 @@ export default function Quiz({
     );
   };
 
+  // --- 🔥 ЗМІНЕНИЙ MATCHING: РАНДОМІЗАЦІЯ ПРАВОЇ ЧАСТИНИ ---
   const renderMatching = (q: Question, idx: number) => {
     const pairs = q.pairs || [];
     const userMap = answers[idx] || {}; 
     const isQChecked = isChecked(idx);
-    const rightOptions = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
+    
+    // --- РАНДОМІЗАЦІЯ ---
+    // Використовуємо useMemo, щоб перемішати варіанти один раз при завантаженні питання.
+    // Це гарантує, що список буде випадковим, але не буде змінюватися при кожному кліку.
+    const rightOptions = useMemo(() => {
+        // 1. Створюємо копію масиву варіантів
+        const options = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
+        
+        // 2. Перемішуємо алгоритмом Фішера-Єйтса (найнадійніший метод)
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        
+        return options;
+    }, [pairs]); // Перемішуємо тільки якщо змінилися дані питання
 
     return (
       <div className="space-y-3">
@@ -279,6 +295,7 @@ export default function Quiz({
            return (
              <div key={pIdx} className={`p-4 rounded-xl border-2 flex flex-col md:flex-row md:items-center justify-between gap-4 ${style}`}>
                 <div className="flex items-center gap-4 flex-1 overflow-hidden">
+                   {/* Ліва частина залишається по порядку 1, 2, 3... */}
                    <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black border border-slate-200">{pIdx+1}</span>
                    {p.leftImg ? <img src={p.leftImg} className="w-24 h-24 rounded-lg object-cover border bg-white" alt=""/> : 
                     isLeftImage ? <img src={p.left} className="w-32 h-24 rounded-lg object-cover border bg-white" alt=""/> : 
@@ -292,6 +309,7 @@ export default function Quiz({
                       className="w-full p-3 rounded-xl bg-slate-50 border-2 border-slate-200 font-bold text-sm outline-none cursor-pointer focus:border-blue-400 text-slate-700 truncate"
                     >
                        <option value="">-- Επιλογή --</option>
+                       {/* Тут виводимо ПЕРЕМІШАНІ варіанти */}
                        {rightOptions.map((opt, i) => (
                           <option key={i} value={opt.val}>{opt.val || `Επιλογή ${i+1}`}</option>
                        ))}
@@ -304,7 +322,6 @@ export default function Quiz({
     );
   };
 
-  // --- 🔥 ЗМІНА 1: ВІДОБРАЖЕННЯ ПРОПУСКІВ З ВІДПОВІДДЮ ---
   const renderFillGap = (q: Question, idx: number) => {
     const questionType = (q.type || 'SINGLE').toUpperCase();
     const parts = q.textParts || [];
@@ -384,7 +401,6 @@ export default function Quiz({
     );
   };
 
-  // --- 🔥 ЗМІНА 2: ІНТЕРАКТИВНА КАРТА (замість заглушки) ---
   const renderMap = (q: Question, idx: number) => {
      const userPlacedPoints = (answers[idx] as {lat:number, lng:number}[]) || [];
      const requiredPoints = q.points || [];
@@ -424,7 +440,7 @@ export default function Quiz({
                  label = `✅ ${targetPt.label}`;
              } else {
                  color = 'red';
-                 label = undefined; // Тільки точка (без підпису)
+                 label = undefined; 
              }
          }
  
