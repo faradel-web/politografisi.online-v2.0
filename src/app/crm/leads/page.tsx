@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation"; 
 import { db, auth } from "@/lib/firebase"; 
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { 
   Loader2, Mail, Phone, 
   Trash2, Search, 
   ShieldAlert, UserCircle, 
   CheckCircle, AlertTriangle,
-  Crown, FileEdit, Users, Inbox, ChevronDown, Edit3, X, Save, Calendar, AlertOctagon,
-  Archive, ChevronRight, GraduationCap, PauseCircle, Timer, Skull
+  Crown, FileEdit, Users, Inbox, 
+  Archive, ChevronRight, LayoutDashboard, UserCog, 
+  CalendarClock, AlertOctagon,
+  GraduationCap, PauseCircle, Timer, Skull
 } from "lucide-react";
 
 // --- ТИПИ ДАНИХ ---
@@ -57,8 +60,7 @@ interface UnifiedContact {
   phone: string;
   isRegistered: boolean;
   role: string;          
-  subscription: string;  
-  subscriptionEndsAt?: any; 
+  subscriptionEndsAt?: any;
   requests: RequestItem[]; 
   lastActive: any;
   avatar?: string;
@@ -69,6 +71,8 @@ interface UnifiedContact {
 
 export default function CrmUnifiedPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [users, setUsers] = useState<UserData[]>([]);
   const [leads, setLeads] = useState<LeadData[]>([]);
   const [contacts, setContacts] = useState<UnifiedContact[]>([]);
@@ -76,19 +80,12 @@ export default function CrmUnifiedPage() {
   const [loading, setLoading] = useState(true);
   const [authStatus, setAuthStatus] = useState<'checking' | 'authorized' | 'guest' | 'forbidden'>('checking');
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Стани для модалок
-  const [editingContact, setEditingContact] = useState<UnifiedContact | null>(null);
-  const [archivingContact, setArchivingContact] = useState<UnifiedContact | null>(null); // ✅ Для вибору категорії архіву
   
-  const [editForm, setEditForm] = useState({
-      firstName: "",
-      lastName: "",
-      phone: "",
-      role: "student",
-      subDate: "" 
-  });
+  // ✅ СТАН ДЛЯ ВКЛАДОК
+  const [activeTab, setActiveTab] = useState<'all' | 'admins' | 'editors' | 'paid' | 'free' | 'leads'>('all');
 
+  const [archivingContact, setArchivingContact] = useState<UnifiedContact | null>(null); 
+  
   // 1. ПЕРЕВІРКА ПРАВ
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -125,14 +122,6 @@ export default function CrmUnifiedPage() {
     return () => { unsubUsers(); unsubLeads(); };
   }, [authStatus]);
 
-  const checkPhoneMatch = (p1: string | undefined, p2: string | undefined) => {
-      if (!p1 || !p2) return false;
-      const n1 = p1.replace(/\D/g, ''); 
-      const n2 = p2.replace(/\D/g, '');
-      if (n1.length < 7 || n2.length < 7) return n1 === n2;
-      return n1.endsWith(n2) || n2.endsWith(n1);
-  };
-
   // 3. ОБРОБКА ДАНИХ
   useEffect(() => {
     if (users.length === 0 && leads.length === 0) {
@@ -145,11 +134,7 @@ export default function CrmUnifiedPage() {
     users.forEach(user => {
       if (!user.email) return;
       const emailKey = user.email.toLowerCase();
-      let subStatus = 'FREE';
-      if (user.subscriptionEndsAt) {
-          const endDate = user.subscriptionEndsAt.toDate ? user.subscriptionEndsAt.toDate() : new Date(user.subscriptionEndsAt);
-          if (endDate > new Date()) subStatus = 'PAID';
-      }
+      
       let fName = user.firstName || user.displayName?.split(" ")[0] || "Άγνωστος";
       let lName = user.lastName || user.displayName?.split(" ").slice(1).join(" ") || "Χρήστης";
 
@@ -161,8 +146,7 @@ export default function CrmUnifiedPage() {
         phone: user.phoneNumber || "-",
         isRegistered: true,
         role: user.role || 'student',
-        subscription: subStatus,
-        subscriptionEndsAt: user.subscriptionEndsAt, 
+        subscriptionEndsAt: user.subscriptionEndsAt,
         requests: [],
         lastActive: user.createdAt,
         avatar: user.photoURL,
@@ -182,8 +166,9 @@ export default function CrmUnifiedPage() {
       };
 
       const existingUser = mergedContacts[emailKey];
+
       if (existingUser) {
-          const isPhoneMatch = checkPhoneMatch(lead.phone, existingUser.phone);
+          const isPhoneMatch = checkPhoneMatch(lead.phone || "", existingUser.phone);
           const isFirstPhoneAdd = (existingUser.phone === "-" || existingUser.phone === "") && (lead.phone && lead.phone.length > 5);
 
           if (isPhoneMatch || isFirstPhoneAdd) {
@@ -200,7 +185,7 @@ export default function CrmUnifiedPage() {
                   phone: lead.phone || "-",
                   isRegistered: false,
                   role: 'guest',
-                  subscription: '-',
+                  subscriptionEndsAt: null,
                   requests: [requestItem],
                   lastActive: lead.createdAt,
                   isConflict: true, 
@@ -217,7 +202,7 @@ export default function CrmUnifiedPage() {
           phone: lead.phone || "-",
           isRegistered: false,
           role: 'guest',
-          subscription: '-',
+          subscriptionEndsAt: null,
           requests: [requestItem],
           lastActive: lead.createdAt,
           isArchived: lead.status === 'archived'
@@ -235,55 +220,55 @@ export default function CrmUnifiedPage() {
     setLoading(false);
   }, [users, leads, authStatus]);
 
-  // --- 🔥 ФУНКЦІЇ АРХІВУВАННЯ З ВИБОРОМ КАТЕГОРІЇ ---
+  // АВТОМАТИЧНИЙ ПЕРЕХІД
+  useEffect(() => {
+    const targetId = searchParams.get('id');
+    if (targetId && contacts.length > 0) {
+        const target = contacts.find(c => c.id === targetId || c.requests.some(r => r.docId === targetId));
+        if (target) {
+            router.push(`/leads/${target.id}`);
+        }
+    }
+  }, [contacts, searchParams, router]);
+
+  // --- ХЕЛПЕРИ ---
+  const checkPhoneMatch = (p1: string | undefined, p2: string | undefined) => {
+      if (!p1 || !p2) return false;
+      const n1 = p1.replace(/\D/g, ''); 
+      const n2 = p2.replace(/\D/g, '');
+      if (n1.length < 7 || n2.length < 7) return n1 === n2;
+      return n1.endsWith(n2) || n2.endsWith(n1);
+  };
+
+  const renderSubscriptionInfo = (subEndsAt: any, role: string) => {
+    if (role === 'admin' || role === 'editor') return <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">TEAM</span>;
+    let isValid = false;
+    let dateStr = "";
+    if (subEndsAt) {
+        const date = subEndsAt.toDate ? subEndsAt.toDate() : new Date(subEndsAt);
+        isValid = date > new Date();
+        dateStr = date.toLocaleDateString('el-GR');
+    }
+    if (isValid) {
+        return (
+            <div className="flex flex-col items-start gap-1">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-100 text-green-700 border-green-200 flex items-center gap-1 w-fit"><CheckCircle size={10}/> NEO</span>
+                <span className="text-[10px] font-bold text-green-600 flex items-center gap-1"><CalendarClock size={10}/> {dateStr}</span>
+            </div>
+        );
+    }
+    return <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1 w-fit"><AlertTriangle size={10}/> FREE</span>;
+  };
 
   const confirmArchive = async (category: string) => {
       if (!archivingContact) return;
       try {
           if (archivingContact.isRegistered) {
-              await updateDoc(doc(db, "users", archivingContact.id), { 
-                  isArchived: true, 
-                  archiveCategory: category 
-              });
+              await updateDoc(doc(db, "users", archivingContact.id), { isArchived: true, archiveCategory: category });
           } else {
-              for (const req of archivingContact.requests) {
-                  await updateDoc(doc(db, "leads", req.docId), { 
-                      status: 'archived', 
-                      archiveCategory: category 
-                  });
-              }
+              for (const req of archivingContact.requests) { await updateDoc(doc(db, "leads", req.docId), { status: 'archived', archiveCategory: category }); }
           }
           setArchivingContact(null);
-          alert("Εστάλη στο αρχείο!");
-      } catch (error) { console.error(error); }
-  };
-
-  const handleSaveChanges = async () => {
-      if (!editingContact) return;
-      try {
-          if (editingContact.isRegistered) {
-              const userRef = doc(db, "users", editingContact.id);
-              const updateData: any = {
-                  firstName: editForm.firstName,
-                  lastName: editForm.lastName,
-                  displayName: `${editForm.firstName} ${editForm.lastName}`.trim(),
-                  phoneNumber: editForm.phone,
-                  role: editForm.role
-              };
-              if (editForm.subDate) {
-                  const newDate = new Date(editForm.subDate);
-                  newDate.setHours(23, 59, 59);
-                  updateData.subscriptionEndsAt = Timestamp.fromDate(newDate);
-              }
-              await updateDoc(userRef, updateData);
-          } else {
-              if (editingContact.requests.length > 0) {
-                  const leadRef = doc(db, "leads", editingContact.requests[0].docId);
-                  await updateDoc(leadRef, { firstName: editForm.firstName, lastName: editForm.lastName, phone: editForm.phone });
-              }
-          }
-          setEditingContact(null);
-          alert("✅ Оновлено!");
       } catch (error) { console.error(error); }
   };
 
@@ -292,7 +277,7 @@ export default function CrmUnifiedPage() {
   };
 
   const handleDeleteRequest = async (leadDocId: string) => {
-    if (!confirm("Видалити повідомлення?")) return;
+    if (!confirm("Διαγραφή μηνύματος;")) return;
     try { await deleteDoc(doc(db, "leads", leadDocId)); } catch (error) { console.error(error); }
   };
 
@@ -321,18 +306,25 @@ export default function CrmUnifiedPage() {
       }
   };
 
-  const renderSubscriptionBadge = (subscription: string, role: string) => {
-    if (role === 'admin' || role === 'editor') return null;
-    if (subscription === 'PAID') return <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-100 text-green-700 border-green-200 flex items-center gap-1 w-fit"><CheckCircle size={10}/> PAID</span>;
-    return <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1 w-fit"><AlertTriangle size={10}/> FREE</span>;
-  };
-
   const activeContacts = contacts.filter(c => !c.isArchived && (c.email.toLowerCase().includes(searchTerm.toLowerCase()) || c.lastName.toLowerCase().includes(searchTerm.toLowerCase())));
 
   const adminUsers = activeContacts.filter(c => c.role === 'admin');
   const editorUsers = activeContacts.filter(c => c.role === 'editor');
-  const paidStudents = activeContacts.filter(c => c.isRegistered && c.subscription === 'PAID');
-  const freeStudents = activeContacts.filter(c => c.isRegistered && c.subscription !== 'PAID' && c.role !== 'admin' && c.role !== 'editor');
+  
+  const paidStudents = activeContacts.filter(c => {
+      if (!c.isRegistered || c.role === 'admin' || c.role === 'editor') return false;
+      if (!c.subscriptionEndsAt) return false;
+      const date = c.subscriptionEndsAt.toDate ? c.subscriptionEndsAt.toDate() : new Date(c.subscriptionEndsAt);
+      return date > new Date();
+  });
+  
+  const freeStudents = activeContacts.filter(c => {
+      if (!c.isRegistered || c.role === 'admin' || c.role === 'editor') return false;
+      if (!c.subscriptionEndsAt) return true;
+      const date = c.subscriptionEndsAt.toDate ? c.subscriptionEndsAt.toDate() : new Date(c.subscriptionEndsAt);
+      return date <= new Date();
+  });
+  
   const guestLeads = activeContacts.filter(c => !c.isRegistered);
 
   const renderSection = (title: string, icon: any, data: UnifiedContact[], colorClass: string) => (
@@ -347,26 +339,21 @@ export default function CrmUnifiedPage() {
         <div className="overflow-x-auto bg-white">
             <table className="w-full text-left border-collapse">
                 <thead className="bg-slate-50/50 text-xs uppercase text-slate-400 font-bold">
-                    <tr>
-                        <th className="p-4 w-1/4">User Info</th>
-                        <th className="p-4 w-1/4">Contact</th>
-                        <th className="p-4 w-1/2">Requests</th>
-                        <th className="p-4 text-right">Manage</th>
-                    </tr>
+                    <tr><th className="p-4 w-1/4">User Info</th><th className="p-4 w-1/4">Contact</th><th className="p-4 w-1/2">Requests</th><th className="p-4 text-right">Manage</th></tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-sm">
                     {data.length === 0 ? <tr><td colSpan={4} className="p-6 text-center text-slate-400 italic text-xs">No records.</td></tr> : 
                         data.map(contact => (
-                            <tr key={contact.id} className="hover:bg-slate-50 transition-colors align-top">
+                            <tr key={contact.id} onClick={() => router.push(`/leads/${contact.id}`)} className="hover:bg-blue-50 transition-colors align-top cursor-pointer group">
                                 <td className="p-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 relative">
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 relative group-hover:border-blue-200">
                                             {contact.isConflict && <div className="absolute inset-0 bg-red-100 flex items-center justify-center z-10"><AlertOctagon className="text-red-600" size={16}/></div>}
-                                            {!contact.isConflict && (contact.avatar ? <img src={contact.avatar} className="w-full h-full object-cover"/> : <UserCircle size={16} className="text-slate-400"/>)}
+                                            {!contact.isConflict && (contact.avatar ? <img src={contact.avatar} className="w-full h-full object-cover" referrerPolicy="no-referrer"/> : <UserCircle size={16} className="text-slate-400"/>)}
                                         </div>
                                         <div>
-                                            <p className={`font-bold ${contact.isConflict ? 'text-red-600' : 'text-slate-800'}`}>{contact.lastName.toUpperCase()} {contact.firstName}</p>
-                                            <div className="mt-1">{contact.isRegistered && renderSubscriptionBadge(contact.subscription, contact.role)}</div>
+                                            <p className={`font-bold ${contact.isConflict ? 'text-red-600' : 'text-slate-800'} group-hover:text-blue-700`}>{contact.lastName.toUpperCase()} {contact.firstName}</p>
+                                            <div className="mt-1">{contact.isRegistered && renderSubscriptionInfo(contact.subscriptionEndsAt, contact.role)}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -379,20 +366,25 @@ export default function CrmUnifiedPage() {
                                 <td className="p-4">
                                     <div className="space-y-2">
                                         {contact.requests.map((req) => (
-                                            <div key={req.docId} className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex justify-between items-center gap-2">
+                                            <div key={req.docId} className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex justify-between items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2 mb-1">{getTopicLabel(req.topic)} <span className="text-[9px] text-slate-400">{formatDate(req.createdAt)}</span></div>
                                                     <p className="text-[11px] text-slate-700 italic">"{req.message}"</p>
                                                 </div>
                                                 <div className="flex items-center gap-1">
-                                                    <select value={req.status} onChange={(e) => handleStatusChange(req.docId, e.target.value)} className={`text-[9px] font-bold p-1 rounded border outline-none ${getStatusStyle(req.status)}`}>
+                                                    <select 
+                                                        value={req.status} 
+                                                        onChange={(e) => handleStatusChange(req.docId, e.target.value)} 
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className={`text-[9px] font-bold p-1 rounded border outline-none cursor-pointer ${getStatusStyle(req.status)}`}
+                                                    >
                                                         <option value="new">🔵 Νέο</option>
                                                         <option value="seen">👁️ Είδαν</option>
                                                         <option value="in_progress">🟡 Σε εξέλιξη</option>
                                                         <option value="answered">✅ Απαντήθηκε</option>
                                                         <option value="archived">⚪ Αρχείο</option>
                                                     </select>
-                                                    <button onClick={() => handleDeleteRequest(req.docId)} className="p-1 text-slate-300 hover:text-red-500"><Trash2 size={12}/></button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleDeleteRequest(req.docId); }} className="p-1 text-slate-300 hover:text-red-500"><Trash2 size={12}/></button>
                                                 </div>
                                             </div>
                                         ))}
@@ -400,9 +392,8 @@ export default function CrmUnifiedPage() {
                                 </td>
                                 <td className="p-4 text-right">
                                     <div className="flex justify-end gap-1">
-                                        {/* ✅ КНОПКА АРХІВУ (ВІДКРИВАЄ МОДАЛКУ) */}
-                                        <button onClick={() => setArchivingContact(contact)} className="p-2 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-xl" title="Archive"><Archive size={16}/></button>
-                                        <button onClick={() => { setEditingContact(contact); setEditForm({ firstName: contact.firstName, lastName: contact.lastName, phone: contact.phone, role: contact.role, subDate: "" }); }} className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl"><Edit3 size={16}/></button>
+                                        <button onClick={(e) => { e.stopPropagation(); setArchivingContact(contact); }} className="p-2 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-xl transition-all" title="Αρχειοθέτηση"><Archive size={16}/></button>
+                                        <button onClick={(e) => { e.stopPropagation(); router.push(`/leads/${contact.id}`); }} className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm" title="Προφίλ"><UserCog size={16}/></button>
                                     </div>
                                 </td>
                             </tr>
@@ -421,23 +412,38 @@ export default function CrmUnifiedPage() {
     <div className="space-y-6 pb-20 max-w-7xl mx-auto p-4">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <div><h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">CRM Dashboard</h1><p className="text-sm text-slate-500">Ενεργές επαφές: {activeContacts.length}</p></div>
+          <div><h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">CRM Leads</h1><p className="text-sm text-slate-500">Ενεργές επαφές: {activeContacts.length}</p></div>
           <div className="flex items-center gap-3 w-full md:w-auto">
+             <button onClick={() => router.push('/')} className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-50 transition-all shadow-sm text-sm"><LayoutDashboard size={16}/> Dashboard</button>
              <div className="relative flex-1 md:w-64"><Search className="absolute left-3 top-2.5 text-slate-400 h-4 w-4"/><input type="text" placeholder="Αναζήτηση..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
-             {/* ✅ КНОПКА ПЕРЕХОДУ ДО АРХІВУ */}
-             <button onClick={() => router.push('/archive')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg text-sm">
-                <Archive size={16}/> Αρχειοθήκη <ChevronRight size={14}/>
-             </button>
+             <button onClick={() => router.push('/archive')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg text-sm"><Archive size={16}/> Αρχειοθήκη <ChevronRight size={14}/></button>
           </div>
       </div>
 
-      {renderSection("Διαχειριστές (Admins)", <ShieldAlert size={20}/>, adminUsers, "border-red-200 bg-red-50")}
-      {renderSection("Συντάκτες (Editors)", <FileEdit size={20}/>, editorUsers, "border-orange-200 bg-orange-50")}
-      {renderSection("Συνδρομητές (Paid Users)", <Crown size={20}/>, paidStudents, "border-green-200 bg-green-50")}
-      {renderSection("Εγγεγραμμένοι (Free Users)", <Users size={20}/>, freeStudents, "border-blue-200 bg-blue-50")}
-      {renderSection("Αιτήματα Επισκεπτών (Leads)", <Inbox size={20}/>, guestLeads, "border-slate-200 bg-slate-50")}
+      {/* ✅ ВКЛАДКИ (TABS) */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar">
+          <button onClick={() => setActiveTab('all')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>Όλοι ({activeContacts.length})</button>
+          <button onClick={() => setActiveTab('paid')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'paid' ? 'bg-green-600 text-white border-green-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-green-50'}`}>Συνδρομητές ({paidStudents.length})</button>
+          <button onClick={() => setActiveTab('free')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'free' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-blue-50'}`}>Εγγεγραμμένοι ({freeStudents.length})</button>
+          <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'leads' ? 'bg-slate-600 text-white border-slate-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>Αιτήματα ({guestLeads.length})</button>
+          <button onClick={() => setActiveTab('admins')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'admins' ? 'bg-red-600 text-white border-red-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-red-50'}`}>Διαχειριστές ({adminUsers.length + editorUsers.length})</button>
+      </div>
 
-      {/* ✅ МОДАЛКА ВИБОРУ КАТЕГОРІЇ АРХІВУ */}
+      {/* SECTIONS З УМОВНИМ РЕНДЕРИНГОМ */}
+      {(activeTab === 'all' || activeTab === 'admins') && (
+          <>
+            {adminUsers.length > 0 && renderSection("Διαχειριστές (Admins)", <ShieldAlert size={20}/>, adminUsers, "border-red-200 bg-red-50")}
+            {editorUsers.length > 0 && renderSection("Συντάκτες (Editors)", <FileEdit size={20}/>, editorUsers, "border-orange-200 bg-orange-50")}
+          </>
+      )}
+      
+      {(activeTab === 'all' || activeTab === 'paid') && renderSection("Συνδρομητές (Paid Users)", <Crown size={20}/>, paidStudents, "border-green-200 bg-green-50")}
+      
+      {(activeTab === 'all' || activeTab === 'free') && renderSection("Εγγεγραμμένοι (Free Users)", <Users size={20}/>, freeStudents, "border-blue-200 bg-blue-50")}
+      
+      {(activeTab === 'all' || activeTab === 'leads') && renderSection("Αιτήματα Επισκεπτών (Leads)", <Inbox size={20}/>, guestLeads, "border-slate-200 bg-slate-50")}
+
+      {/* ARCHIVE MODAL */}
       {archivingContact && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
               <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
@@ -449,56 +455,17 @@ export default function CrmUnifiedPage() {
                   <div className="p-4 grid grid-cols-1 gap-2 bg-slate-50/50">
                       {archivingContact.isRegistered ? (
                           <>
-                              <button onClick={() => confirmArchive('completed')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-green-50 border border-slate-200 rounded-2xl text-left transition-all group">
-                                  <div className="p-2 bg-green-100 text-green-600 rounded-lg group-hover:scale-110 transition-transform"><GraduationCap size={20}/></div>
-                                  <div><div className="font-bold text-slate-800">Ολοκλήρωση</div><div className="text-[10px] text-slate-400">Ολοκλήρωσαν την εκπαίδευση</div></div>
-                              </button>
-                              <button onClick={() => confirmArchive('paused')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-orange-50 border border-slate-200 rounded-2xl text-left transition-all group">
-                                  <div className="p-2 bg-orange-100 text-orange-600 rounded-lg group-hover:scale-110 transition-transform"><PauseCircle size={20}/></div>
-                                  <div><div className="font-bold text-slate-800">Διακοπή</div><div className="text-[10px] text-slate-400">Διέκοψαν / Σε αναμονή</div></div>
-                              </button>
+                              <button onClick={() => confirmArchive('completed')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-green-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-green-100 text-green-600 rounded-lg group-hover:scale-110 transition-transform"><GraduationCap size={20}/></div><div><div className="font-bold text-slate-800">Ολοκλήρωση</div><div className="text-[10px] text-slate-400">Ολοκλήρωσαν την εκπαίδευση</div></div></button>
+                              <button onClick={() => confirmArchive('paused')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-orange-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg group-hover:scale-110 transition-transform"><PauseCircle size={20}/></div><div><div className="font-bold text-slate-800">Διακοπή</div><div className="text-[10px] text-slate-400">Διέκοψαν / Σε αναμονή</div></div></button>
                           </>
                       ) : (
                           <>
-                              <button onClick={() => confirmArchive('potential')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-blue-50 border border-slate-200 rounded-2xl text-left transition-all group">
-                                  <div className="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><Timer size={20}/></div>
-                                  <div><div className="font-bold text-slate-800">Ενδιαφέρον</div><div className="text-[10px] text-slate-400">Σκέφτονται / Μελλοντικά</div></div>
-                              </button>
-                              <button onClick={() => confirmArchive('spam')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-red-50 border border-slate-200 rounded-2xl text-left transition-all group">
-                                  <div className="p-2 bg-red-100 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><Skull size={20}/></div>
-                                  <div><div className="font-bold text-slate-800">Απόρριψη / Spam</div><div className="text-[10px] text-slate-400">Δεν ενδιαφέρεται καθόλου</div></div>
-                              </button>
+                              <button onClick={() => confirmArchive('potential')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-blue-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><Timer size={20}/></div><div><div className="font-bold text-slate-800">Ενδιαφέρον</div><div className="text-[10px] text-slate-400">Σκέφτονται / Μελλοντικά</div></div></button>
+                              <button onClick={() => confirmArchive('spam')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-red-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-red-100 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><Skull size={20}/></div><div><div className="font-bold text-slate-800">Απόρριψη / Spam</div><div className="text-[10px] text-slate-400">Δεν ενδιαφέρεται καθόλου</div></div></button>
                           </>
                       )}
                   </div>
                   <button onClick={() => setArchivingContact(null)} className="w-full p-4 text-slate-400 font-bold hover:text-slate-600 hover:bg-slate-100 transition-colors uppercase text-xs">Ακύρωση</button>
-              </div>
-          </div>
-      )}
-
-      {/* MODAL EDIT */}
-      {editingContact && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-              <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200">
-                  <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                      <h3 className="font-bold text-slate-800 flex items-center gap-2"><Edit3 size={18}/> Επεξεργασία</h3>
-                      <button onClick={() => setEditingContact(null)} className="p-1 hover:bg-slate-200 rounded-full transition-colors"><X size={20}/></button>
-                  </div>
-                  <div className="p-6 space-y-4">
-                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Όνομα</label><input type="text" value={editForm.firstName} onChange={(e) => setEditForm({...editForm, firstName: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
-                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Επώνυμο</label><input type="text" value={editForm.lastName} onChange={(e) => setEditForm({...editForm, lastName: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
-                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Τηλέφωνο</label><input type="text" value={editForm.phone} onChange={(e) => setEditForm({...editForm, phone: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
-                      {editingContact.isRegistered && (
-                          <>
-                              <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ρόλος</label><select value={editForm.role} onChange={(e) => setEditForm({...editForm, role: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none"><option value="student">Student</option><option value="editor">Editor</option><option value="admin">Admin</option></select></div>
-                              <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Λήξη Συνδρομής</label><input type="date" value={editForm.subDate} onChange={(e) => setEditForm({...editForm, subDate: e.target.value})} className="w-full p-3 bg-green-50 border border-green-200 rounded-xl text-sm font-bold outline-none"/></div>
-                          </>
-                      )}
-                  </div>
-                  <div className="p-4 border-t border-slate-100 flex justify-end gap-2 bg-slate-50">
-                      <button onClick={() => setEditingContact(null)} className="px-4 py-2 text-slate-400 font-bold hover:text-slate-600 transition-colors">Ακύρωση</button>
-                      <button onClick={handleSaveChanges} className="px-6 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg flex items-center gap-2"><Save size={18}/> Αποθήκευση</button>
-                  </div>
               </div>
           </div>
       )}

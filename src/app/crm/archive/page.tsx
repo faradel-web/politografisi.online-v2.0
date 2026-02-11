@@ -216,7 +216,7 @@ export default function CrmArchivePage() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 pb-20">
-        <button onClick={() => router.push('/crm/leads')} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-slate-800 font-bold transition-colors text-sm uppercase tracking-wider">
+        <button onClick={() => router.push('/leads')} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-slate-800 font-bold transition-colors text-sm uppercase tracking-wider">
             <ArrowLeft size={18}/> Επιστροφή στο CRM
         </button>
 
