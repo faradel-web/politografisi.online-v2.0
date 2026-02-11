@@ -1,256 +1,507 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "@/lib/firebase";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase"; 
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, deleteDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 import { 
-  Loader2, Mail, Phone, Calendar, MessageSquare, 
-  Trash2, User, Search, RefreshCcw
+  Loader2, Mail, Phone, 
+  Trash2, Search, 
+  ShieldAlert, UserCircle, 
+  CheckCircle, AlertTriangle,
+  Crown, FileEdit, Users, Inbox, ChevronDown, Edit3, X, Save, Calendar, AlertOctagon,
+  Archive, ChevronRight, GraduationCap, PauseCircle, Timer, Skull
 } from "lucide-react";
 
-// Тип даних заявки
-interface Lead {
+// --- ТИПИ ДАНИХ ---
+interface UserData {
   id: string;
-  firstName: string;
-  lastName: string;
-  fullName?: string; // Для зручності, якщо є
   email: string;
-  phone: string;
-  topic: string;
-  message: string;
-  status: 'new' | 'contacted' | 'converted_to_student' | 'archived';
-  createdAt: any;
-  source?: string;
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
+  role?: string;
+  createdAt?: any;
+  subscriptionEndsAt?: any;
+  photoURL?: string;
+  phoneNumber?: string;
+  isArchived?: boolean; 
 }
 
-export default function CrmLeadsPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
+interface LeadData {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  message?: string;
+  topic?: string;
+  createdAt: any;
+  status: string;
+}
+
+interface RequestItem {
+  docId: string;
+  message: string;
+  topic: string;
+  status: string;
+  createdAt: any;
+}
+
+interface UnifiedContact {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  isRegistered: boolean;
+  role: string;          
+  subscription: string;  
+  subscriptionEndsAt?: any; 
+  requests: RequestItem[]; 
+  lastActive: any;
+  avatar?: string;
+  isConflict?: boolean; 
+  conflictReason?: string;
+  isArchived: boolean; 
+}
+
+export default function CrmUnifiedPage() {
+  const router = useRouter();
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [leads, setLeads] = useState<LeadData[]>([]);
+  const [contacts, setContacts] = useState<UnifiedContact[]>([]);
+  
   const [loading, setLoading] = useState(true);
+  const [authStatus, setAuthStatus] = useState<'checking' | 'authorized' | 'guest' | 'forbidden'>('checking');
   const [searchTerm, setSearchTerm] = useState("");
 
-  // 1. Отримання даних в реальному часі
-  useEffect(() => {
-    // Сортуємо: найновіші зверху
-    const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
-    
-    // onSnapshot - це слухач, який оновлює дані миттєво, без перезавантаження сторінки
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const leadsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Lead[];
-      
-      setLeads(leadsData);
-      setLoading(false);
-    });
+  // Стани для модалок
+  const [editingContact, setEditingContact] = useState<UnifiedContact | null>(null);
+  const [archivingContact, setArchivingContact] = useState<UnifiedContact | null>(null); // ✅ Для вибору категорії архіву
+  
+  const [editForm, setEditForm] = useState({
+      firstName: "",
+      lastName: "",
+      phone: "",
+      role: "student",
+      subDate: "" 
+  });
 
-    return () => unsubscribe();
+  // 1. ПЕРЕВІРКА ПРАВ
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userSnapshot = await getDoc(userDocRef);
+          if (userSnapshot.exists() && ['admin', 'editor'].includes(userSnapshot.data().role || 'student')) {
+              setAuthStatus('authorized');
+          } else {
+              setAuthStatus('forbidden');
+              setLoading(false);
+          }
+        } catch (error) { setAuthStatus('guest'); setLoading(false); }
+      } else { setAuthStatus('guest'); setLoading(false); }
+    });
+    return () => unsubscribeAuth();
   }, []);
 
-  // 2. Функція зміни статусу
-  const updateStatus = async (id: string, newStatus: string) => {
-    try {
-      const leadRef = doc(db, "leads", id);
-      await updateDoc(leadRef, { status: newStatus });
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Σφάλμα κατά την ενημέρωση (Помилка оновлення)");
-    }
+  // 2. ЗАВАНТАЖЕННЯ ДАНИХ
+  useEffect(() => {
+    if (authStatus !== 'authorized') return;
+    setLoading(true);
+
+    const unsubUsers = onSnapshot(collection(db, "users"), (snap) => {
+      setUsers(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as UserData[]);
+    });
+
+    const qLeads = query(collection(db, "leads"), orderBy("createdAt", "desc"));
+    const unsubLeads = onSnapshot(qLeads, (snap) => {
+      setLeads(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })) as LeadData[]);
+    });
+
+    return () => { unsubUsers(); unsubLeads(); };
+  }, [authStatus]);
+
+  const checkPhoneMatch = (p1: string | undefined, p2: string | undefined) => {
+      if (!p1 || !p2) return false;
+      const n1 = p1.replace(/\D/g, ''); 
+      const n2 = p2.replace(/\D/g, '');
+      if (n1.length < 7 || n2.length < 7) return n1 === n2;
+      return n1.endsWith(n2) || n2.endsWith(n1);
   };
 
-  // 3. Функція видалення
-  const handleDelete = async (id: string) => {
-    if (confirm("Είστε σίγουρος ότι θέλετε να διαγράψετε αυτό το αίτημα; (Видалити цей запит?)")) {
-        try {
-            await deleteDoc(doc(db, "leads", id));
-        } catch (error) {
-            console.error("Error deleting:", error);
-        }
+  // 3. ОБРОБКА ДАНИХ
+  useEffect(() => {
+    if (users.length === 0 && leads.length === 0) {
+        if (authStatus === 'authorized') setLoading(false);
+        return;
     }
+
+    const mergedContacts: Record<string, UnifiedContact> = {};
+
+    users.forEach(user => {
+      if (!user.email) return;
+      const emailKey = user.email.toLowerCase();
+      let subStatus = 'FREE';
+      if (user.subscriptionEndsAt) {
+          const endDate = user.subscriptionEndsAt.toDate ? user.subscriptionEndsAt.toDate() : new Date(user.subscriptionEndsAt);
+          if (endDate > new Date()) subStatus = 'PAID';
+      }
+      let fName = user.firstName || user.displayName?.split(" ")[0] || "Άγνωστος";
+      let lName = user.lastName || user.displayName?.split(" ").slice(1).join(" ") || "Χρήστης";
+
+      mergedContacts[emailKey] = {
+        id: user.id,
+        email: user.email,
+        firstName: fName,
+        lastName: lName,
+        phone: user.phoneNumber || "-",
+        isRegistered: true,
+        role: user.role || 'student',
+        subscription: subStatus,
+        subscriptionEndsAt: user.subscriptionEndsAt, 
+        requests: [],
+        lastActive: user.createdAt,
+        avatar: user.photoURL,
+        isArchived: user.isArchived || false 
+      };
+    });
+
+    leads.forEach(lead => {
+      if (!lead.email) return;
+      const emailKey = lead.email.toLowerCase();
+      const requestItem: RequestItem = {
+          docId: lead.id,
+          message: lead.message || "",
+          topic: lead.topic || "general",
+          status: lead.status || "new",
+          createdAt: lead.createdAt
+      };
+
+      const existingUser = mergedContacts[emailKey];
+      if (existingUser) {
+          const isPhoneMatch = checkPhoneMatch(lead.phone, existingUser.phone);
+          const isFirstPhoneAdd = (existingUser.phone === "-" || existingUser.phone === "") && (lead.phone && lead.phone.length > 5);
+
+          if (isPhoneMatch || isFirstPhoneAdd) {
+              existingUser.requests.push(requestItem);
+              if (existingUser.phone === "-" || existingUser.phone === "") existingUser.phone = lead.phone || "-";
+              if (lead.createdAt && (!existingUser.lastActive || lead.createdAt > existingUser.lastActive)) existingUser.lastActive = lead.createdAt;
+          } else {
+              const conflictKey = `${emailKey}_CONFLICT_${lead.id}`;
+              mergedContacts[conflictKey] = {
+                  id: lead.id,
+                  email: lead.email,
+                  firstName: lead.firstName || "Επισκέπτης",
+                  lastName: lead.lastName || "",
+                  phone: lead.phone || "-",
+                  isRegistered: false,
+                  role: 'guest',
+                  subscription: '-',
+                  requests: [requestItem],
+                  lastActive: lead.createdAt,
+                  isConflict: true, 
+                  conflictReason: `Registered phone: ${existingUser.phone}`,
+                  isArchived: lead.status === 'archived'
+              };
+          }
+      } else {
+        mergedContacts[emailKey] = {
+          id: lead.id,
+          email: lead.email,
+          firstName: lead.firstName || "Επισκέπτης",
+          lastName: lead.lastName || "",
+          phone: lead.phone || "-",
+          isRegistered: false,
+          role: 'guest',
+          subscription: '-',
+          requests: [requestItem],
+          lastActive: lead.createdAt,
+          isArchived: lead.status === 'archived'
+        };
+      }
+    });
+
+    const contactsArray = Object.values(mergedContacts).sort((a, b) => {
+        const dateA = a.lastActive?.toDate ? a.lastActive.toDate() : new Date(0);
+        const dateB = b.lastActive?.toDate ? b.lastActive.toDate() : new Date(0);
+        return dateB.getTime() - dateA.getTime();
+    });
+
+    setContacts(contactsArray);
+    setLoading(false);
+  }, [users, leads, authStatus]);
+
+  // --- 🔥 ФУНКЦІЇ АРХІВУВАННЯ З ВИБОРОМ КАТЕГОРІЇ ---
+
+  const confirmArchive = async (category: string) => {
+      if (!archivingContact) return;
+      try {
+          if (archivingContact.isRegistered) {
+              await updateDoc(doc(db, "users", archivingContact.id), { 
+                  isArchived: true, 
+                  archiveCategory: category 
+              });
+          } else {
+              for (const req of archivingContact.requests) {
+                  await updateDoc(doc(db, "leads", req.docId), { 
+                      status: 'archived', 
+                      archiveCategory: category 
+                  });
+              }
+          }
+          setArchivingContact(null);
+          alert("Εστάλη στο αρχείο!");
+      } catch (error) { console.error(error); }
   };
 
-  // Форматування дати
+  const handleSaveChanges = async () => {
+      if (!editingContact) return;
+      try {
+          if (editingContact.isRegistered) {
+              const userRef = doc(db, "users", editingContact.id);
+              const updateData: any = {
+                  firstName: editForm.firstName,
+                  lastName: editForm.lastName,
+                  displayName: `${editForm.firstName} ${editForm.lastName}`.trim(),
+                  phoneNumber: editForm.phone,
+                  role: editForm.role
+              };
+              if (editForm.subDate) {
+                  const newDate = new Date(editForm.subDate);
+                  newDate.setHours(23, 59, 59);
+                  updateData.subscriptionEndsAt = Timestamp.fromDate(newDate);
+              }
+              await updateDoc(userRef, updateData);
+          } else {
+              if (editingContact.requests.length > 0) {
+                  const leadRef = doc(db, "leads", editingContact.requests[0].docId);
+                  await updateDoc(leadRef, { firstName: editForm.firstName, lastName: editForm.lastName, phone: editForm.phone });
+              }
+          }
+          setEditingContact(null);
+          alert("✅ Оновлено!");
+      } catch (error) { console.error(error); }
+  };
+
+  const handleStatusChange = async (leadDocId: string, newStatus: string) => {
+      try { await updateDoc(doc(db, "leads", leadDocId), { status: newStatus }); } catch (error) { console.error(error); }
+  };
+
+  const handleDeleteRequest = async (leadDocId: string) => {
+    if (!confirm("Видалити повідомлення?")) return;
+    try { await deleteDoc(doc(db, "leads", leadDocId)); } catch (error) { console.error(error); }
+  };
+
   const formatDate = (timestamp: any) => {
     if (!timestamp) return "-";
-    // Обробка Timestamp від Firebase
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return new Intl.DateTimeFormat('el-GR', {
-      day: '2-digit', month: '2-digit', year: '2-digit',
-      hour: '2-digit', minute: '2-digit'
-    }).format(date);
+    return new Intl.DateTimeFormat('el-GR', { day: '2-digit', month: '2-digit', year: '2-digit' }).format(date);
   };
 
-  // Переклад теми (відображення для адміна)
   const getTopicLabel = (topic: string) => {
-    switch (topic) {
-        case 'pack_3_months': return '📦 Πακέτο 3 Μήνες';
-        case 'pack_1_month': return '📦 Πακέτο 1 Μήνας';
-        case 'general': return '✉️ Γενική Ερώτηση';
-        default: return topic;
-    }
+      switch(topic) {
+          case 'pack_1_month': return <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">📦 1 Month</span>;
+          case 'pack_3_months': return <span className="text-[10px] font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100">📦 3 Months</span>;
+          default: return <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">✉️ General</span>;
+      }
   };
 
-  // Колір статусу
-  const getStatusColor = (status: string) => {
-    switch (status) {
-        case 'new': return 'bg-blue-100 text-blue-700 border-blue-200';
-        case 'contacted': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-        case 'converted_to_student': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-        case 'archived': return 'bg-slate-100 text-slate-500 border-slate-200';
-        default: return 'bg-gray-100';
-    }
+  const getStatusStyle = (status: string) => {
+      switch(status) {
+          case 'new': return 'bg-blue-50 text-blue-700 border-blue-200';
+          case 'seen': return 'bg-purple-50 text-purple-700 border-purple-200';
+          case 'in_progress': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+          case 'answered': return 'bg-green-50 text-green-700 border-green-200';
+          case 'archived': return 'bg-slate-100 text-slate-400 border-slate-200';
+          default: return 'bg-white text-slate-600 border-slate-200';
+      }
   };
 
-  // Фільтрація лідів (пошук)
-  const filteredLeads = leads.filter(lead => 
-    lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lead.phone.includes(searchTerm)
+  const renderSubscriptionBadge = (subscription: string, role: string) => {
+    if (role === 'admin' || role === 'editor') return null;
+    if (subscription === 'PAID') return <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-100 text-green-700 border-green-200 flex items-center gap-1 w-fit"><CheckCircle size={10}/> PAID</span>;
+    return <span className="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-50 text-yellow-700 border-yellow-200 flex items-center gap-1 w-fit"><AlertTriangle size={10}/> FREE</span>;
+  };
+
+  const activeContacts = contacts.filter(c => !c.isArchived && (c.email.toLowerCase().includes(searchTerm.toLowerCase()) || c.lastName.toLowerCase().includes(searchTerm.toLowerCase())));
+
+  const adminUsers = activeContacts.filter(c => c.role === 'admin');
+  const editorUsers = activeContacts.filter(c => c.role === 'editor');
+  const paidStudents = activeContacts.filter(c => c.isRegistered && c.subscription === 'PAID');
+  const freeStudents = activeContacts.filter(c => c.isRegistered && c.subscription !== 'PAID' && c.role !== 'admin' && c.role !== 'editor');
+  const guestLeads = activeContacts.filter(c => !c.isRegistered);
+
+  const renderSection = (title: string, icon: any, data: UnifiedContact[], colorClass: string) => (
+    <div className={`rounded-2xl shadow-sm border overflow-hidden mb-8 ${colorClass}`}>
+        <div className="p-4 border-b border-slate-200/50 flex justify-between items-center bg-white/50 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${colorClass.replace('border-', 'bg-').replace('200', '100')} text-slate-700`}>{icon}</div>
+                <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+            </div>
+            <span className="text-xs font-bold px-3 py-1 bg-white rounded-full text-slate-500 shadow-sm border border-slate-100">{data.length}</span>
+        </div>
+        <div className="overflow-x-auto bg-white">
+            <table className="w-full text-left border-collapse">
+                <thead className="bg-slate-50/50 text-xs uppercase text-slate-400 font-bold">
+                    <tr>
+                        <th className="p-4 w-1/4">User Info</th>
+                        <th className="p-4 w-1/4">Contact</th>
+                        <th className="p-4 w-1/2">Requests</th>
+                        <th className="p-4 text-right">Manage</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-sm">
+                    {data.length === 0 ? <tr><td colSpan={4} className="p-6 text-center text-slate-400 italic text-xs">No records.</td></tr> : 
+                        data.map(contact => (
+                            <tr key={contact.id} className="hover:bg-slate-50 transition-colors align-top">
+                                <td className="p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 relative">
+                                            {contact.isConflict && <div className="absolute inset-0 bg-red-100 flex items-center justify-center z-10"><AlertOctagon className="text-red-600" size={16}/></div>}
+                                            {!contact.isConflict && (contact.avatar ? <img src={contact.avatar} className="w-full h-full object-cover"/> : <UserCircle size={16} className="text-slate-400"/>)}
+                                        </div>
+                                        <div>
+                                            <p className={`font-bold ${contact.isConflict ? 'text-red-600' : 'text-slate-800'}`}>{contact.lastName.toUpperCase()} {contact.firstName}</p>
+                                            <div className="mt-1">{contact.isRegistered && renderSubscriptionBadge(contact.subscription, contact.role)}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="p-4">
+                                    <div className="text-[11px] space-y-1 text-slate-600">
+                                        <div className="flex items-center gap-1"><Mail size={12}/> {contact.email}</div>
+                                        <div className="flex items-center gap-1"><Phone size={12}/> {contact.phone}</div>
+                                    </div>
+                                </td>
+                                <td className="p-4">
+                                    <div className="space-y-2">
+                                        {contact.requests.map((req) => (
+                                            <div key={req.docId} className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex justify-between items-center gap-2">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">{getTopicLabel(req.topic)} <span className="text-[9px] text-slate-400">{formatDate(req.createdAt)}</span></div>
+                                                    <p className="text-[11px] text-slate-700 italic">"{req.message}"</p>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <select value={req.status} onChange={(e) => handleStatusChange(req.docId, e.target.value)} className={`text-[9px] font-bold p-1 rounded border outline-none ${getStatusStyle(req.status)}`}>
+                                                        <option value="new">🔵 Νέο</option>
+                                                        <option value="seen">👁️ Είδαν</option>
+                                                        <option value="in_progress">🟡 Σε εξέλιξη</option>
+                                                        <option value="answered">✅ Απαντήθηκε</option>
+                                                        <option value="archived">⚪ Αρχείο</option>
+                                                    </select>
+                                                    <button onClick={() => handleDeleteRequest(req.docId)} className="p-1 text-slate-300 hover:text-red-500"><Trash2 size={12}/></button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </td>
+                                <td className="p-4 text-right">
+                                    <div className="flex justify-end gap-1">
+                                        {/* ✅ КНОПКА АРХІВУ (ВІДКРИВАЄ МОДАЛКУ) */}
+                                        <button onClick={() => setArchivingContact(contact)} className="p-2 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-xl" title="Archive"><Archive size={16}/></button>
+                                        <button onClick={() => { setEditingContact(contact); setEditForm({ firstName: contact.firstName, lastName: contact.lastName, phone: contact.phone, role: contact.role, subDate: "" }); }} className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl"><Edit3 size={16}/></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
   );
 
-  if (loading) {
-    return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="animate-spin h-8 w-8 text-blue-600"/></div>;
-  }
+  if (loading) return <div className="flex h-[50vh] items-center justify-center"><Loader2 className="animate-spin text-blue-600"/></div>;
+  if (authStatus !== 'authorized') return null;
 
   return (
-    <div className="space-y-6">
-      
-      {/* Header & Search */}
+    <div className="space-y-6 pb-20 max-w-7xl mx-auto p-4">
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <div>
-            <h1 className="text-2xl font-black text-slate-800">Вхідні Заявки (Leads)</h1>
-            <p className="text-sm text-slate-500">Список усіх, хто заповнив форму на сайті</p>
-          </div>
-          
-          <div className="flex items-center gap-4 w-full md:w-auto">
-             <div className="relative w-full md:w-64">
-                <Search className="absolute left-3 top-2.5 text-slate-400 h-4 w-4"/>
-                <input 
-                    type="text" 
-                    placeholder="Αναζήτηση (Email, Tel)..." 
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
-                />
-             </div>
-             <div className="bg-slate-100 px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 whitespace-nowrap">
-                Total: {leads.length}
-             </div>
+          <div><h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">CRM Dashboard</h1><p className="text-sm text-slate-500">Ενεργές επαφές: {activeContacts.length}</p></div>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+             <div className="relative flex-1 md:w-64"><Search className="absolute left-3 top-2.5 text-slate-400 h-4 w-4"/><input type="text" placeholder="Αναζήτηση..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
+             {/* ✅ КНОПКА ПЕРЕХОДУ ДО АРХІВУ */}
+             <button onClick={() => router.push('/archive')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg text-sm">
+                <Archive size={16}/> Αρχειοθήκη <ChevronRight size={14}/>
+             </button>
           </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase text-slate-500 font-bold tracking-wider">
-                <th className="p-4 w-40">Ημερομηνία</th>
-                <th className="p-4">Πελάτης</th>
-                <th className="p-4">Επικοινωνία</th>
-                <th className="p-4">Θέμα / Μήνυμα</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
-              {filteredLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-blue-50/30 transition-colors group">
-                  
-                  {/* Date */}
-                  <td className="p-4 whitespace-nowrap text-slate-500 font-medium">
-                      <div className="flex items-center gap-2">
-                          <Calendar size={14} className="text-slate-400"/>
-                          {formatDate(lead.createdAt)}
-                      </div>
-                  </td>
+      {renderSection("Διαχειριστές (Admins)", <ShieldAlert size={20}/>, adminUsers, "border-red-200 bg-red-50")}
+      {renderSection("Συντάκτες (Editors)", <FileEdit size={20}/>, editorUsers, "border-orange-200 bg-orange-50")}
+      {renderSection("Συνδρομητές (Paid Users)", <Crown size={20}/>, paidStudents, "border-green-200 bg-green-50")}
+      {renderSection("Εγγεγραμμένοι (Free Users)", <Users size={20}/>, freeStudents, "border-blue-200 bg-blue-50")}
+      {renderSection("Αιτήματα Επισκεπτών (Leads)", <Inbox size={20}/>, guestLeads, "border-slate-200 bg-slate-50")}
 
-                  {/* Name */}
-                  <td className="p-4">
-                      <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs border border-slate-200">
-                              <User size={14}/>
-                          </div>
-                          <div>
-                              <p className="font-bold text-slate-800">{lead.firstName} {lead.lastName}</p>
-                              {lead.status === 'new' && <span className="text-[10px] text-blue-600 font-bold animate-pulse">NEW</span>}
-                          </div>
-                      </div>
-                  </td>
-
-                  {/* Contact */}
-                  <td className="p-4 space-y-1">
-                      <div className="flex items-center gap-2 text-slate-600">
-                          <Mail size={14} className="text-slate-400"/> 
-                          <a href={`mailto:${lead.email}`} className="hover:text-blue-600 font-medium">{lead.email}</a>
-                      </div>
-                      <div className="flex items-center gap-2 text-slate-600">
-                          <Phone size={14} className="text-slate-400"/> 
-                          <a href={`tel:${lead.phone}`} className="hover:text-blue-600 font-medium">{lead.phone}</a>
-                      </div>
-                  </td>
-
-                  {/* Message */}
-                  <td className="p-4 max-w-xs">
-                      <div className="mb-1">
-                          <span className="inline-block px-2 py-0.5 bg-slate-100 rounded text-[10px] font-bold text-slate-600 border border-slate-200 uppercase tracking-wide">
-                              {getTopicLabel(lead.topic)}
-                          </span>
-                      </div>
-                      {lead.message && (
-                          <div className="relative group/msg cursor-help">
-                              <p className="text-slate-500 truncate max-w-[180px] italic">"{lead.message}"</p>
-                              {/* Tooltip */}
-                              <div className="absolute left-0 bottom-full mb-2 hidden group-hover/msg:block w-64 p-3 bg-slate-800 text-white text-xs rounded-lg shadow-xl z-20 leading-relaxed">
-                                  {lead.message}
-                              </div>
-                          </div>
+      {/* ✅ МОДАЛКА ВИБОРУ КАТЕГОРІЇ АРХІВУ */}
+      {archivingContact && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+              <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+                  <div className="p-6 text-center border-b border-slate-100">
+                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500"><Archive size={32}/></div>
+                      <h3 className="text-xl font-black text-slate-800 uppercase">Αρχειοθέτηση</h3>
+                      <p className="text-sm text-slate-500 mt-1">Επιλέξτε την αιτία αρχειοθέτησης για τον χρήστη <br/><b>{archivingContact.email}</b></p>
+                  </div>
+                  <div className="p-4 grid grid-cols-1 gap-2 bg-slate-50/50">
+                      {archivingContact.isRegistered ? (
+                          <>
+                              <button onClick={() => confirmArchive('completed')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-green-50 border border-slate-200 rounded-2xl text-left transition-all group">
+                                  <div className="p-2 bg-green-100 text-green-600 rounded-lg group-hover:scale-110 transition-transform"><GraduationCap size={20}/></div>
+                                  <div><div className="font-bold text-slate-800">Ολοκλήρωση</div><div className="text-[10px] text-slate-400">Ολοκλήρωσαν την εκπαίδευση</div></div>
+                              </button>
+                              <button onClick={() => confirmArchive('paused')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-orange-50 border border-slate-200 rounded-2xl text-left transition-all group">
+                                  <div className="p-2 bg-orange-100 text-orange-600 rounded-lg group-hover:scale-110 transition-transform"><PauseCircle size={20}/></div>
+                                  <div><div className="font-bold text-slate-800">Διακοπή</div><div className="text-[10px] text-slate-400">Διέκοψαν / Σε αναμονή</div></div>
+                              </button>
+                          </>
+                      ) : (
+                          <>
+                              <button onClick={() => confirmArchive('potential')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-blue-50 border border-slate-200 rounded-2xl text-left transition-all group">
+                                  <div className="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><Timer size={20}/></div>
+                                  <div><div className="font-bold text-slate-800">Ενδιαφέρον</div><div className="text-[10px] text-slate-400">Σκέφτονται / Μελλοντικά</div></div>
+                              </button>
+                              <button onClick={() => confirmArchive('spam')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-red-50 border border-slate-200 rounded-2xl text-left transition-all group">
+                                  <div className="p-2 bg-red-100 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><Skull size={20}/></div>
+                                  <div><div className="font-bold text-slate-800">Απόρριψη / Spam</div><div className="text-[10px] text-slate-400">Δεν ενδιαφέρεται καθόλου</div></div>
+                              </button>
+                          </>
                       )}
-                  </td>
+                  </div>
+                  <button onClick={() => setArchivingContact(null)} className="w-full p-4 text-slate-400 font-bold hover:text-slate-600 hover:bg-slate-100 transition-colors uppercase text-xs">Ακύρωση</button>
+              </div>
+          </div>
+      )}
 
-                  {/* Status Select */}
-                  <td className="p-4">
-                      <select 
-                          value={lead.status}
-                          onChange={(e) => updateStatus(lead.id, e.target.value)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-bold border appearance-none cursor-pointer outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300 transition-all ${getStatusColor(lead.status)}`}
-                      >
-                          <option value="new">🆕 Νέο (New)</option>
-                          <option value="contacted">📞 Επικοινωνία (Contacted)</option>
-                          <option value="converted_to_student">🎓 Μαθητής (Student)</option>
-                          <option value="archived">🗄️ Αρχείο (Archived)</option>
-                      </select>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="p-4 text-right">
-                      <button 
-                          onClick={() => handleDelete(lead.id)}
-                          className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                          title="Delete Lead"
-                      >
-                          <Trash2 size={16}/>
-                      </button>
-                  </td>
-
-                </tr>
-              ))}
-
-              {filteredLeads.length === 0 && (
-                  <tr>
-                      <td colSpan={6} className="p-12 text-center">
-                          <div className="flex flex-col items-center justify-center text-slate-400 gap-3">
-                              <RefreshCcw size={32} className="opacity-20"/>
-                              <p>Δεν βρέθηκαν αποτελέσματα.</p>
-                          </div>
-                      </td>
-                  </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* MODAL EDIT */}
+      {editingContact && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200">
+                  <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                      <h3 className="font-bold text-slate-800 flex items-center gap-2"><Edit3 size={18}/> Επεξεργασία</h3>
+                      <button onClick={() => setEditingContact(null)} className="p-1 hover:bg-slate-200 rounded-full transition-colors"><X size={20}/></button>
+                  </div>
+                  <div className="p-6 space-y-4">
+                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Όνομα</label><input type="text" value={editForm.firstName} onChange={(e) => setEditForm({...editForm, firstName: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
+                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Επώνυμο</label><input type="text" value={editForm.lastName} onChange={(e) => setEditForm({...editForm, lastName: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
+                      <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Τηλέφωνο</label><input type="text" value={editForm.phone} onChange={(e) => setEditForm({...editForm, phone: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500"/></div>
+                      {editingContact.isRegistered && (
+                          <>
+                              <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ρόλος</label><select value={editForm.role} onChange={(e) => setEditForm({...editForm, role: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none"><option value="student">Student</option><option value="editor">Editor</option><option value="admin">Admin</option></select></div>
+                              <div><label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Λήξη Συνδρομής</label><input type="date" value={editForm.subDate} onChange={(e) => setEditForm({...editForm, subDate: e.target.value})} className="w-full p-3 bg-green-50 border border-green-200 rounded-xl text-sm font-bold outline-none"/></div>
+                          </>
+                      )}
+                  </div>
+                  <div className="p-4 border-t border-slate-100 flex justify-end gap-2 bg-slate-50">
+                      <button onClick={() => setEditingContact(null)} className="px-4 py-2 text-slate-400 font-bold hover:text-slate-600 transition-colors">Ακύρωση</button>
+                      <button onClick={handleSaveChanges} className="px-6 py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg flex items-center gap-2"><Save size={18}/> Αποθήκευση</button>
+                  </div>
+              </div>
+          </div>
+      )}
     </div>
   );
 }
