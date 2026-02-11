@@ -26,7 +26,7 @@ export default function Footer() {
         {/* Copyright & Links */}
         <div className="text-center space-y-3">
             <p className="text-blue-200 text-sm font-medium">
-              &copy; {new Date().getFullYear()} POLITOGRAFISI.GR.
+              &copy; {new Date().getFullYear()} POLITOGRAFISI.ONLINE.
             </p>
             
             <div className="flex items-center justify-center gap-4 text-xs font-bold tracking-wider text-blue-400">

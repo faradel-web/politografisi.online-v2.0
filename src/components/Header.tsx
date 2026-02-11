@@ -48,7 +48,7 @@ export default function Header() {
                   P
               </div>
               <span className="hidden sm:block font-montserrat text-lg font-black tracking-wide text-slate-900">
-                  POLITOGRAFISI
+                  POLITOGRAFISI.ONLINE
               </span>
           </Link>
         </div>
@@ -204,7 +204,7 @@ export default function Header() {
 
                 <div className="mt-auto">
                     <p className="text-xs text-center text-slate-400 font-medium">
-                        © 2024 Politografisi
+                        © 2026 Politografisi.online | All rights reserved.
                     </p>
                 </div>
             </div>

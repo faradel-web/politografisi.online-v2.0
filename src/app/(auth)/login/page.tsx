@@ -103,7 +103,7 @@ export default function LoginPage() {
                  P
                </div>
                <span className="font-montserrat font-bold text-lg text-white tracking-wide">
-                 POLITOGRAFISI.GR
+                 POLITOGRAFISI.ONLINE
                </span>
             </div>
             <h2 className="text-2xl font-bold font-montserrat text-white leading-tight pr-4">
@@ -121,7 +121,7 @@ export default function LoginPage() {
                P
              </div>
              <span className="font-montserrat font-bold text-xl tracking-wide text-white">
-               POLITOGRAFISI.GR
+               POLITOGRAFISI.ONLINE
              </span>
           </div>
 

@@ -60,7 +60,7 @@ export default function Navbar() {
             </div>
             {/* Використовуємо Montserrat для логотипу */}
             <span className="font-montserrat font-black text-xl md:text-2xl text-blue-950 tracking-tight leading-none">
-              POLITOGRAFISI<span className="text-blue-600">.GR</span>
+              POLITOGRAFISI<span className="text-blue-600">.ONLINE</span>
             </span>
           </Link>
 

@@ -94,7 +94,7 @@ export default function RegisterPage() {
                  P
                </div>
                <span className="font-montserrat font-bold text-lg text-white tracking-wide">
-                 POLITOGRAFISI.GR
+                 POLITOGRAFISI.ONLINE
                </span>
             </div>
 
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                   P
                 </div>
                 <span className="font-montserrat font-bold text-xl tracking-wide text-white">
-                  POLITOGRAFISI.GR
+                  POLITOGRAFISI.ONLINE
                 </span>
              </Link>
           </div>

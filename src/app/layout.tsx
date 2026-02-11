@@ -24,21 +24,20 @@ const vollkorn = Vollkorn({
 // --- SEO ТΑ OPEN GRAPH НАЛАШТУВАННЯ ---
 export const metadata: Metadata = {
   // Важливо: Базовий URL для правильного формування посилань на картинки
-  // Коли ви купите домен, змініть це на 'https://politografisi.gr'
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://politografisi.gr'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://politografisi.online'),
 
   title: {
-    default: "Politografisi.gr | Προετοιμασία για Εξετάσεις Πολιτογράφησης",
-    template: "%s | Politografisi.gr", // Автоматично додає суфікс до заголовків інших сторінок
+    default: "Politografisi.online | Προετοιμασία για Εξετάσεις Πολιτογράφησης",
+    template: "%s | Politografisi.online", // Автоматично додає суфікс до заголовків інших сторінок
   },
   description: "Η Νο1 πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ). Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
   
   // Налаштування для Facebook, LinkedIn, Viber, Telegram
   openGraph: {
-    title: "Politografisi.gr | Έξυπνη Προετοιμασία",
+    title: "Politografisi.online | Έξυπνη Προετοιμασία",
     description: "Η πληρέστερη πλατφόρμα προετοιμασίας. Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
-    url: 'https://politografisi.gr',
-    siteName: 'Politografisi.gr',
+    url: 'https://politografisi.online',
+    siteName: 'Politografisi.online',
     locale: 'el_GR',
     type: 'website',
     // Next.js автоматично підтягне файл opengraph-image.tsx тут
@@ -47,7 +46,7 @@ export const metadata: Metadata = {
   // Налаштування для Twitter (X)
   twitter: {
     card: 'summary_large_image',
-    title: "Politografisi.gr | Προετοιμασία ΠΕΓΠ",
+    title: "Politografisi.online | Προετοιμασία ΠΕΓΠ",
     description: "Η Νο1 πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση.",
   },
 };

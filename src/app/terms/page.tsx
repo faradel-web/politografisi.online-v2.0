@@ -3,7 +3,7 @@ import Footer from "@/components/landing/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Όροι Χρήσης | Politografisi.gr",
+  title: "Όροι Χρήσης | Politografisi.online",
   description: "Διαβάστε τους όρους χρήσης της πλατφόρμας προετοιμασίας για τις εξετάσεις πολιτογράφησης.",
 };
 
@@ -23,7 +23,8 @@ export default function TermsPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-blue-900">1. Εισαγωγή</h2>
               <p className="leading-relaxed">
-                Καλώς ήρθατε στο Politografisi.gr. Η χρήση της ιστοσελίδας και των υπηρεσιών μας συνεπάγεται την πλήρη και ανεπιφύλακτη αποδοχή των παρόντων Όρων Χρήσης. Εάν δεν συμφωνείτε με οποιονδήποτε από τους όρους, παρακαλούμε να μην χρησιμοποιήσετε την πλατφόρμα.
+                Καλώς ήρθατε στο Politografisi.online
+                . Η χρήση της ιστοσελίδας και των υπηρεσιών μας συνεπάγεται την πλήρη και ανεπιφύλακτη αποδοχή των παρόντων Όρων Χρήσης. Εάν δεν συμφωνείτε με οποιονδήποτε από τους όρους, παρακαλούμε να μην χρησιμοποιήσετε την πλατφόρμα.
               </p>
             </section>
 
@@ -49,7 +50,7 @@ export default function TermsPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-blue-900">4. Πνευματική Ιδιοκτησία</h2>
               <p className="leading-relaxed">
-                Όλο το περιεχόμενο της πλατφόρμας (κείμενα, λογότυπα, γραφικά, λογισμικό, βίντεο) αποτελεί πνευματική ιδιοκτησία του Politografisi.gr και προστατεύεται από την ελληνική και διεθνή νομοθεσία. Απαγορεύεται η αντιγραφή, αναπαραγωγή ή αναδιανομή του υλικού χωρίς γραπτή άδεια.
+                Όλο το περιεχόμενο της πλατφόρμας (κείμενα, λογότυπα, γραφικά, λογισμικό, βίντεο) αποτελεί πνευματική ιδιοκτησία του Politografisi.online και προστατεύεται από την ελληνική και διεθνή νομοθεσία. Απαγορεύεται η αντιγραφή, αναπαραγωγή ή αναδιανομή του υλικού χωρίς γραπτή άδεια.
               </p>
             </section>
 
@@ -73,7 +74,7 @@ export default function TermsPage() {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-blue-900">7. Επικοινωνία</h2>
               <p className="leading-relaxed">
-                Για απορίες σχετικά με τους όρους χρήσης, μπορείτε να επικοινωνήσετε μαζί μας στο <a href="mailto:support@politografisi.gr" className="text-blue-600 font-bold hover:underline">support@politografisi.gr</a>.
+                Για απορίες σχετικά με τους όρους χρήσης, μπορείτε να επικοινωνήσετε μαζί μας στο <a href="mailto:support@politografisi.online" className="text-blue-600 font-bold hover:underline">support@politografisi.online</a>.
               </p>
             </section>
 

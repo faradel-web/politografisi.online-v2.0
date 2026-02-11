@@ -10,8 +10,8 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Προετοιμασία για Εξετάσεις Πολιτογράφησης | Politografisi.gr",
-  description: "Η Νο1 πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ). Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
+  title: "Προετοιμασία για Εξετάσεις Πολιτογράφησης | Politografisi.online",
+  description: "Η Νο1 πλατφόρμα προετοιμασίας для το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ). Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
 };
 
 export default function Home() {
@@ -147,7 +147,7 @@ export default function Home() {
                  </div>
               </div>
 
-              {/* 6. ΑΠΕΡΙΟΡΙΣΤΗ ΠΡΑΚΤΙΚΗ */}
+              {/* 6. ΑΠΕΡΙΟΡΙΣТΗ ΠΡΑΚТΙΚΗ */}
               <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
                 <div className="flex items-start gap-6">
                     <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
@@ -166,7 +166,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* === 3. ΔΙΑΔΙΚΑΣΙΑ (PROCESS - 5 ΒΗΜΑΤΑ) === */}
+        {/* === 3. ΔΙΑΔΙΚΑΣΙΑ (PROCESS - 5 ΒΗΜΑТА) === */}
         <section id="process" className="py-24 bg-blue-950 text-white relative overflow-hidden">
            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[120px]"></div>
            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-cyan-500/10 rounded-full blur-[100px]"></div>
@@ -274,7 +274,7 @@ export default function Home() {
                  <h4 className="text-xl font-bold text-blue-900 mb-4">1 Μήνας</h4>
                  <div className="mb-6 flex items-baseline gap-1"><span className="text-4xl font-black text-blue-950">€100</span><span className="text-slate-500">/ εφάπαξ</span></div>
                  <p className="text-sm text-blue-800/60 mb-8 pb-8 border-b border-slate-100">
-                   Ιδανικό για γρήγορη επανάληψη λίγο πριν τις εξετάσεις.
+                   Ιδανικό для γρήγορη επανάληψη λίγο πριν τις εξετάσεις.
                  </p>
                  <ul className="space-y-4 mb-8 text-sm">
                    <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600"/> Πλήρης Πρόσβαση</li>
@@ -289,7 +289,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* === NEW: FAQ SECTION (ΣΥΧΝΕΣ ΕΡΩΤΗΣΕΙΣ) === */}
+        {/* === NEW: FAQ SECTION (ΣΥΧΝΕΣ ΕΡΩТΗΣΕΙΣ) === */}
         <section id="faq" className="py-24 bg-white">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -338,7 +338,7 @@ export default function Home() {
                             <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform"/>
                         </summary>
                         <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
-                            Η πληρωμή είναι εφάπαξ (μία φορά) για το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα.
+                            Η πληρωμή είναι εφάπαξ (μία φορά) для το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα.
                         </div>
                     </details>
                 </div>
@@ -350,24 +350,14 @@ export default function Home() {
            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-blue-100 flex flex-col md:flex-row">
                  
-                 {/* Αριστερή Στήλη */}
-                 <div className="bg-blue-900 text-white p-10 md:p-16 md:w-2/5 flex flex-col justify-between relative overflow-hidden">
+                 {/* Аριστερή Στήλη */}
+                 <div className="bg-blue-900 text-white p-10 md:p-16 md:w-2/5 flex flex-col justify-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full bg-blue-800/50 mix-blend-multiply"></div>
                     <div className="relative z-10">
                         <h3 className="text-3xl font-black mb-6">Επικοινωνία</h3>
-                        <p className="text-blue-200 mb-8 leading-relaxed">
-                            Έχετε ερωτήσεις; Συμπληρώστε τη φόρμα και θα επικοινωνήσουμε μαζί σας το συντομότερο δυνατό.
+                        <p className="text-blue-100 leading-relaxed">
+                            Αφήστε το αίτημά σας και οι διαχειριστές μας θα επικοινωνήσουν μαζί σας το συντομότερο δυνατό μέσω email για να σας δώσουν αναλυτικές οδηγίες σχετικά με την απόκτηση premium πρόσβασης στον ιστότοπο.
                         </p>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-4 text-blue-100">
-                                <div className="p-3 bg-blue-800/50 rounded-xl"><Mail className="h-5 w-5"/></div>
-                                <span className="font-medium">support@politografisi.gr</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-blue-100">
-                                <div className="p-3 bg-blue-800/50 rounded-xl"><MessageSquare className="h-5 w-5"/></div>
-                                <span className="font-medium">Live Chat Υποστήριξη</span>
-                            </div>
-                        </div>
                     </div>
                  </div>
 
