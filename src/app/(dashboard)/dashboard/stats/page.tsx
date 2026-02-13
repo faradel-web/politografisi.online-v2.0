@@ -12,11 +12,11 @@ import { useAuth } from "@/lib/auth-context";
 import ProgressChart from "@/components/ProgressChart"; 
 import SkillRadar from "@/components/SkillRadar"; 
 
-// Тип для результату
+// --- ТИПІЗАЦІЯ РЕЗУЛЬТАТУ ---
 type ExamResult = {
   id: string;
   date: any;
-  score: number;
+  score: number; // Загальний бал (Grand Total)
   percentage: number; 
   totalQuestions: number;
   isPassed: boolean;
@@ -36,14 +36,14 @@ export default function StatsPage() {
   const [results, setResults] = useState<ExamResult[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Stats State
+  // Загальна статистика
   const [stats, setStats] = useState({ 
     totalExams: 0, 
     averageScore: 0,
     successRate: 0 
   });
   
-  // Radar Data
+  // Дані для радару навичок
   const [skillStats, setSkillStats] = useState({
       theory: 0, 
       readingWriting: 0, 
@@ -70,53 +70,54 @@ export default function StatsPage() {
         let passedCount = 0;
         let validExamsCount = 0;
         
-        // Sums for Radar
+        // Суми для Радару (для обчислення середнього)
         let totals = { theory: 0, rw: 0, list: 0, speak: 0 };
         let counts = { theory: 0, rw: 0, list: 0, speak: 0 };
 
         snapshot.forEach(doc => {
             const data = doc.data();
             
-            // --- DATA NORMALIZATION ---
-            let examScore = 0;
-            let theoryScore = 0;
-            let langScore = 0;
-            let isPassed = false;
-            
+            // --- НОРМАЛІЗАЦІЯ ДАНИХ (Адаптація під нові реалії) ---
             let s_theory = 0, s_read = 0, s_write = 0, s_list = 0, s_speak = 0;
+            let langScore = 0;
+            let examScore = 0;
+            let isPassed = false;
 
             if (data.scores) {
-                s_theory = data.scores.theory || 0;
-                s_read = data.scores.reading || 0;
-                s_write = data.scores.writing || 0;
-                s_list = data.scores.listening || 0;
-                s_speak = data.scores.speaking || 0;
+                // Новий формат даних
+                s_theory = Number(data.scores.theory) || 0;
+                s_read = Number(data.scores.reading) || 0;
+                s_write = Number(data.scores.writing) || 0;
+                s_list = Number(data.scores.listening) || 0;
+                s_speak = Number(data.scores.speaking) || 0;
                 
-                langScore = data.scores.totalLang || (s_read + s_write + s_list + s_speak);
-                examScore = s_theory + langScore; 
-                isPassed = data.isPassed ?? (s_theory >= 20 && langScore >= 40);
+                langScore = Number(data.scores.totalLang) || (s_read + s_write + s_list + s_speak);
+                examScore = Number(data.scores.grandTotal) || (s_theory + langScore); 
+                
+                // Якщо поле isPassed збережено в базі - беремо його, якщо ні - перераховуємо за формулою
+                isPassed = data.isPassed ?? (examScore >= 70 && s_theory >= 20 && langScore >= 40);
             } else {
-                examScore = data.score || 0;
-                if (data.details) s_theory = data.details.theory || 0;
+                // Старий формат даних (Legacy)
+                examScore = Number(data.score) || 0;
+                if (data.details) s_theory = Number(data.details.theory) || 0;
+                // Стара логіка проходження (спрощена)
                 isPassed = data.isPassed || (examScore >= 60);
             }
-
-            const finalScore = Math.round(examScore);
 
             const result: ExamResult = {
                 id: doc.id,
                 date: data.date,
-                score: finalScore,
-                percentage: finalScore,
-                totalQuestions: 100,
+                score: Math.round(examScore * 10) / 10,
+                percentage: Math.round(examScore),
+                totalQuestions: 100, // Умовно
                 isPassed: isPassed,
                 scores: {
-                    theory: Math.round(s_theory),
+                    theory: Math.round(s_theory * 10) / 10,
                     reading: s_read,
                     writing: s_write,
                     listening: s_list,
                     speaking: s_speak,
-                    totalLang: Math.round(langScore)
+                    totalLang: Math.round(langScore * 10) / 10
                 }
             };
             
@@ -126,11 +127,20 @@ export default function StatsPage() {
             if (isPassed) passedCount++;
             validExamsCount++;
 
-            // --- RADAR CALCULATION ---
+            // --- РОЗРАХУНОК ДЛЯ РАДАРУ (У відсотках від максимуму секції) ---
+            // Теорія (max 40)
             totals.theory += (s_theory / 40) * 100; counts.theory++;
-            const rwTotal = s_read + s_write;
-            totals.rw += (rwTotal / 30) * 100; counts.rw++;
+            
+            // Читання/Письмо (max 30: 9+9+12)
+            const rwTotal = s_read + s_write + (data.scores?.readingB || 0); // Врахувати всі підсекції, якщо є
+            // Спрощено для радару: (Read + Write) / 30
+            // Оскільки структура score плоска (reading містить Part A+B), то (reading + writing) / 30
+            totals.rw += ((s_read + s_write) / 30) * 100; counts.rw++;
+            
+            // Аудіювання (max 15)
             totals.list += (s_list / 15) * 100; counts.list++;
+            
+            // Говоріння (max 15)
             totals.speak += (s_speak / 15) * 100; counts.speak++;
         });
 
@@ -142,6 +152,7 @@ export default function StatsPage() {
             successRate: validExamsCount > 0 ? Math.round((passedCount / validExamsCount) * 100) : 0
         });
 
+        // Безпечне середнє (щоб не було NaN і > 100)
         const safeAvg = (total: number, count: number) => count > 0 ? Math.min(Math.round(total / count), 100) : 0;
         
         setSkillStats({
@@ -232,7 +243,7 @@ export default function StatsPage() {
             </div>
         </div>
 
-        {/* 3. HISTORY LIST (ADAPTIVE) */}
+        {/* 3. HISTORY LIST */}
         <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
              <div className="p-6 sm:p-8 border-b border-slate-100">
                 <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
@@ -243,12 +254,16 @@ export default function StatsPage() {
              <div className="divide-y divide-slate-100">
                 {results.length > 0 ? (
                     results.map((res) => {
+                        // Перевірка порогових значень для відображення бейджів
                         const theoryPassed = res.scores.theory >= 20;
                         const langPassed = res.scores.totalLang >= 40;
+                        // Загальний прохідний бал також 70
+                        const totalPassed = res.score >= 70;
 
                         return (
                             <Link 
                                 key={res.id} 
+                                // 🔥 ЦЕ ВАЖЛИВО: Перевірте, чи цей шлях веде до правильного файлу Results
                                 href={`/dashboard/results/${res.id}`} 
                                 className="flex flex-col sm:flex-row sm:items-center justify-between p-5 sm:p-6 hover:bg-slate-50 transition-colors group gap-4"
                             >
@@ -266,17 +281,16 @@ export default function StatsPage() {
                                             </span>
                                         </p>
                                         <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold mt-2">
-                                            <span className={`px-2 py-1 rounded-md border ${theoryPassed ? 'bg-slate-100 text-slate-600 border-slate-200' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                                            <span className={`px-2 py-1 rounded-md border ${theoryPassed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
                                                 Θεωρία: {res.scores.theory}/40
                                             </span>
-                                            <span className={`px-2 py-1 rounded-md border ${langPassed ? 'bg-slate-100 text-slate-600 border-slate-200' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                                            <span className={`px-2 py-1 rounded-md border ${langPassed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
                                                 Γλώσσα: {res.scores.totalLang}/60
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Right Side: Score - Full width on mobile, aligned end on desktop */}
                                 <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-50 sm:gap-4">
                                     <div className="text-left sm:text-right">
                                         <p className="text-[10px] uppercase font-black text-slate-400">Σύνολο</p>
@@ -294,7 +308,7 @@ export default function StatsPage() {
                 ) : (
                     <div className="p-8 sm:p-12 text-center flex flex-col items-center gap-4">
                         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300"><AlertTriangle size={32}/></div>
-                        <p className="text-slate-500 font-medium text-sm sm:text-base">Δεν βρέθηκαν αποτελέσματα. Ξεκινήστε το πρώτο σας τεστ!</p>
+                        <p className="text-slate-500 font-medium text-sm sm:text-base">Δεν βρέθηκαν αποτελέσματα.</p>
                         <Link href="/exam" className="text-blue-600 font-bold hover:underline">Έναρξη Εξέτασης</Link>
                     </div>
                 )}

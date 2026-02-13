@@ -12,16 +12,16 @@ import {
 
 // Конфігурація (Грецька)
 const CATEGORIES = [
-  // Knowledge
+  // Knowledge (Гνώσεις)
   { id: 'history', group: 'knowledge', title: 'Ιστορία', sub: 'Ερωτήσεις Ιστορίας', icon: ScrollText, color: 'text-amber-600', bg: 'bg-amber-50', collection: 'questions_history' },
   { id: 'politics', group: 'knowledge', title: 'Πολιτικοί Θεσμοί', sub: 'Θεσμοί & Πολίτευμα', icon: Landmark, color: 'text-blue-600', bg: 'bg-blue-50', collection: 'questions_politics' },
   { id: 'geography', group: 'knowledge', title: 'Γεωγραφία', sub: 'Γεωγραφία της Ελλάδας', icon: Globe, color: 'text-emerald-600', bg: 'bg-emerald-50', collection: 'questions_geography' },
   { id: 'culture', group: 'knowledge', title: 'Πολιτισμός', sub: 'Τέχνες & Παράδοση', icon: Palette, color: 'text-pink-600', bg: 'bg-pink-50', collection: 'questions_culture' },
   
-  // Language
-  { id: 'reading', group: 'language', title: 'Ανάγνωση', sub: 'Κατανόηση Κειμένου', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-50', collection: 'lessons_reading' },
-  { id: 'listening', group: 'language', title: 'Ακρόαση', sub: 'Κατανόηση Προφορικού', icon: Headphones, color: 'text-purple-600', bg: 'bg-purple-50', collection: 'lessons_listening' },
-  { id: 'speaking', group: 'language', title: 'Παραγωγή Λόγου', sub: 'Προφορική Εξέταση', icon: Mic, color: 'text-orange-600', bg: 'bg-orange-50', collection: 'lessons_speaking' },
+  // Language (Γλώσσα)
+  { id: 'reading', group: 'language', title: 'Ανάγνωση', sub: 'Κατανόηση και Παραγωγή Γραπτού Λόγου', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-50', collection: 'lessons_reading' },
+  { id: 'listening', group: 'language', title: 'Ακρόαση', sub: 'Κατανόηση Προφορικού Λόγου', icon: Headphones, color: 'text-purple-600', bg: 'bg-purple-50', collection: 'lessons_listening' },
+  { id: 'speaking', group: 'language', title: 'Παραγωγή Λόγου', sub: 'Παραγωγή Προφορικού Λόγου', icon: Mic, color: 'text-orange-600', bg: 'bg-orange-50', collection: 'lessons_speaking' },
 ];
 
 export default function StudyHubPage() {
@@ -56,7 +56,6 @@ export default function StudyHubPage() {
   const CategoryCard = ({ cat }: { cat: typeof CATEGORIES[0] }) => {
     const practiceCount = practiceCounts[cat.id] || 0;
     
-    // Ведемо на сторінку вибору
     const theoryHref = `/study/${cat.id}/theory`;
     const practiceHref = `/study/${cat.id}`;
 
@@ -77,12 +76,23 @@ export default function StudyHubPage() {
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">{cat.sub}</p>
         </div>
 
+        {/* КНОПКИ: Виправлено локалізацію для мобільних */}
         <div className="grid grid-cols-2 gap-3 mt-auto">
-            <Link href={theoryHref} className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold text-sm transition-colors border border-slate-100">
-                <Book size={16}/> <span className="hidden sm:inline">Θεωρία</span><span className="sm:hidden">Info</span>
+            <Link 
+                href={theoryHref} 
+                className="flex items-center justify-center gap-2 py-3 px-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold text-xs sm:text-sm transition-colors border border-slate-100"
+            >
+                <Book size={16}/> 
+                <span>Θεωρία</span>
             </Link>
-            <Link href={practiceHref} className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-sm transition-all shadow-sm ${practiceCount > 0 ? 'bg-slate-900 text-white hover:bg-blue-600 shadow-slate-200' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`} onClick={(e) => practiceCount === 0 && e.preventDefault()}>
-                <PenTool size={16}/> <span className="hidden sm:inline">Εξάσκηση</span><span className="sm:hidden">Test</span>
+            
+            <Link 
+                href={practiceHref} 
+                className={`flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-sm ${practiceCount > 0 ? 'bg-slate-900 text-white hover:bg-blue-600 shadow-slate-200' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`} 
+                onClick={(e) => practiceCount === 0 && e.preventDefault()}
+            >
+                <PenTool size={16}/> 
+                <span>Εξάσκηση</span>
             </Link>
         </div>
       </div>
@@ -93,16 +103,30 @@ export default function StudyHubPage() {
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-12">
         <header className="mb-8">
-            <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tight">Κέντρο Μελέτης</h1>
-            <p className="text-slate-500 font-medium text-lg">Επιλέξτε κατηγορία για προετοιμασία</p>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2 tracking-tight">Κέντρο Μελέτης</h1>
+            <p className="text-slate-500 font-medium text-base md:text-lg">Επιλέξτε κατηγορία για προετοιμασία</p>
         </header>
+
+        {/* БЛОК 1: Γνώσεις (Ιστορία/Πολιτισμός/) - ТЕПЕР ЗВЕРХУ */}
         <section>
-            <div className="flex items-center gap-3 mb-6 px-2"><GraduationCap className="h-6 w-6 text-purple-600"/><h2 className="text-xl font-black text-slate-800 uppercase tracking-widest">Ελληνομάθεια (Γλώσσα)</h2></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{CATEGORIES.filter(c => c.group === 'language').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}</div>
+            <div className="flex items-center gap-3 mb-6 px-2">
+                <Layers className="h-6 w-6 text-blue-600"/>
+                <h2 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-widest">Γνώσεις (Ιστορία/Πολιτικοί Θεσμοί/Γεωγραφία/Πολιτισμός)</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {CATEGORIES.filter(c => c.group === 'knowledge').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}
+            </div>
         </section>
+
+        {/* БЛОК 2: Ελληνομάθεια (Γλώσσα) - ТЕПЕР ЗНИЗУ */}
         <section>
-            <div className="flex items-center gap-3 mb-6 px-2"><Layers className="h-6 w-6 text-blue-600"/><h2 className="text-xl font-black text-slate-800 uppercase tracking-widest">Γνώσεις (Ιστορία/Πολιτισμός)</h2></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">{CATEGORIES.filter(c => c.group === 'knowledge').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}</div>
+            <div className="flex items-center gap-3 mb-6 px-2">
+                <GraduationCap className="h-6 w-6 text-purple-600"/>
+                <h2 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-widest">Ελληνομάθεια (Γλώσσα)</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {CATEGORIES.filter(c => c.group === 'language').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}
+            </div>
         </section>
       </div>
     </div>

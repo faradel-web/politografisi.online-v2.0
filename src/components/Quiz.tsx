@@ -8,6 +8,40 @@ import {
 } from "lucide-react";
 import GreeceMap, { MapMarker } from "./GreeceMap"; 
 
+// --- ВНУТРІШНІ КОМПОНЕНТИ ДЛЯ СТАБІЛІЗАЦІЇ ВВОДУ (Anti-Jump Fix) ---
+const BufferedInput = ({ value, onUpdate, className, disabled, placeholder }: any) => {
+  const [localVal, setLocalVal] = useState(value || "");
+  useEffect(() => { setLocalVal(value || ""); }, [value]);
+
+  return (
+    <input
+      type="text"
+      className={className}
+      disabled={disabled}
+      placeholder={placeholder}
+      value={localVal}
+      onChange={(e) => setLocalVal(e.target.value)}
+      onBlur={() => onUpdate(localVal)} 
+    />
+  );
+};
+
+const BufferedTextarea = ({ value, onUpdate, className, disabled, placeholder }: any) => {
+  const [localVal, setLocalVal] = useState(value || "");
+  useEffect(() => { setLocalVal(value || ""); }, [value]);
+
+  return (
+    <textarea
+      className={className}
+      disabled={disabled}
+      placeholder={placeholder}
+      value={localVal}
+      onChange={(e) => setLocalVal(e.target.value)}
+      onBlur={() => onUpdate(localVal)}
+    />
+  );
+};
+
 // --- ΤΥΠΟΠΟΙΗΣΗ (TYPING) ---
 export interface Question {
   id?: string;
@@ -15,30 +49,24 @@ export interface Question {
   question?: string; 
   imageUrl?: string;
   
-  // Single/Multi
   options?: string[];
   correctAnswerIndex?: number;
   correctIndices?: number[];
 
-  // Matching
   pairs?: {left: string, right: string, leftImg?: string, rightImg?: string}[];
 
-  // Fill Gap
   textParts?: string[]; 
   wordBank?: string[]; 
   inlineChoices?: Record<string, string[]>; 
   correctAnswers?: Record<string, string> | any;
 
-  // True/False
   items?: {id?: string, text?: string, imageUrl?: string, isTrue: boolean}[];
   statement?: string;
   isTrue?: boolean;
 
-  // Map
   points?: {id?: string, lat: number, lng: number, label: string}[];
   tolerance?: number;
 
-  // Open
   modelAnswer?: string;
 }
 
@@ -73,11 +101,9 @@ export default function Quiz({
   const [checkedQuestions, setCheckedQuestions] = useState<Record<number, boolean>>({});
   const [isListSubmitted, setIsListSubmitted] = useState(false); 
 
-  // --- ΚΑΤΑΣΤΑΣΕΙΣ AI (AI STATES) ---
   const [aiFeedback, setAiFeedback] = useState<Record<number, any>>({});
   const [isAiLoading, setIsAiLoading] = useState<Record<number, boolean>>({});
 
-  // --- ΚΑΤΑΣΤΑΣΗ ΓΙΑ ΤΥΧΑΙΑ ΣΕΙΡΑ MATCHING ---
   const [matchingOrder, setMatchingOrder] = useState<Record<number, number[]>>({});
 
   useEffect(() => {
@@ -86,18 +112,14 @@ export default function Quiz({
     }
   }, [savedAnswers]);
 
-  // --- ΔΗΜΙΟΥΡΓΙΑ ΤΥΧΑΙΑΣ ΣΕΙΡΑΣ ΓΙΑ ΤΟ MATCHING ---
   useEffect(() => {
     setMatchingOrder(prevOrder => {
       const newOrder = { ...prevOrder };
       let hasChanges = false;
-
       questions.forEach((q, idx) => {
         if (newOrder[idx]) return;
-
         if ((q.type === 'MATCHING' || q.type?.includes('MATCH')) && q.pairs && q.pairs.length > 0) {
             const indices = q.pairs.map((_, i) => i);
-            // Fisher-Yates Shuffle
             for (let i = indices.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [indices[i], indices[j]] = [indices[j], indices[i]];
@@ -106,7 +128,6 @@ export default function Quiz({
             hasChanges = true;
         }
       });
-
       return hasChanges ? newOrder : prevOrder;
     });
   }, [questions]); 
@@ -126,6 +147,45 @@ export default function Quiz({
     const newAnswers = { ...answers, [idx]: val };
     setAnswers(newAnswers);
     if (onAnswerUpdate) onAnswerUpdate(newAnswers);
+  };
+
+  // 🔥 НОВА ФУНКЦІЯ: Перевірка правильності (для візуалізації бейджів)
+  const isQuestionCorrect = (q: Question, idx: number) => {
+    const ans = answers[idx];
+    if (ans === undefined || ans === null) return false;
+
+    // 1. MAP LOGIC (Математична перевірка)
+    if (q.type?.includes('MAP') && q.points) {
+        if (!Array.isArray(ans)) return false;
+        let correctPoints = 0;
+        
+        q.points.forEach((targetPt, i) => {
+            const userPt = ans[i];
+            if (!userPt) return;
+            
+            const tolerance = Number(q.tolerance) || 30; 
+            const dist = Math.sqrt(
+                Math.pow(userPt.lat - targetPt.lat, 2) + 
+                Math.pow(userPt.lng - targetPt.lng, 2)
+            );
+            
+            if (dist <= tolerance) correctPoints++;
+        });
+
+        return correctPoints === q.points.length;
+    }
+
+    // 2. STANDARD LOGIC
+    if (q.type === 'SINGLE') return ans === q.correctAnswerIndex;
+    if (q.type === 'TRUE_FALSE') return q.items && ans['0'] === q.items[0].isTrue;
+    if (q.type === 'MULTI') {
+        if (!Array.isArray(ans)) return false;
+        const correctIds = q.correctIndices || [];
+        if (ans.length !== correctIds.length) return false;
+        return ans.every((v: number) => correctIds.includes(v));
+    }
+    
+    return true; // Для інших типів (Open, FillGap) - складніша логіка, повертаємо true щоб не лякати червоним
   };
 
   const handleNext = () => {
@@ -158,7 +218,6 @@ export default function Quiz({
       window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // --- ΧΕΙΡΙΣΜΟΣ AI BUTTON ---
   const handleAICheckClick = async (q: Question, idx: number) => {
       const userAnswer = answers[idx];
       if (!userAnswer || !onAICheck) return;
@@ -167,7 +226,6 @@ export default function Quiz({
       try {
           const result = await onAICheck(q.question || "", userAnswer, q.modelAnswer);
           setAiFeedback(prev => ({ ...prev, [idx]: result }));
-          // 🔥 ВАЖЛИВО: Позначаємо питання як перевірене, щоб з'явилася кнопка "Далі"
           setCheckedQuestions(prev => ({ ...prev, [idx]: true }));
       } catch (error) {
           console.error("AI Check Failed", error);
@@ -319,8 +377,6 @@ export default function Quiz({
     const pairs = q.pairs || [];
     const userMap = answers[idx] || {}; 
     const isQChecked = isChecked(idx);
-    
-    // Αριστερό μέρος (Τυχαία σειρά)
     const orderIndices = matchingOrder[idx] || pairs.map((_, i) => i);
     const rightOptions = pairs.map((p) => ({ val: p.right, img: p.rightImg }));
 
@@ -385,7 +441,6 @@ export default function Quiz({
          <div className="space-y-6">
             {parts.map((text, partIdx) => {
                const userVal = userMap[partIdx] || "";
-               
                let correctVal = "";
                let isCorrect = false;
                
@@ -419,12 +474,11 @@ export default function Quiz({
                               {q.inlineChoices?.[String(partIdx+1)]?.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
                            </select>
                         ) : (
-                           <input 
-                              type="text" 
-                              value={userVal} 
-                              onChange={(e) => handleSelect(idx, {...userMap, [partIdx]: e.target.value})} 
-                              disabled={isQChecked} 
+                           <BufferedInput 
                               className={`w-full p-3 rounded-xl border-2 font-bold outline-none ${style}`} 
+                              value={userVal} 
+                              onUpdate={(val: string) => handleSelect(idx, {...userMap, [partIdx]: val})} 
+                              disabled={isQChecked} 
                               placeholder="Γράψτε εδώ..." 
                            />
                         )}
@@ -444,8 +498,11 @@ export default function Quiz({
     );
   };
 
+  // 🔥🔥🔥 ВИПРАВЛЕНИЙ РЕНДЕР КАРТИ 🔥🔥🔥
   const renderMap = (q: Question, idx: number) => {
-     const userPlacedPoints = (answers[idx] as {lat:number, lng:number}[]) || [];
+     const rawAnswer = answers[idx];
+     const userPlacedPoints: {lat:number, lng:number}[] = Array.isArray(rawAnswer) ? rawAnswer : [];
+     
      const requiredPoints = q.points || [];
      const isQChecked = isChecked(idx);
  
@@ -455,17 +512,14 @@ export default function Quiz({
  
      const handleMapClick = (coords: {lat: number, lng: number}) => {
          if (isFinished || isQChecked) return;
-         const newAnswerArray = [...userPlacedPoints, coords];
-         handleSelect(idx, newAnswerArray);
+         handleSelect(idx, [...userPlacedPoints, coords]);
      };
  
-     const handleResetMap = () => {
-         if (isQChecked) return;
-         handleSelect(idx, []); 
-     };
+     const handleResetMap = () => !isQChecked && handleSelect(idx, []);
  
      const markersToRender: MapMarker[] = [];
  
+     // 1. Точки, які поставив користувач
      userPlacedPoints.forEach((userPt, i) => {
          const targetPt = requiredPoints[i]; 
          if (!targetPt) return;
@@ -474,42 +528,41 @@ export default function Quiz({
          let color: 'red' | 'green' | 'blue' = 'blue'; 
  
          if (isQChecked) {
-             const tolerance = q.tolerance || 30;
+             // 🟢 МАТЕМАТИЧНА ПЕРЕВІРКА ПОХИБКИ
+             const tolerance = Number(q.tolerance) || 30;
              const dist = Math.sqrt(Math.pow(userPt.lat - targetPt.lat, 2) + Math.pow(userPt.lng - targetPt.lng, 2));
-             const isCorrect = dist <= tolerance;
              
-             if (isCorrect) {
+             if (dist <= tolerance) {
                  color = 'green';
                  label = `✅ ${targetPt.label}`;
              } else {
                  color = 'red';
-                 label = undefined; 
+                 label = `❌ ${targetPt.label}`;
              }
          }
  
-         markersToRender.push({
-             lat: userPt.lat,
-             lng: userPt.lng,
-             label: label, 
-             color: color 
-         });
+         markersToRender.push({ lat: userPt.lat, lng: userPt.lng, label, color });
      });
  
+     // 2. Якщо помилка - показуємо правильне місце
      if (isQChecked) {
          requiredPoints.forEach((targetPt, i) => {
              const userPt = userPlacedPoints[i];
+             const tolerance = Number(q.tolerance) || 30;
+             let showCorrect = true;
+
              if (userPt) {
-                 const tolerance = q.tolerance || 30;
-                 const dist = Math.sqrt(Math.pow(userPt.lat - targetPt.lat, 2) + Math.pow(userPt.lng - targetPt.lng, 2));
-                 
-                 if (dist > tolerance) {
-                      markersToRender.push({
-                          lat: targetPt.lat,
-                          lng: targetPt.lng,
-                          label: `(Σωστό: ${targetPt.label})`, 
-                          color: 'green'
-                      });
-                 }
+                const dist = Math.sqrt(Math.pow(userPt.lat - targetPt.lat, 2) + Math.pow(userPt.lng - targetPt.lng, 2));
+                if (dist <= tolerance) showCorrect = false; // Якщо попав - не дублюємо
+             }
+
+             if (showCorrect) {
+                  markersToRender.push({
+                      lat: targetPt.lat,
+                      lng: targetPt.lng,
+                      label: `(Σωστό: ${targetPt.label})`, 
+                      color: 'green'
+                  });
              }
          });
      }
@@ -532,63 +585,20 @@ export default function Quiz({
                      );
                  })}
              </div>
- 
-             {!isQChecked && !isFinished && currentTarget && (
-                 <div className="flex items-center gap-4 p-4 bg-blue-50 text-blue-900 rounded-xl border border-blue-100 shadow-sm">
-                     <div className="bg-white p-2 rounded-full shadow-sm">
-                          <MapPin className="animate-bounce w-6 h-6 text-blue-600"/>
-                     </div>
-                     <div>
-                         <p className="text-xs uppercase font-bold text-blue-400 mb-1">Τρέχον βήμα:</p>
-                         <p className="font-black text-xl leading-none">
-                             {currentTarget.label}
-                         </p>
-                     </div>
-                 </div>
-             )}
-             
              {!isQChecked && userPlacedPoints.length > 0 && (
-                 <button onClick={handleResetMap} className="text-xs font-bold text-slate-500 hover:text-red-500 flex items-center gap-1 transition-colors">
+                 <button onClick={handleResetMap} className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors w-fit">
                      <Undo2 size={14}/> Επαναφορά
                  </button>
              )}
          </div>
  
          <div className="w-full h-[500px] rounded-2xl overflow-hidden relative shadow-inner border-2 border-slate-200 bg-slate-100">
-            <GreeceMap 
-               markers={markersToRender}
-               onSelect={isFinished || isQChecked ? undefined : handleMapClick}
-            />
+            <GreeceMap markers={markersToRender} onSelect={isFinished || isQChecked ? undefined : handleMapClick} />
          </div>
- 
-         {isQChecked && (
-           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-              <p className="font-bold text-slate-700 mb-2">Αποτελέσματα:</p>
-              <ul className="space-y-2 text-sm">
-                 {requiredPoints.map((targetPt, i) => {
-                     const userPt = userPlacedPoints[i];
-                     if (!userPt) return <li key={i} className="text-red-500 font-bold">❌ {targetPt.label} - Δεν απαντήθηκε</li>;
-                     
-                     const tolerance = q.tolerance || 30;
-                     const dist = Math.sqrt(Math.pow(userPt.lat - targetPt.lat, 2) + Math.pow(userPt.lng - targetPt.lng, 2));
-                     const isCorrect = dist <= tolerance;
- 
-                     return (
-                         <li key={i} className={`flex items-center gap-2 font-bold ${isCorrect ? "text-emerald-600" : "text-red-600"}`}>
-                             {isCorrect ? <CheckCircle2 size={18}/> : <X size={18}/>}
-                             <span>{i+1}. {targetPt.label}</span>
-                             {!isCorrect && <span className="text-xs font-normal opacity-70">(Λάθος τοποθεσία)</span>}
-                         </li>
-                     );
-                 })}
-              </ul>
-           </div>
-         )}
        </div>
      );
-   };
+  };
   
-  // --- 🔥 ΠΛΗΡΗΣ ΛΟΚΑΛΙΖΑΣΙΟΝ (OPEN QUESTION & AI) ---
   const renderOpen = (q: Question, idx: number) => {
      const loading = isAiLoading[idx];
      const feedback = aiFeedback[idx];
@@ -616,15 +626,14 @@ export default function Quiz({
 
      return (
         <div className="space-y-4">
-            <textarea 
-                value={textAnswer}
-                onChange={(e) => handleSelect(idx, e.target.value)}
-                disabled={isChecked(idx) || loading}
-                className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 outline-none focus:border-purple-400 font-medium disabled:bg-slate-50"
-                placeholder="Η απάντησή σας..."
+            <BufferedTextarea 
+                className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 outline-none focus:border-purple-400 font-medium disabled:bg-slate-50" 
+                value={textAnswer} 
+                onUpdate={(val: string) => handleSelect(idx, val)} 
+                disabled={isChecked(idx) || loading} 
+                placeholder="Η απάντησή σας..." 
             />
             
-            {/* Κουμπί ελέγχου AI - εξαφανίζεται όταν έρθει η απάντηση */}
             {!feedback && onAICheck && (
                 <div className="flex justify-end">
                     <button 
@@ -684,25 +693,40 @@ export default function Quiz({
       return (
           <div className="w-full max-w-4xl mx-auto pb-10">
               <div className="space-y-12">
-                  {questions.map((q, i) => (
-                      <div key={q.id || i} className="bg-white p-6 md:p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
-                          <div className="absolute top-0 left-0 bg-slate-100 px-4 py-2 rounded-br-2xl text-xs font-black text-slate-500 uppercase tracking-widest">
-                              Ερώτηση {i + 1}
-                          </div>
-                          
-                          <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 mt-6 leading-snug">
-                              {q.question}
-                          </h3>
+                  {questions.map((q, i) => {
+                      // 🔥 ВАЖЛИВО: Оновлення бейджів для Карти в режимі списку
+                      let badge = null;
+                      let borderClass = "border-slate-100";
 
-                          {q.imageUrl && !q.type?.includes('TRUE') && !q.type?.includes('MAP') && (
-                              <div className="mb-6 rounded-xl overflow-hidden border border-slate-100">
-                                  <img src={q.imageUrl} className="w-full max-h-64 object-contain bg-slate-50" alt=""/>
-                              </div>
-                          )}
+                      if (isListSubmitted) {
+                          const isCorrect = isQuestionCorrect(q, i); // Використовуємо нову функцію
+                          if (isCorrect) {
+                              borderClass = "border-emerald-200 ring-1 ring-emerald-100";
+                              badge = <div className="absolute top-0 right-0 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-bl-2xl text-xs font-black uppercase tracking-widest flex items-center gap-1"><CheckCircle2 size={14}/> Σωστό</div>;
+                          } else {
+                              borderClass = "border-red-200 ring-1 ring-red-100";
+                              badge = <div className="absolute top-0 right-0 bg-red-100 text-red-700 px-4 py-2 rounded-bl-2xl text-xs font-black uppercase tracking-widest flex items-center gap-1"><X size={14}/> Λάθος</div>;
+                          }
+                      }
 
-                          {renderQuestionContent(q, i)}
-                      </div>
-                  ))}
+                      return (
+                        <div key={q.id || i} className={`bg-white p-6 md:p-8 rounded-[2rem] border shadow-sm relative overflow-hidden ${borderClass}`}>
+                            <div className="absolute top-0 left-0 bg-slate-100 px-4 py-2 rounded-br-2xl text-xs font-black text-slate-500 uppercase tracking-widest">
+                                Ερώτηση {i + 1}
+                            </div>
+                            {badge}
+                            <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 mt-6 leading-snug">
+                                {q.question}
+                            </h3>
+                            {q.imageUrl && !q.type?.includes('TRUE') && !q.type?.includes('MAP') && (
+                                <div className="mb-6 rounded-xl overflow-hidden border border-slate-100">
+                                    <img src={q.imageUrl} className="w-full max-h-64 object-contain bg-slate-50" alt=""/>
+                                </div>
+                            )}
+                            {renderQuestionContent(q, i)}
+                        </div>
+                      )
+                  })}
               </div>
 
               {!readOnlyMode && !hideSubmit && (
@@ -736,10 +760,8 @@ export default function Quiz({
   // --- STEPPER LAYOUT ---
   const currentQ = questions[currentIndex];
   const currentAnswer = answers[currentIndex];
-  
-  // Map validation
   const hasMapFinished = currentQ.type?.includes('MAP') && Array.isArray(currentAnswer) && currentAnswer.length === (currentQ.points?.length || 0);
-
+  
   const hasAnswer = currentAnswer !== undefined && currentAnswer !== null && (
       hasMapFinished || 
       (!currentQ.type?.includes('MAP') && (
@@ -770,9 +792,6 @@ export default function Quiz({
       return false;
   };
 
-  // 🔥 ΛΟΓΙΚΗ ΓΙΑ ΤΟ ΚΟΥΜΠΙ ΚΑΤΩ (Main Footer Button):
-  // Αν είναι ερώτηση τύπου OPEN, έχουμε AI λειτουργία και ΔΕΝ έχει ελεγχθεί ακόμα,
-  // τότε ΚΡΥΒΟΥΜΕ το κάτω κουμπί. Θα εμφανιστεί ξανά ως "Επόμενο" όταν το AI απαντήσει.
   const isPendingAIQuestion = currentQ.type === 'OPEN' && !!onAICheck && !checkedQuestions[currentIndex];
   const showMainFooterButton = !hideSubmit && !isPendingAIQuestion;
 
@@ -783,26 +802,19 @@ export default function Quiz({
              Ερώτηση {currentIndex + 1} / {questions.length}
           </span>
        </div>
-
        <h3 className="text-xl font-black text-slate-900 mb-6 leading-snug">{currentQ.question}</h3>
-       
        {currentQ.imageUrl && !currentQ.type?.includes('MAP') && !currentQ.type?.includes('TRUE') && (
           <div className="mb-8 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
               <img src={currentQ.imageUrl} className="w-full max-h-80 object-contain mx-auto" alt="Question"/>
           </div>
        )}
-
-       <div className="mb-10">
-          {renderQuestionContent(currentQ, currentIndex)}
-       </div>
-
+       <div className="mb-10">{renderQuestionContent(currentQ, currentIndex)}</div>
        <div className="flex justify-between items-center pt-6 border-t border-slate-100">
           {currentIndex > 0 ? (
             <button onClick={handlePrev} className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all">
                 <ChevronLeft size={20}/> Πίσω
             </button>
           ) : <div/>}
-
           {showMainFooterButton && (
               <button 
                 onClick={handleMainAction}

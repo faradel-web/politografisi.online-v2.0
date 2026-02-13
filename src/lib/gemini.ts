@@ -5,8 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
-// 🔥 ОНОВЛЕННЯ: Перейшли на актуальну модель gemini-2.5-flash
-// Це поточна стабільна версія (GA), яка замінила застарілу 1.5.
+// 🔥 Використовуємо найновішу стабільну модель
 const model = genAI.getGenerativeModel({ 
   model: "gemini-2.5-flash", 
   generationConfig: { responseMimeType: "application/json" }
@@ -181,8 +180,51 @@ export async function gradeShortAnswer(question: string, userAnswer: string, mod
     return { 
       score: 0, 
       isCorrect: false, 
-      feedback: "Παρουσιάστηκε σφάλμα ή υψηλός φόρτος συστήματος. Παρακαλώ περιμένετε λίγο και δοκιμάστε ξανά.", 
+      feedback: "Σφάλμα συστήματος.", 
       improvedAnswer: modelAnswer 
     };
+  }
+}
+
+// ============================================================================
+// 4. FILL GAP / LANGUAGE CHECK (ΓΛΩΣΣΑ) - Boolean (Correct/Incorrect)
+// ============================================================================
+// Ця функція використовується для перевірки пропусків у тексті, де можливі синоніми.
+export async function gradeFillGap(context: string, userAnswer: string, correctAnswer: string) {
+  if (!apiKey) return { isCorrect: false };
+  if (!userAnswer) return { isCorrect: false };
+
+  // Економимо токени, якщо відповідь ідеально збігається
+  if (userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
+    return { isCorrect: true };
+  }
+
+  const prompt = `
+    Act as a Greek language expert.
+    Task: Determine if the student's answer is linguistically acceptable in the given context.
+    
+    Context/Sentence: "${context}"
+    Target Correct Answer: "${correctAnswer}"
+    Student's Answer: "${userAnswer}"
+
+    Rules:
+    - Accept synonyms that fit the context perfectly.
+    - Accept correct inflections (cases, tenses) even if slightly different from target, provided they fit the grammar.
+    - Reject incorrect spellings that change the meaning.
+    - Reject grammatically incorrect forms for the specific gap.
+
+    Output strictly valid JSON:
+    {
+      "isCorrect": boolean
+    }
+  `;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    return cleanAndParseJSON(text);
+  } catch (error) {
+    // Fallback: якщо AI не відповів, перевіряємо жорстким порівнянням
+    return { isCorrect: userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase() };
   }
 }
