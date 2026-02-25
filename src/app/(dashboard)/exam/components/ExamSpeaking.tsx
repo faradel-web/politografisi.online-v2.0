@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Mic, CheckCircle2, Trash2, Save } from "lucide-react";
-import AudioRecorder from "@/components/AudioRecorder";
+import AudioRecorder from "@/components/shared/AudioRecorder";
 
 // --- ІНТЕРФЕЙСИ ---
 interface ExamSpeakingProps {

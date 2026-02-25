@@ -8,9 +8,9 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, where } from "firebase/firestore"; 
-import { useAuth } from "@/lib/auth-context"; 
-import ProgressChart from "@/components/ProgressChart"; 
-import SkillRadar from "@/components/SkillRadar"; 
+import { useAuth } from "@/contexts/auth-context"; 
+import ProgressChart from "@/components/dashboard/ProgressChart"; 
+import SkillRadar from "@/components/dashboard/SkillRadar"; 
 
 // --- ТИПІЗАЦІЯ РЕЗУЛЬТАТУ ---
 type ExamResult = {

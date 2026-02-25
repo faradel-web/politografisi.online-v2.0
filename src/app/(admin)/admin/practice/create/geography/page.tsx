@@ -10,7 +10,7 @@ import {
   CheckSquare, FileText, Bug, Image as ImageIcon, Map as MapIcon, MapPin, Trash2, PlusCircle
 } from "lucide-react";
 import { QuestionType, MapPoint } from "@/types/exam-types"; // Підключаємо стандарт
-import GreeceMap, { MapMarker } from "@/components/GreeceMap"; 
+import GreeceMap, { MapMarker } from "@/components/shared/GreeceMap"; 
 
 // --- НАЛАШТУВАННЯ ---
 const COLLECTION_NAME = "questions_geography"; 

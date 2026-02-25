@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geologica, Vollkorn } from "next/font/google";
 // 2. ВАЖЛИВО: Імпорт глобальних стилів
 import "./globals.css"; 
-import { AuthProvider } from "@/lib/auth-context";
+import { AuthProvider } from "@/contexts/auth-context";
 
 // Налаштовуємо Geologica (основний шрифт)
 const geologica = Geologica({ 

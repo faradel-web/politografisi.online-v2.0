@@ -2,7 +2,7 @@
 
 import { useState, useEffect, memo } from "react";
 import { BookOpen, PenTool, CheckCircle2, Save, AlignLeft, ListChecks } from "lucide-react";
-import Quiz, { Question } from "@/components/Quiz";
+import Quiz, { Question } from "@/components/shared/Quiz";
 
 // --- ОПТИМІЗОВАНИЙ РЕДАКТОР ЕСЕ ---
 // Тримає текст локально, оновлює глобальний стейт тільки при втраті фокусу (onBlur)

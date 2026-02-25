@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import GreeceMap from "@/components/GreeceMap";
+import GreeceMap from "@/components/shared/GreeceMap";
 import Link from "next/link";
 import { ArrowLeft, MapPin } from "lucide-react";
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Headphones, CheckCircle2, Save, AlignLeft, ListChecks } from "lucide-react";
-import Quiz, { Question } from "@/components/Quiz";
+import Quiz, { Question } from "@/components/shared/Quiz";
 
 // --- ІНТЕРФЕЙСИ ---
 interface ExamListeningProps {

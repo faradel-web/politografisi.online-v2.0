@@ -7,7 +7,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { ArrowLeft, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/lib/auth-context"; // Для кнопки Google
+import { useAuth } from "@/contexts/auth-context"; // Для кнопки Google
 
 export default function RegisterPage() {
   const router = useRouter();

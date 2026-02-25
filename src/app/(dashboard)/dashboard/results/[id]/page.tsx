@@ -9,7 +9,7 @@ import {
   Mic, PenTool, Sparkles, CheckCircle, XCircle,
   AlignLeft, ListChecks 
 } from "lucide-react";
-import GreeceMap from "@/components/GreeceMap";
+import GreeceMap from "@/components/shared/GreeceMap";
 
 // --- ТИПІЗАЦІЯ ---
 type ResultData = {

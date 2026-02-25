@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, updateDoc, Timestamp } from "firebase/firestore";
 import { USER_ROLES } from "@/lib/constants";
-import { useAuth } from "@/lib/auth-context"; // --- NEW: Імпорт Auth
+import { useAuth } from "@/contexts/auth-context"; // --- NEW: Імпорт Auth
 import { useRouter } from "next/navigation";   // --- NEW: Імпорт Router
 import { 
   Loader2, User, Search, Shield, 

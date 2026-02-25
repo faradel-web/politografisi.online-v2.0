@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle2, ChevronLeft, ChevronRight, Save } from "lucide-react";
-import Quiz, { Question } from "@/components/Quiz";
+import Quiz, { Question } from "@/components/shared/Quiz";
 
 interface ExamTheoryProps {
   data: Question[];
