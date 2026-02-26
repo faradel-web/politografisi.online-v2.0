@@ -194,31 +194,44 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
       {/* --- MAIN CONTENT LAYOUT --- */}
       <div className="flex-1 flex overflow-hidden relative">
 
-        {/* LEFT PANEL: LESSON CONTENT */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 w-full ${isChatOpen ? 'lg:mr-[400px]' : ''}`}>
+        {/* LEFT SIDEBAR (DRAWER) */}
+        {isSidebarOpen && <div className="fixed inset-0 bg-black/20 z-30 lg:hidden backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)}></div>}
 
-          {/* LESSONS NAV (SCROLLABLE) */}
-          <div className="h-14 border-b border-slate-100 flex items-center px-4 gap-2 overflow-x-auto bg-slate-50/50 shrink-0 scrollbar-hide">
+        <div className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-slate-50 border-r border-slate-200 flex flex-col transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} shrink-0`}>
+          <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
+            <span className="font-bold text-slate-800 text-sm tracking-wide uppercase">Μαθήματα ({lessons.length})</span>
+            <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-1.5 text-slate-400 hover:bg-slate-100 rounded-md"><X size={18} /></button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
             {lessons.length > 0 ? (
               lessons.map(l => (
                 <button
                   key={l.id}
-                  onClick={() => setActiveLesson(l)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${activeLesson?.id === l.id
-                    ? 'bg-white border-blue-200 text-blue-700 shadow-sm'
-                    : 'bg-transparent border-transparent text-slate-500 hover:bg-white hover:border-slate-200'
+                  onClick={() => { setActiveLesson(l); setIsSidebarOpen(false); }}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all block ${activeLesson?.id === l.id
+                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
+                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-100'
                     }`}
                 >
                   {l.order}. {l.title}
                 </button>
               ))
             ) : (
-              <span className="text-xs text-slate-400 italic px-2">Δεν υπάρχουν μαθήματα.</span>
+              <div className="text-xs text-slate-400 italic text-center mt-10">Δεν υπάρχουν μαθήματα.</div>
             )}
+          </div>
+        </div>
+
+        {/* LEFT PANEL: LESSON CONTENT */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 min-w-0 ${isChatOpen ? 'lg:mr-[400px]' : ''}`}>
+
+          {/* PROGRESS BAR */}
+          <div className="h-1 w-full bg-slate-100 shrink-0">
+            <div className="h-full bg-blue-500 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }}></div>
           </div>
 
           {/* ACTIVE LESSON VIEW */}
-          <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 custom-scrollbar bg-white">
+          <div onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 custom-scrollbar bg-white scroll-smooth relative">
             {activeLesson ? (
               <div className="max-w-3xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
