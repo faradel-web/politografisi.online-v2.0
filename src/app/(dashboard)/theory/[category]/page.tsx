@@ -4,13 +4,12 @@ import { useState, useEffect, useRef, use } from "react";
 import { useParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebase/firestore";
-import {
-  ArrowLeft, Bot, Send, Loader2, Video, FileText, ChevronRight,
-  Music, Download, File, X, Presentation, Menu, ArrowRight
-} from "lucide-react";
+import { ArrowLeft, Bot, Send, Loader2, Video, FileText, ChevronRight, Music, Download, File, X, Presentation, Menu, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useAuth } from "@/contexts/auth-context";
+import { GUEST_LIMITS } from "@/lib/constants";
 
 // --- ТИПИ ---
 interface Attachment {
@@ -61,6 +60,8 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
       setScrollProgress((scrollTop / (scrollHeight - clientHeight)) * 100);
     }
   };
+
+  const { isPremium, loading: authLoading } = useAuth();
 
   // STATE: ДАНІ
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -159,7 +160,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
   };
 
-  if (isLoading) return <div className="h-screen flex items-center justify-center bg-slate-50"><Loader2 className="animate-spin h-10 w-10 text-blue-600" /></div>;
+  if (isLoading || authLoading) return <div className="h-screen flex items-center justify-center bg-slate-50"><Loader2 className="animate-spin h-10 w-10 text-blue-600" /></div>;
 
   return (
     <div className="h-screen flex flex-col bg-white overflow-hidden font-sans text-slate-900">
@@ -204,18 +205,30 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
             {lessons.length > 0 ? (
-              lessons.map(l => (
-                <button
-                  key={l.id}
-                  onClick={() => { setActiveLesson(l); setIsSidebarOpen(false); }}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all block ${activeLesson?.id === l.id
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-100'
-                    }`}
-                >
-                  {l.order}. {l.title}
-                </button>
-              ))
+              lessons.map((l, index) => {
+                const isLocked = !isPremium && index >= (GUEST_LIMITS.THEORY_PAGES || 1);
+
+                return (
+                  <button
+                    key={l.id}
+                    onClick={() => {
+                      if (!isLocked) {
+                        setActiveLesson(l);
+                        setIsSidebarOpen(false);
+                      }
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${isLocked
+                      ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-75'
+                      : activeLesson?.id === l.id
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
+                        : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-100'
+                      }`}
+                  >
+                    {isLocked && <Lock size={14} className="shrink-0 text-slate-400" />}
+                    <span className="truncate">{l.order}. {l.title}</span>
+                  </button>
+                );
+              })
             ) : (
               <div className="text-xs text-slate-400 italic text-center mt-10">Δεν υπάρχουν μαθήματα.</div>
             )}
@@ -329,6 +342,21 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                 {(() => {
                   const currentIndex = lessons.findIndex(l => l.id === activeLesson.id);
                   const nextLesson = currentIndex >= 0 && currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null;
+                  const isNextLocked = !isPremium && (currentIndex + 1) >= (GUEST_LIMITS.THEORY_PAGES || 1);
+
+                  if (isNextLocked) {
+                    return (
+                      <div className="mt-12 flex flex-col items-center justify-center p-6 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                        <div className="p-3 bg-white rounded-full text-slate-400 mb-3 shadow-sm"><Lock size={24} /></div>
+                        <h4 className="font-bold text-slate-800 mb-1">Το επόμενο μάθημα απαιτεί συνδρομή</h4>
+                        <p className="text-sm text-slate-500 mb-4 max-w-sm">Αναβαθμίστε τον λογαριασμό σας για πλήρη πρόσβαση σε όλη τη θεωρία, τα τεστ και τον AI καθηγητή.</p>
+                        <Link href="/profile" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition shadow-md hover:-translate-y-0.5">
+                          Αναβάθμιση Τώρα
+                        </Link>
+                      </div>
+                    );
+                  }
+
                   if (nextLesson) {
                     return (
                       <div className="mt-12 flex justify-end border-t border-slate-100 pt-8">

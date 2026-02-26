@@ -73,17 +73,17 @@ export const QUESTION_TYPES = [
 
 // --- РОЛІ КОРИСТУВАЧІВ ---
 export const USER_ROLES = {
-  ADMIN: 'admin',     
-  EDITOR: 'editor',   
-  STUDENT: 'student', 
-  GUEST: 'guest'      
+  ADMIN: 'admin',
+  EDITOR: 'editor',
+  STUDENT: 'student',
+  GUEST: 'guest'
 };
 
 // --- ЛІМІТИ ---
 export const GUEST_LIMITS = {
-  CONTENT_ITEMS: 5,   // Скільки питань бачить гість
+  CONTENT_ITEMS: 5,   // Скільки питань/теστών бачить гість
   EXAM_ATTEMPTS: 1,   // Спроби іспиту
-  THEORY_PAGES: 3,    // <-- ДОДАНО: Ліміт сторінок теорії (виправляє помилку)
+  THEORY_PAGES: 1,    // Ліміт сторінок теорії για демо користувачів
   AI_CHECKS: 0        // Ліміт AI
 };
 
