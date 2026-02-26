@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
     Trophy, Loader2, PlayCircle,
     GraduationCap, Timer, BookOpen,
-    BarChart3, Layers, ArrowRight, FileText, Sparkles, PenTool
+    BarChart3, Layers, ArrowRight, FileText, Sparkles, PenTool, Home
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, where, getCountFromServer } from "firebase/firestore";
@@ -112,14 +112,22 @@ export default function UserDashboardPage() {
     return (
         <div className="w-full max-w-[1600px] mx-auto space-y-8 pb-20 p-4 sm:p-6 lg:p-8 font-sans">
 
-            {/* 1. HEADER: ПРИВІТАННЯ */}
-            <header className="py-2">
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-serif mb-2">
-                    Γεια σου, <span className="text-blue-600">{user?.displayName?.split(' ')[0] || "Σπουδαστή"}</span>! 👋
-                </h1>
-                <p className="text-slate-500 font-medium text-lg flex items-center gap-2">
-                    Έτοιμοι για το επόμενο βήμα; <Sparkles size={18} className="text-yellow-500 fill-yellow-500" />
-                </p>
+            {/* 1. HEADER: ПРИВІТАННЯ ΚΑΙ ΚΟΥΜΠΙ АРХΙΚΗΣ */}
+            <header className="py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-serif mb-2">
+                        Γεια σου, <span className="text-blue-600">{user?.displayName?.split(' ')[0] || "Σπουδαστή"}</span>! 👋
+                    </h1>
+                    <p className="text-slate-500 font-medium text-lg flex items-center gap-2">
+                        Έτοιμοι για το επόμενο βήμα; <Sparkles size={18} className="text-yellow-500 fill-yellow-500" />
+                    </p>
+                </div>
+                <Link
+                    href="/"
+                    className="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
+                >
+                    <Home size={18} /> Αρχική Σελίδα
+                </Link>
             </header>
 
             {/* 2. HERO SECTION (ВІДЕО) */}
