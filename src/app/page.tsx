@@ -165,12 +165,11 @@ export default function Home() {
               Έξυπνη προετοιμασία, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                 σίγουρη επιτυχία
-              </span> στο ΠΕΓΠ 2026
+              </span> στην εξέταση για απόκτηση του ΠΕΓΠ 2026
             </h1>
 
             <p className="text-xl text-blue-800/70 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-              Μην αφήνετε το άγχος των εξετάσεων πολιτογράφησης να σας σταματήσει.
-              Ακολουθήστε τη μέθοδο (βασισμένη στην επίσημη τράπεζα θεμάτων του Υπουργείου Εσωτερικών) που έχει βοηθήσει εκατοντάδες να γίνουν Έλληνες πολίτες.
+              Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για την απόκτηση του Πιστοποιητικού Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
