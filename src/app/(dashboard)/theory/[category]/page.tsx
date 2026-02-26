@@ -6,10 +6,11 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebase/firestore";
 import {
   ArrowLeft, Bot, Send, Loader2, Video, FileText, ChevronRight,
-  Music, Download, File, X, Presentation
+  Music, Download, File, X, Presentation, Menu, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // --- ТИПИ ---
 interface Attachment {
@@ -27,6 +28,7 @@ interface Lesson {
   audioUrl?: string;
   presentationUrl?: string;
   attachments?: Attachment[];
+  isPublished?: boolean;
 }
 
 interface Message {
@@ -48,6 +50,17 @@ const CATEGORY_NAMES: Record<string, string> = {
 export default function TheoryPage({ params }: { params: Promise<{ category: string }> }) {
   const resolvedParams = use(params);
   const categoryId = resolvedParams.category;
+
+  // UI STATE
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight > clientHeight) {
+      setScrollProgress((scrollTop / (scrollHeight - clientHeight)) * 100);
+    }
+  };
 
   // STATE: ДАНІ
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -77,6 +90,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
         const loadedLessons = snapshot.docs
           .map(d => ({ id: d.id, ...d.data() } as Lesson))
+          .filter(l => l.isPublished !== false)
           .sort((a, b) => (a.order || 0) - (b.order || 0));
 
         setLessons(loadedLessons);
@@ -152,11 +166,14 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
       {/* --- HEADER --- */}
       <header className="h-16 border-b border-slate-100 flex items-center justify-between px-4 bg-white shrink-0 z-20 shadow-sm relative">
-        <div className="flex items-center gap-3 md:gap-4">
-          <Link href={`/theory`} className="p-2 hover:bg-slate-50 rounded-xl text-slate-500 transition-colors">
+        <div className="flex items-center gap-2 md:gap-4">
+          <Link href={`/theory`} className="hidden md:flex p-2 hover:bg-slate-50 rounded-xl text-slate-500 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <div className="flex flex-col md:flex-row md:items-center md:gap-2">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden p-2 hover:bg-slate-50 rounded-xl text-slate-500 transition-colors">
+            <Menu className="h-5 w-5" />
+          </button>
+          <div className="flex flex-col md:flex-row md:items-center md:gap-2 md:border-l md:border-slate-200 md:pl-4 pl-2">
             <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">ΘΕΩΡΙΑ</span>
             <h1 className="font-black text-slate-900 text-sm md:text-lg leading-tight">
               {CATEGORY_NAMES[categoryId] || categoryId}
@@ -188,8 +205,8 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                   key={l.id}
                   onClick={() => setActiveLesson(l)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${activeLesson?.id === l.id
-                      ? 'bg-white border-blue-200 text-blue-700 shadow-sm'
-                      : 'bg-transparent border-transparent text-slate-500 hover:bg-white hover:border-slate-200'
+                    ? 'bg-white border-blue-200 text-blue-700 shadow-sm'
+                    : 'bg-transparent border-transparent text-slate-500 hover:bg-white hover:border-slate-200'
                     }`}
                 >
                   {l.order}. {l.title}
@@ -294,6 +311,32 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                     <button onClick={() => setIsChatOpen(true)} className="text-xs font-black uppercase tracking-wider text-indigo-600 hover:text-indigo-800 underline">Άνοιγμα Chat</button>
                   </div>
                 </div>
+
+                {/* NEXT LESSON BUTTON */}
+                {(() => {
+                  const currentIndex = lessons.findIndex(l => l.id === activeLesson.id);
+                  const nextLesson = currentIndex >= 0 && currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null;
+                  if (nextLesson) {
+                    return (
+                      <div className="mt-12 flex justify-end border-t border-slate-100 pt-8">
+                        <button
+                          onClick={() => {
+                            setActiveLesson(nextLesson);
+                            document.querySelector('.custom-scrollbar')?.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="group flex flex-col items-end text-right hover:-translate-y-1 transition-transform"
+                        >
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Επόμενο Μάθημα</span>
+                          <span className="flex items-center gap-3 text-lg font-black text-blue-600 group-hover:text-blue-700">
+                            {nextLesson.title} <ArrowRight className="w-5 h-5 bg-blue-100 rounded-full p-0.5" />
+                          </span>
+                        </button>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-slate-400 text-center p-4">
@@ -305,10 +348,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
         </div>
 
         {/* RIGHT PANEL: AI CHAT (MOBILE OVERLAY / DESKTOP SIDEBAR) */}
-        <div className={`fixed inset-y-0 right-0 w-full sm:w-[400px] bg-white border-l border-slate-200 shadow-2xl transform transition-transform duration-300 z-50 flex flex-col ${isChatOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`fixed inset-y-0 right-0 w-full md:w-[450px] border-l border-white/40 shadow-2xl transform transition-transform duration-300 z-50 flex flex-col bg-white/80 backdrop-blur-xl ${isChatOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
           {/* Chat Header */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-indigo-100 bg-gradient-to-r from-indigo-50 to-white shrink-0">
+          <div className="h-16 flex items-center justify-between px-4 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-white/50 shrink-0">
             <div className="flex items-center gap-2 text-indigo-900">
               <div className="p-1.5 bg-indigo-100 rounded-lg"><Bot size={18} /></div>
               <div>
@@ -322,15 +365,16 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 scroll-smooth">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar scroll-smooth relative z-10">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${m.role === 'user'
-                    ? 'bg-slate-900 text-white rounded-br-none'
-                    : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none'
+                  ? 'bg-slate-900 text-white rounded-br-none'
+                  : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none'
                   }`}>
                   {m.role === 'ai' ? (
                     <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
                       components={{
                         p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
                         ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2" {...props} />,
@@ -357,14 +401,14 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-white border-t border-slate-100 shrink-0 pb-safe">
+          <div className="p-4 bg-white/50 border-t border-indigo-100/50 shrink-0 pb-safe z-10">
             <form onSubmit={handleSendMessage} className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ρώτησε κάτι..."
-                className="w-full pl-4 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 outline-none text-sm font-medium transition-all placeholder:text-slate-400"
+                className="w-full pl-4 pr-12 py-3 bg-white/80 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 outline-none text-sm font-medium transition-all shadow-inner placeholder:text-slate-400"
               />
               <button
                 type="submit"
