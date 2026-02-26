@@ -38,27 +38,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [user, loading, router]);
 
-  // ✅ ФУНКЦІЯ ПЕРЕХОДУ В CRM (Оновлена для Localhost)
-  const handleCrmAccess = () => {
-    const isLocal = window.location.hostname === "localhost";
-    const protocol = window.location.protocol;
-    const host = window.location.host;
-
-    let newUrl;
-
-    if (isLocal) {
-      // На localhost додаємо параметр доступу, бо кукі не шаряться між піддоменами
-      newUrl = `${protocol}//crm.localhost:3000?crm_access=true`;
-    } else {
-      // На проді формуємо піддомен
-      const cleanHost = host.replace("www.", "");
-      // Також додаємо параметр для надійності
-      newUrl = `${protocol}//crm.${cleanHost}?crm_access=true`;
-    }
-
-    // Перехід
-    window.location.href = newUrl;
-  };
 
   // --- 7. Лоадер ---
   if (loading) {
@@ -143,13 +122,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* ✅ КНОПКА CRM (ТІЛЬКИ ДЛЯ АДМІНА) */}
           {role === USER_ROLES.ADMIN && (
-            <button
-              onClick={handleCrmAccess}
+            <Link
+              href="/crm"
               className="w-full flex items-center gap-3 px-4 py-3 text-indigo-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1 text-left font-bold"
             >
               <Database className="h-5 w-5" />
               CRM (Leads)
-            </button>
+            </Link>
           )}
 
           <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-emerald-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1">
