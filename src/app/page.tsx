@@ -111,6 +111,38 @@ export default function Home() {
                         "@type": "Answer",
                         "text": "Η πληρωμή είναι εφάπαξ (μία φορά) για το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα."
                       }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Υπάρχει διορθωτής για την Έκθεση και την Ομιλία;",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Ναι! Η πλατφόρμα μας ενσωματώνει προηγμένη Τεχνητή Νοημοσύνη (AI) που βαθμολογεί και διορθώνει αυτόματα τα κείμενά σας (έκθεση) αλλά και τα ηχητικά σας μηνύματα (ομιλία), δίνοντας εξατομικευμένες συμβουλές βελτίωσης."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Μπορώ να δοκιμάσω πριν πληρώσω;",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Βεβαίως. Με τη Δωρεάν Εγγραφή σας παρέχουμε πρόσβαση γνωριμίας στην πλατφόρμα, η οποία περιλαμβάνει 1 δοκιμαστικό τεστ ανά κατηγορία, χωρίς να απαιτείται πιστωτική κάρτα."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Το υλικό απευθύνεται σε αρχάριους ή προχωρημένους;",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Το υλικό απευθύνεται σε άτομα που κατέχουν έστω ένα βασικό (Б1+) επίπεδο της Ελληνικής Γλώσσας και θέλουν στοχευμένη προετοιμασία πάνω στα θέματα της Τράπεζας Εξετάσεων."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Πότε ενεργοποιείται ο λογαριασμός μου μετά την πληρωμή;",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Μόλις επιλέξετε το πακέτο που επιθυμείτε και ολοκληρωθεί η επικοινωνία με τους διαχειριστές μας, η Premium πρόσβαση ενεργοποιείται σχεδόν άμεσα, και μπορείτε να ξεκινήσετε τη μελέτη."
+                      }
                     }
                   ]
                 }
@@ -436,7 +468,51 @@ export default function Home() {
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
                 <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
-                  Η πληρωμή είναι εφάπαξ (μία φορά) для το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα.
+                  Η πληρωμή είναι εφάπαξ (μία φορά) για το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα.
+                </div>
+              </details>
+
+              {/* Q5 */}
+              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="font-bold text-blue-900 text-lg">Υπάρχει διορθωτής για την Έκθεση και την Ομιλία;</span>
+                  <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                  Ναι! Η πλατφόρμα μας ενσωματώνει προηγμένη Τεχνητή Νοημοσύνη (AI) που βαθμολογεί και διορθώνει αυτόματα τα κείμενά σας (έκθεση) αλλά και τα ηχητικά σας μηνύματα (ομιλία), δίνοντας εξατομικευμένες συμβουλές βελτίωσης.
+                </div>
+              </details>
+
+              {/* Q6 */}
+              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="font-bold text-blue-900 text-lg">Μπορώ να δοκιμάσω πριν πληρώσω;</span>
+                  <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                  Βεβαίως. Με τη <strong>Δωρεάν Εγγραφή</strong> σας παρέχουμε πρόσβαση γνωριμίας στην πλατφόρμα, η οποία περιλαμβάνει 1 δοκιμαστικό τεστ ανά κατηγορία, χωρίς να απαιτείται πιστωτική κάρτα.
+                </div>
+              </details>
+
+              {/* Q7 */}
+              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="font-bold text-blue-900 text-lg">Το υλικό απευθύνεται σε αρχάριους ή προχωρημένους;</span>
+                  <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                  Το υλικό είναι δομημένο βάσει των Εξετάσεων (ΠΕΓΠ) και απευθύνεται σε άτομα που κατέχουν έστω ένα βασικό επίπεδο της Ελληνικής Γλώσσας, και θέλουν στοχευμένη προετοιμασία πάνω στα θέματα της Τράπεζας.
+                </div>
+              </details>
+
+              {/* Q8 */}
+              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="font-bold text-blue-900 text-lg">Πότε ενεργοποιείται ο λογαριασμός μου μετά την πληρωμή;</span>
+                  <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                  Μόλις επιλέξετε το πακέτο που επιθυμείτε και ολοκληρωθεί η επικοινωνία με τους διαχειριστές μας, η Premium πρόσβαση ενεργοποιείται σχεδόν άμεσα, και μπορείτε να ξεκινήσετε τη μελέτη.
                 </div>
               </details>
             </div>
