@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import {
   Loader2, TrendingUp, TrendingDown, Wallet,
   Plus, X, User, Tag, ArrowUpRight, ArrowDownRight, Users,
-  MessageSquare, UserPlus, Clock
+  MessageSquare, UserPlus, Clock, LayoutDashboard
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, Tooltip, ResponsiveContainer
@@ -234,12 +234,26 @@ export default function CrmDashboard() {
           <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Dashboard</h1>
           <p className="text-slate-500 font-medium">Επισκόπηση & Οικονομικά</p>
         </div>
-        <button
-          onClick={() => router.push('/crm/leads')}
-          className="px-6 py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
-        >
-          <Users size={18} /> Όλοι οι Χρήστες
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => router.push('/admin')}
+            className="px-5 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-200 transition-all flex items-center gap-2 text-sm shadow-sm"
+          >
+            <LayoutDashboard size={16} /> Admin Panel
+          </button>
+          <button
+            onClick={() => router.push('/crm/transactions')}
+            className="px-5 py-2.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl font-bold hover:bg-blue-100 transition-all flex items-center gap-2 text-sm shadow-sm"
+          >
+            <Wallet size={16} /> Οικονομικά
+          </button>
+          <button
+            onClick={() => router.push('/crm/leads')}
+            className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold shadow-sm hover:bg-black transition-all flex items-center gap-2 text-sm"
+          >
+            <Users size={16} /> Χρήστες & Leads
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
