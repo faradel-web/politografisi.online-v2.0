@@ -11,7 +11,7 @@ import {
   MoreHorizontal, Calendar, Phone, Mail, CheckCircle, XCircle, ChevronDown, ShieldAlert 
 } from "lucide-react";
 
-// Тип даних користувача
+// Τύπος даних користувача
 type UserData = {
   id: string;
   email: string;
@@ -107,7 +107,7 @@ export default function UserManagementPage() {
       setEditingUser(null);
     } catch (error) {
       console.error("Error updating:", error);
-      alert("Σφάλμα κατά την ενημέρωση (Помилка оновлення)");
+      alert("Σφάλμα κατά την ενημέρωση");
     } finally {
       setIsSaving(false);
     }
@@ -171,7 +171,7 @@ export default function UserManagementPage() {
             <h1 className="text-3xl font-black flex items-center gap-3 font-serif text-slate-900">
                 Διαχείριση Χρηστών
             </h1>
-            <p className="text-slate-500 font-medium mt-1">Κерування доступами та підписками</p>
+            <p className="text-slate-500 font-medium mt-1">Διαχείριση προσβάσεων και συνδρομών</p>
           </div>
           
           <div className="relative w-full md:w-72">
@@ -280,7 +280,7 @@ export default function UserManagementPage() {
                                 onChange={(e) => setSelectedRole(e.target.value)}
                                 className="w-full p-4 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 appearance-none font-bold text-slate-700 shadow-sm"
                             >
-                                <option value={USER_ROLES.GUEST}>Guest (Demo / Limited)</option>
+                                <option value={USER_ROLES.GUEST}>Επισκέπτης (Demo / Περιορισμένο)</option>
                                 <option value={USER_ROLES.STUDENT}>Student (Premium / Paid)</option>
                                 <option value={USER_ROLES.EDITOR}>Editor (Content Manager)</option>
                                 <option value={USER_ROLES.ADMIN}>Admin (Superuser)</option>

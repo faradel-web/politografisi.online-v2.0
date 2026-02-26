@@ -15,15 +15,15 @@ import { QuestionType } from "@/types/exam-types"; // Standard
 
 // --- TYPES FOR READING ---
 const READING_QUESTION_TYPES = [
-  { label: "Вибір (Single Choice)", value: "SINGLE" },
+  { label: "Επιλογή (Single Choice)", value: "SINGLE" },
   { label: "True / False", value: "TRUE_FALSE" },
-  { label: "Вписати слово (Fill Gap)", value: "FILL_GAP" },
-  { label: "Пари (Matching)", value: "MATCHING" },
+  { label: "Συμπλήρωση Λέξης (Fill Gap)", value: "FILL_GAP" },
+  { label: "Αντιστοίχιση", value: "MATCHING" },
 ];
 
 export default function ReadingEditorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Завантаження...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Φόρτωση...</div>}>
       <EditorContent />
     </Suspense>
   );
@@ -63,7 +63,7 @@ function EditorContent() {
         const snapshot = await uploadBytes(storageRef, file);
         const url = await getDownloadURL(snapshot.ref);
         setImages(prev => [...prev, url]);
-      } catch (err) { alert("Помилка завантаження"); } 
+      } catch (err) { alert("Σφάλμα φόρτωσης"); } 
       finally { setIsUploading(false); }
     }
   };
@@ -160,19 +160,19 @@ function EditorContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title) return alert("Введіть назву уроку!");
+    if (!title) return alert("Εισαγάγετε τον τίτλο του μαθήματος!");
     setIsSaving(true);
     try {
       const docData = constructPayload();
       if (editId) {
         await updateDoc(doc(db, "lessons_reading", editId), docData);
-        alert("Оновлено!");
+        alert("Ενημερώθηκε!");
       } else {
         await addDoc(collection(db, "lessons_reading"), { ...docData, createdAt: serverTimestamp() });
-        alert("Створено!");
+        alert("Δημιουργήθηκε!");
       }
       router.push('/admin/manage');
-    } catch (error) { alert("Помилка: " + error); } 
+    } catch (error) { alert("Σφάλμα: " + error); } 
     finally { setIsSaving(false); }
   };
 
@@ -200,12 +200,12 @@ function EditorContent() {
             {/* --- FIX: INSTRUCTION FIELD (ONLY FOR FILL GAP) --- */}
             {q.type === 'FILL_GAP' && (
                 <div className="mb-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Інструкція</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Οδηγία</label>
                     <textarea 
                         value={q.instruction || ""} 
                         onChange={(e) => updateQuestion(part, index, 'instruction', e.target.value)}
                         className="w-full p-3 bg-amber-50/50 rounded-xl border border-amber-100 font-medium text-slate-600 text-sm outline-none focus:bg-white focus:border-amber-300 transition-colors"
-                        placeholder="Напр: Ξαναγράψτε τις παρακάτω προτάσεις..."
+                        placeholder="Π.χ.: Ξαναγράψτε τις παρακάτω προτάσεις..."
                         rows={2}
                     />
                 </div>
@@ -215,7 +215,7 @@ function EditorContent() {
             {q.type === 'FILL_GAP' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Вихідне речення (Source)</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Αρχική πρόταση (Source)</label>
                         <textarea
                             value={q.question.includes('->') ? q.question.split('->')[0].trim() : q.question}
                             onChange={(e) => {
@@ -223,12 +223,12 @@ function EditorContent() {
                                 updateQuestion(part, index, 'question', `${e.target.value} -> ${currentTarget}`);
                             }}
                             className="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 font-medium text-slate-600 text-sm outline-none focus:bg-white focus:border-blue-200 transition-colors"
-                            placeholder="Напр: Πηγαίνω στο σχολείο"
+                            placeholder="Π.χ.: Πηγαίνω στο σχολείο"
                             rows={2}
                         />
                     </div>
                     <div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Речення з пропуском (Target)</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Πρόταση με κενό (Target)</label>
                         <textarea
                             value={q.question.includes('->') ? q.question.split('->')[1].trim() : ""}
                             onChange={(e) => {
@@ -236,7 +236,7 @@ function EditorContent() {
                                 updateQuestion(part, index, 'question', `${currentSource} -> ${e.target.value}`);
                             }}
                             className="w-full p-3 bg-blue-50/50 rounded-xl border border-blue-100 font-bold text-slate-800 text-sm outline-none focus:bg-white focus:border-blue-200 transition-colors"
-                            placeholder="Напр: Πηγαίνω _____ σχολείο"
+                            placeholder="Π.χ.: Πηγαίνω _____ σχολείο"
                             rows={2}
                         />
                     </div>
@@ -244,12 +244,12 @@ function EditorContent() {
             ) : (
                 // Стандартне поле для інших типів
                 <>
-                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Текст питання / Речення</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-1 block mb-1">Κείμενο Ερώτησης / Πρόταση</label>
                     <textarea 
                         value={q.question} 
                         onChange={(e) => updateQuestion(part, index, 'question', e.target.value)}
                         className="w-full p-3 bg-slate-50 rounded-xl border border-slate-100 font-bold text-slate-700 text-sm mb-4 outline-none focus:bg-white focus:border-blue-200 transition-colors"
-                        placeholder="Текст запитання..."
+                        placeholder="Κείμενο ερώτησης..."
                         rows={2}
                     />
                 </>
@@ -262,7 +262,7 @@ function EditorContent() {
                         {(q.options || ["","","",""]).map((opt: string, i: number) => (
                             <div key={i} className="flex items-center gap-2">
                                 <button type="button" onClick={() => updateQuestion(part, index, 'correctAnswerIndex', i)} className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${q.correctAnswerIndex === i ? 'bg-emerald-500 text-white' : 'text-slate-300'}`}>{['A','B','C','D'][i]}</button>
-                                <input value={opt} onChange={(e) => {const n=[...q.options]; n[i]=e.target.value; updateQuestion(part, index, 'options', n)}} className="flex-1 p-2 bg-white border rounded-lg text-sm outline-none" placeholder={`Варіант ${i+1}`}/>
+                                <input value={opt} onChange={(e) => {const n=[...q.options]; n[i]=e.target.value; updateQuestion(part, index, 'options', n)}} className="flex-1 p-2 bg-white border rounded-lg text-sm outline-none" placeholder={`Επιλογή ${i+1}`}/>
                             </div>
                         ))}
                     </div>
@@ -272,12 +272,12 @@ function EditorContent() {
             {/* FILL GAP */}
             {q.type === 'FILL_GAP' && (
                 <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase">Правильна відповідь</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Σωστή απάντηση</label>
                     <input 
                         value={q.correctAnswers?.['0'] || ""}
                         onChange={(e) => updateQuestion(part, index, 'correctAnswers', {'0': e.target.value})}
                         className="w-full p-2 bg-emerald-50 border border-emerald-100 rounded-lg text-sm font-bold text-emerald-700"
-                        placeholder="Слово..."
+                        placeholder="Λέξη..."
                     />
                 </div>
             )}
@@ -287,11 +287,11 @@ function EditorContent() {
                 <div className="space-y-2">
                     {(q.pairs || [{left:"", right:""}]).map((p:any, i:number) => (
                         <div key={i} className="flex gap-2">
-                            <input value={p.left} onChange={e => {const n=[...q.pairs]; n[i].left=e.target.value; updateQuestion(part, index, 'pairs', n)}} className="flex-1 p-2 border rounded-lg text-xs" placeholder="Ліва частина"/>
-                            <input value={p.right} onChange={e => {const n=[...q.pairs]; n[i].right=e.target.value; updateQuestion(part, index, 'pairs', n)}} className="flex-1 p-2 border border-emerald-100 bg-emerald-50 rounded-lg text-xs" placeholder="Права частина"/>
+                            <input value={p.left} onChange={e => {const n=[...q.pairs]; n[i].left=e.target.value; updateQuestion(part, index, 'pairs', n)}} className="flex-1 p-2 border rounded-lg text-xs" placeholder="Αριστερό τμήμα"/>
+                            <input value={p.right} onChange={e => {const n=[...q.pairs]; n[i].right=e.target.value; updateQuestion(part, index, 'pairs', n)}} className="flex-1 p-2 border border-emerald-100 bg-emerald-50 rounded-lg text-xs" placeholder="Δεξί τμήμα"/>
                         </div>
                     ))}
-                    <button type="button" onClick={() => updateQuestion(part, index, 'pairs', [...q.pairs, {left:"", right:""}])} className="text-xs text-blue-500 font-bold">+ Додати пару</button>
+                    <button type="button" onClick={() => updateQuestion(part, index, 'pairs', [...q.pairs, {left:"", right:""}])} className="text-xs text-blue-500 font-bold">+ Προσθήκη Ζεύγους</button>
                 </div>
             )}
 
@@ -300,11 +300,11 @@ function EditorContent() {
                 <div className="space-y-2">
                     {(q.items || [{text:"", isTrue:true}]).map((item:any, i:number) => (
                         <div key={i} className="flex items-center gap-2">
-                            <input value={item.text} onChange={e => {const n=[...q.items]; n[i].text=e.target.value; updateQuestion(part, index, 'items', n)}} className="flex-1 p-2 border rounded-lg text-xs" placeholder="Твердження..."/>
+                            <input value={item.text} onChange={e => {const n=[...q.items]; n[i].text=e.target.value; updateQuestion(part, index, 'items', n)}} className="flex-1 p-2 border rounded-lg text-xs" placeholder="Δήλωση..."/>
                             <button type="button" onClick={() => {const n=[...q.items]; n[i].isTrue=!n[i].isTrue; updateQuestion(part, index, 'items', n)}} className={`px-2 py-1 rounded text-xs font-bold ${item.isTrue ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>{item.isTrue ? 'TRUE' : 'FALSE'}</button>
                         </div>
                     ))}
-                    <button type="button" onClick={() => updateQuestion(part, index, 'items', [...q.items, {text:"", isTrue:true}])} className="text-xs text-blue-500 font-bold">+ Додати</button>
+                    <button type="button" onClick={() => updateQuestion(part, index, 'items', [...q.items, {text:"", isTrue:true}])} className="text-xs text-blue-500 font-bold">+ Προσθήκη</button>
                 </div>
             )}
         </div>
@@ -327,7 +327,7 @@ function EditorContent() {
                 </div>
             </div>
             <button onClick={handleSubmit} disabled={isSaving} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:bg-slate-800 transition-all">
-                {isSaving ? <Loader2 className="animate-spin" size={18}/> : <Save size={18}/>} Зберегти
+                {isSaving ? <Loader2 className="animate-spin" size={18}/> : <Save size={18}/>} Αποθήκευση
             </button>
         </div>
 
@@ -335,14 +335,14 @@ function EditorContent() {
           
           {/* TITLE */}
           <section className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-200">
-             <label className="text-[10px] font-black text-slate-400 uppercase ml-2 block mb-2">Назва уроку</label>
-             <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black text-xl text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50" placeholder="Напр: Θέμα 1" />
+             <label className="text-[10px] font-black text-slate-400 uppercase ml-2 block mb-2">Τίτλος μαθήματος</label>
+             <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black text-xl text-slate-900 outline-none focus:ring-4 focus:ring-indigo-50" placeholder="Π.χ.: Θέμα 1" />
           </section>
 
           {/* INTRO */}
           <section className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 space-y-6">
             <h2 className="text-lg font-black text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-4">
-                <BookOpen className="text-blue-600"/> Текст статті
+                <BookOpen className="text-blue-600"/> Κείμενο Άρθρου
             </h2>
             <div className="flex flex-col lg:flex-row gap-6">
                 <div className="flex-1">
@@ -350,12 +350,12 @@ function EditorContent() {
                         value={mainText} 
                         onChange={e => setMainText(e.target.value)} 
                         className="w-full p-6 bg-slate-50 border-none rounded-2xl min-h-[400px] font-serif text-lg leading-relaxed outline-none focus:ring-4 focus:ring-indigo-50" 
-                        placeholder="Вставте текст тут..." 
+                        placeholder="Επικολλήστε το κείμενο εδώ..." 
                     />
                 </div>
                 <div className="w-full lg:w-1/3 space-y-4">
                     <div className="bg-slate-50 p-6 rounded-[1.5rem] border border-slate-100 h-full">
-                        <h3 className="text-xs font-black uppercase text-slate-400 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Картинки</h3>
+                        <h3 className="text-xs font-black uppercase text-slate-400 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Εικόνες</h3>
                         <div className="grid grid-cols-2 gap-2">
                             {images.map((url, idx) => (
                                 <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden border bg-white">
@@ -376,8 +376,8 @@ function EditorContent() {
           {/* PART A */}
           <section className="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100">
               <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-black text-blue-900 flex items-center gap-2"><CheckSquare className="text-blue-600"/> Part A: Питання до тексту</h2>
-                  <button onClick={() => setPartAQuestions([...partAQuestions, { type: 'SINGLE', options: ["","","",""] }])} className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-blue-700 shadow-lg"><Plus size={14}/> Додати</button>
+                  <h2 className="text-lg font-black text-blue-900 flex items-center gap-2"><CheckSquare className="text-blue-600"/> Part A: Ερωτήσεις επί του κειμένου</h2>
+                  <button onClick={() => setPartAQuestions([...partAQuestions, { type: 'SINGLE', options: ["","","",""] }])} className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-blue-700 shadow-lg"><Plus size={14}/> Προσθήκη</button>
               </div>
               <div className="space-y-4">
                   {partAQuestions.map((q, i) => renderCard(q, i, 'A'))}
@@ -387,8 +387,8 @@ function EditorContent() {
           {/* PART B */}
           <section className="bg-purple-50/50 p-6 rounded-[2rem] border border-purple-100">
               <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-black text-purple-900 flex items-center gap-2"><Type className="text-purple-600"/> Part B: Граматика</h2>
-                  <button onClick={() => setPartBQuestions([...partBQuestions, { type: 'SINGLE', options: ["","","",""] }])} className="bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-purple-700 shadow-lg"><Plus size={14}/> Додати</button>
+                  <h2 className="text-lg font-black text-purple-900 flex items-center gap-2"><Type className="text-purple-600"/> Part B: Γραμματική</h2>
+                  <button onClick={() => setPartBQuestions([...partBQuestions, { type: 'SINGLE', options: ["","","",""] }])} className="bg-purple-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-purple-700 shadow-lg"><Plus size={14}/> Προσθήκη</button>
               </div>
               <div className="space-y-4">
                   {partBQuestions.map((q, i) => renderCard(q, i, 'B'))}
@@ -401,12 +401,12 @@ function EditorContent() {
                 <h2 className="text-lg font-black text-slate-900 flex items-center gap-2"><PenTool className="text-orange-500"/> Part C: Writing</h2>
             </div>
             <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Тема твору (Prompt)</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Θέμα έκθεσης (Prompt)</label>
                 <textarea 
                     value={writingPrompt} 
                     onChange={e => setWritingPrompt(e.target.value)} 
                     className="w-full p-6 bg-slate-50 border-none rounded-3xl min-h-[120px] font-bold text-slate-800 outline-none focus:ring-4 focus:ring-orange-50 transition-all" 
-                    placeholder="Тема есе..."
+                    placeholder="Θέμα έκθεσης..."
                 />
             </div>
           </section>

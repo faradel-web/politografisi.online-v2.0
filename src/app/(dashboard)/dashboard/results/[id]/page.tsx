@@ -182,7 +182,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
 
               {q.imageUrl && !type.includes('MAP') && <img src={q.imageUrl} className="max-h-48 rounded-lg border mb-4 bg-white object-contain w-full sm:w-auto" alt=""/>}
 
-              {/* 🔥 F. OPEN QUESTIONS (Відкриті питання з ШІ) */}
+              {/* 🔥 F. OPEN QUESTIONS (Ανοιχτές ερωτήσεις AI) */}
               {(type.includes('OPEN') || type.includes('SHORT')) && (
                   <div className="space-y-4">
                       <div className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 whitespace-pre-wrap">

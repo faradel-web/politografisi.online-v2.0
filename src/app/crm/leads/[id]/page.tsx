@@ -10,7 +10,7 @@ import {
     Save, CheckCircle, AlertOctagon, UserCircle, Trash2
 } from "lucide-react";
 
-// Типи
+// Τύποςи
 interface UserProfile {
     id: string;
     type: 'user' | 'lead';

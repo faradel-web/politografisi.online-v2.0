@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   description: "Η Νο1 πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ). Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
   
-  // Налаштування для Facebook, LinkedIn, Viber, Telegram
+  // Ρυθμίσεις для Facebook, LinkedIn, Viber, Telegram
   openGraph: {
     title: "Politografisi.online | Έξυπνη Προετοιμασία",
     description: "Η πληρέστερη πλατφόρμα προετοιμασίας. Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     // Next.js автоматично підтягне файл opengraph-image.tsx тут
   },
 
-  // Налаштування для Twitter (X)
+  // Ρυθμίσεις для Twitter (X)
   twitter: {
     card: 'summary_large_image',
     title: "Politografisi.online | Προετοιμασία ΠΕΓΠ",

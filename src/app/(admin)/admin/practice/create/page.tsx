@@ -17,32 +17,32 @@ const SECTIONS = [
   // ГРУПА 1: БАНК ПИТАНЬ (7 розділів будуть мати свої колекції)
   { 
     id: 'history', 
-    title: 'Ιστορία (Історія)', 
-    desc: 'Банк питань: Тести, Дати, Події', 
+    title: 'Ιστορία (Ιστορία)', 
+    desc: 'Τράπεζα ερωτήσεων: Τεστ, Ημερομηνίες, Γεγονότα', 
     icon: ScrollText, 
     color: 'bg-amber-50 text-amber-600 border-amber-100',
     link: '/admin/practice/create/history'
   },
   { 
     id: 'politics', 
-    title: 'Πολιτικοί Θεσμοί (Політика)', 
-    desc: 'Банк питань: Закони, Устрій', 
+    title: 'Πολιτικοί Θεσμοί (Πολιτικοί Θεσμοί)', 
+    desc: 'Τράπεζα ερωτήσεων: Νόμοι, Σύστημα', 
     icon: Landmark, 
     color: 'bg-blue-50 text-blue-600 border-blue-100',
     link: '/admin/practice/create/politics'
   },
   { 
     id: 'culture', 
-    title: 'Πολιτισμός (Культура)', 
-    desc: 'Банк питань: Мистецтво, Традиції', 
+    title: 'Πολιτισμός (Πολιτισμός)', 
+    desc: 'Τράπεζα ερωτήσεων: Τέχνες, Παραδόσεις', 
     icon: Palette, 
     color: 'bg-pink-50 text-pink-600 border-pink-100',
     link: '/admin/practice/create/culture'
   },
   { 
     id: 'geography', 
-    title: 'Γεωγραφία (Географія)', 
-    desc: 'Банк питань + Робота з мапами', 
+    title: 'Γεωγραφία (Γεωγραφία)', 
+    desc: 'Τράπεζα ερωτήσεων + Λειτουργία χάρτη', 
     icon: Globe, 
     color: 'bg-emerald-50 text-emerald-600 border-emerald-100',
     link: '/admin/practice/create/geography'
@@ -51,24 +51,24 @@ const SECTIONS = [
   // ГРУПА 2: КОМПЛЕКСНІ УРОКИ
   { 
     id: 'reading', 
-    title: 'Κατανόηση Γραπτού (Читання)', 
-    desc: 'Текст + Тести + Есе', 
+    title: 'Κατανόηση Γραπτού (Κατανόηση Γραπτού)', 
+    desc: 'Κείμενο + Τεστ + Έκθεση', 
     icon: BookOpen, 
     color: 'bg-indigo-50 text-indigo-600 border-indigo-100',
     link: '/admin/practice/create/reading'
   },
   { 
     id: 'listening', 
-    title: 'Κατανόηση Προφορικού (Αудіювання)', 
-    desc: 'Αудіо + Тести', 
+    title: 'Κατανόηση Προφορικού', 
+    desc: 'Ήχος + Τεστ', 
     icon: Headphones, 
     color: 'bg-purple-50 text-purple-600 border-purple-100',
     link: '/admin/practice/create/listening'
   },
   { 
     id: 'speaking', 
-    title: 'Παραγωγή Προφορικού (Говоріння)', 
-    desc: 'Теми для розмови + Картинки', 
+    title: 'Παραγωγή Προφορικού (Παραγωγή Προφορικού)', 
+    desc: 'Θέματα για συζήτηση + Εικόνες', 
     icon: Mic, 
     color: 'bg-orange-50 text-orange-600 border-orange-100',
     link: '/admin/practice/create/speaking'
@@ -86,15 +86,15 @@ export default function PracticeHubPage() {
                 <ArrowLeft className="h-6 w-6 text-slate-400 group-hover:text-slate-900"/>
             </Link>
             <div>
-                <h1 className="text-3xl font-black text-slate-900 font-serif tracking-tight">Конструктор Практики</h1>
-                <p className="text-slate-500 font-medium">Оберіть розділ для створення нового завдання</p>
+                <h1 className="text-3xl font-black text-slate-900 font-serif tracking-tight">Δημιουργός Πρακτικής</h1>
+                <p className="text-slate-500 font-medium">Επιλέξετε ενότητα για τη δημιουργία νέας εργασίας</p>
             </div>
         </div>
 
         {/* Секція Банк Питань */}
         <div className="mb-12">
             <div className="flex items-center gap-4 mb-8">
-                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Банк Питань (Одиничні Тести)</h3>
+                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Τράπεζα Θεμάτων (Μεμονωμένα Τεστ)</h3>
                 <div className="h-[1px] flex-1 bg-slate-100"></div>
             </div>
 
@@ -108,7 +108,7 @@ export default function PracticeHubPage() {
         {/* Секція Уроки */}
         <div>
             <div className="flex items-center gap-4 mb-8">
-                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Комплексні Уроки (Текст / Медіа)</h3>
+                <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Ολοκληρωμένα Μαθήματα (Κείμενο / Πολυμέσα)</h3>
                 <div className="h-[1px] flex-1 bg-slate-100"></div>
             </div>
 
@@ -144,7 +144,7 @@ function SectionCard({ section }: { section: any }) {
 
             <div className="mt-8 flex items-center justify-between">
                 <span className="text-xs font-black uppercase tracking-widest text-slate-300 group-hover:text-blue-600 transition-colors">
-                    Створити
+                    Δημιουργία
                 </span>
                 <div className="p-2 rounded-full bg-slate-50 group-hover:bg-blue-600 group-hover:text-white transition-all">
                     <ArrowRight className="h-4 w-4"/>

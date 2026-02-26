@@ -3,7 +3,7 @@
 // ==============================================================================
 
 export enum QuestionDomain {
-  THEORY = 'THEORY',       // Історія, Політика, Культура, Географія (Банк питань)
+  THEORY = 'THEORY',       // Ιστορία, Πολιτικοί Θεσμοί, Πολιτισμός, Γεωγραφία (Банк питань)
   READING = 'READING',     // Урок читання (Текст + 3 частини)
   LISTENING = 'LISTENING', // Урок аудіювання (Аудіо + 2 частини)
   SPEAKING = 'SPEAKING'    // Урок говоріння (Тема + Запис)
@@ -13,10 +13,10 @@ export enum QuestionDomain {
 export type QuestionType = 
   | 'SINGLE'        // Вибір одного (Radio). DB: multiple-choice, image-choice, implicit_single
   | 'MULTI'         // Вибір кількох (Checkbox). DB: multiple-choice-multiple
-  | 'TRUE_FALSE'    // Правда/Неправда (Текст або Картинки). DB: true-false, true-false-image
-  | 'MATCHING'      // Пари (Текст-Текст або Текст-Картинка). DB: matching, image-matching
-  | 'FILL_GAP'      // Пропуски (Вписати, Банк слів, або Inline Dropdown). DB: fill-in-the-blanks, inline-choice
-  | 'MAP'           // Карта (Drag & Drop). DB: map_drag_drop
+  | 'TRUE_FALSE'    // Правда/Неправда (Текст або Εικόνες). DB: true-false, true-false-image
+  | 'MATCHING'      // Ζεύγη (Текст-Текст або Текст-Картинка). DB: matching, image-matching
+  | 'FILL_GAP'      // Κενά (Вписати, Банк слів, або Inline Dropdown). DB: fill-in-the-blanks, inline-choice
+  | 'MAP'           // Χάρτης (Drag & Drop). DB: map_drag_drop
   | 'OPEN';         // Відкрита відповідь / Есе. DB: open-answer
 
 // ==============================================================================
@@ -28,7 +28,7 @@ export interface TrueFalseItem {
   id: string;
   text?: string;      // Текст твердження
   imageUrl?: string;  // URL картинки (якщо питання по картинці)
-  isTrue: boolean;    // Правильна відповідь
+  isTrue: boolean;    // Σωστή απάντηση
 }
 
 // Пара для Matching (може мати картинки, як в Культурі)
@@ -40,12 +40,12 @@ export interface MatchingPair {
   rightImg?: string;
 }
 
-// Точка на карті (Географія)
+// Точка на карті (Γεωγραφία)
 export interface MapPoint {
   id: string;
   lat: number;
   lng: number;
-  label: string; // Назва точки (напр. "Афіни")
+  label: string; // Назва точки (напр. "Αθήνα")
 }
 
 // ==============================================================================
@@ -55,7 +55,7 @@ export interface MapPoint {
 interface BaseQuestion {
   id: string;
   type: QuestionType;
-  question: string; // Заголовок / Інструкція (напр. "Оберіть правильну відповідь")
+  question: string; // Τίτλος / Οδηγία (напр. "Επιλέξτε τη σωστή απάντηση")
   imageUrl?: string; // Головне зображення до питання (опціонально)
 }
 
@@ -92,7 +92,7 @@ export interface FillGapQuestion extends BaseQuestion {
   // Текст завдання. Може бути масивом речень (History) або одним текстом (Culture)
   textParts: string[]; 
   
-  // Режим: 'GLOBAL' (банк слів знизу) або 'INLINE' (випадаючий список у тексті)
+  // Λειτουργία: 'GLOBAL' (банк слів знизу) або 'INLINE' (випадаючий список у тексті)
   mode: 'GLOBAL' | 'INLINE' | 'TYPING';
 
   // Варіанти відповідей
@@ -103,7 +103,7 @@ export interface FillGapQuestion extends BaseQuestion {
   correctAnswers: Record<string, string>; 
 }
 
-// 6. MAP (Географія)
+// 6. MAP (Γεωγραφία)
 export interface MapQuestion extends BaseQuestion {
   type: 'MAP';
   points: MapPoint[];
@@ -152,7 +152,7 @@ export interface ReadingDocument {
     // Part A: Завжди тести (Single Choice)
     partA: SingleChoiceQuestion[]; 
     
-    // Part B: Граматика (Mixed: Fill, Match, TF, Single)
+    // Part B: Γραμματική (Mixed: Fill, Match, TF, Single)
     partB: AnyQuestion[];
     
     // Part C: Письмо (Open)

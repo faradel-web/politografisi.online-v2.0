@@ -26,13 +26,13 @@ const CATEGORIES_CONFIG = [
 // Helper: Human Readable Types
 const getTypeInfo = (type: string) => {
     const t = (type || '').toUpperCase();
-    if (t.includes('MAP')) return { label: 'Карта', color: 'bg-blue-100 text-blue-700', icon: MapPin };
-    if (t.includes('SINGLE') || t.includes('MULTIPLE') || t.includes('CHOICE')) return { label: 'Тест', color: 'bg-slate-100 text-slate-600', icon: ListChecks };
-    if (t.includes('MATCH')) return { label: 'Пари', color: 'bg-orange-100 text-orange-700', icon: Split };
-    if (t.includes('FILL') || t.includes('INLINE')) return { label: 'Пропуски', color: 'bg-purple-100 text-purple-700', icon: Type };
+    if (t.includes('MAP')) return { label: 'Χάρτης', color: 'bg-blue-100 text-blue-700', icon: MapPin };
+    if (t.includes('SINGLE') || t.includes('MULTIPLE') || t.includes('CHOICE')) return { label: 'Τεστ', color: 'bg-slate-100 text-slate-600', icon: ListChecks };
+    if (t.includes('MATCH')) return { label: 'Ζεύγη', color: 'bg-orange-100 text-orange-700', icon: Split };
+    if (t.includes('FILL') || t.includes('INLINE')) return { label: 'Κενά', color: 'bg-purple-100 text-purple-700', icon: Type };
     if (t.includes('TRUE')) return { label: 'True/False', color: 'bg-emerald-100 text-emerald-700', icon: CheckCircle2 };
-    if (t.includes('OPEN')) return { label: 'Відкрите', color: 'bg-pink-100 text-pink-700', icon: Type };
-    return { label: 'Інше', color: 'bg-gray-100 text-gray-500', icon: Layers };
+    if (t.includes('OPEN')) return { label: 'Ανοιχτό Ερώτημα', color: 'bg-pink-100 text-pink-700', icon: Type };
+    return { label: 'Άλλο', color: 'bg-gray-100 text-gray-500', icon: Layers };
 };
 
 export default function ManageContentPage() {
@@ -76,7 +76,7 @@ export default function ManageContentPage() {
                         || docData.question_text 
                         || docData.prompt 
                         || docData.text 
-                        || "Без заголовка";
+                        || "Χωρίς τίτλο";
         
         // Скорочуємо занадто довгі тексти
         if (displayTitle.length > 80) displayTitle = displayTitle.substring(0, 80) + "...";
@@ -103,14 +103,14 @@ export default function ManageContentPage() {
   }, [activeTab]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm(`Ви впевнені? Це видалить запис з розділу ${currentConfig.label}`)) return;
+    if (!confirm(`Είστε σίγουροι; Αυτό θα διαγράψει την εγγραφή από την ενότητα ${currentConfig.label}`)) return;
     setDeletingId(id);
     try {
         await deleteDoc(doc(db, currentConfig.collection, id));
         setItems(prev => prev.filter(item => item.id !== id));
         fetchStats();
     } catch (error) {
-        alert("Помилка видалення: " + error);
+        alert("Σφάλμα διαγραφής: " + error);
     } finally {
         setDeletingId(null);
     }
@@ -127,12 +127,12 @@ export default function ManageContentPage() {
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
-            <h1 className="text-4xl font-black font-serif text-slate-900 tracking-tight">База Знань</h1>
-            <p className="text-slate-500 font-medium mt-1">Керування контентом: <span className="text-blue-600 font-bold">{currentConfig.label}</span></p>
+            <h1 className="text-4xl font-black font-serif text-slate-900 tracking-tight">Βάση Γνώσεων</h1>
+            <p className="text-slate-500 font-medium mt-1">Διαχείριση Περιεχομένου: <span className="text-blue-600 font-bold">{currentConfig.label}</span></p>
           </div>
           <div className="flex w-full lg:w-auto gap-3">
             <Link href={currentConfig.editPath} className="flex-1 lg:flex-none px-6 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-blue-600 transition-all shadow-xl flex items-center justify-center gap-2">
-                <Plus className="h-5 w-5"/> Додати в {currentConfig.label}
+                <Plus className="h-5 w-5"/> Προσθήκη στο {currentConfig.label}
             </Link>
             <button onClick={fetchData} className="p-4 bg-white border border-slate-200 hover:bg-slate-50 rounded-2xl transition-all text-slate-400 hover:text-slate-900 shadow-sm">
                 <RefreshCw className={`h-5 w-5 ${loading ? 'animate-spin' : ''}`}/>
@@ -145,7 +145,7 @@ export default function ManageContentPage() {
           <div className="xl:col-span-7 space-y-3">
               <div className="flex items-center gap-2 px-1 text-slate-400 mb-2">
                   <Layers className="h-4 w-4" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Теми та питання</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Θέματα και Ερωτήσεις</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {CATEGORIES_CONFIG.filter(c => c.group === 'knowledge').map(cat => (
@@ -163,7 +163,7 @@ export default function ManageContentPage() {
           <div className="xl:col-span-5 space-y-3">
               <div className="flex items-center gap-2 px-1 text-slate-400 mb-2">
                   <GraduationCap className="h-4 w-4" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Мовний іспит</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Γλωσσική Εξέταση</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {CATEGORIES_CONFIG.filter(c => c.group === 'language').map(cat => (
@@ -185,7 +185,7 @@ export default function ManageContentPage() {
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5 group-focus-within:text-blue-500 transition-colors"/>
               <input 
                 type="text" 
-                placeholder={`Шукати у розділі ${currentConfig.label} (текст або номер)...`}
+                placeholder={`Αναζήτηση στην ενότητα ${currentConfig.label} (κείμενο ή αριθμός)...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-14 pr-6 py-5 rounded-3xl border border-slate-200 focus:ring-4 focus:ring-blue-50 focus:border-blue-300 outline-none font-bold text-slate-800 bg-white shadow-sm transition-all"
@@ -203,9 +203,9 @@ export default function ManageContentPage() {
                         <thead className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                             <tr>
                                 <th className="p-6 w-20 text-center">№</th>
-                                <th className="p-5">Зміст / Питання</th>
-                                <th className="p-5 w-40">Тип</th>
-                                <th className="p-6 w-32 text-right">Дії</th>
+                                <th className="p-5">Περιεχόμενο / Ερώτηση</th>
+                                <th className="p-5 w-40">Τύπος</th>
+                                <th className="p-6 w-32 text-right">Ενέργειες</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 text-sm">
@@ -251,7 +251,7 @@ export default function ManageContentPage() {
                         </tbody>
                     </table>
                     {filteredItems.length === 0 && (
-                        <div className="p-10 text-center text-slate-400 font-medium">Нічого не знайдено.</div>
+                        <div className="p-10 text-center text-slate-400 font-medium">Δεν βρέθηκε τίποτα.</div>
                     )}
                 </div>
              )}

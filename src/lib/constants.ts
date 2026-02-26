@@ -63,12 +63,12 @@ export const COURSE_SECTIONS = [
 
 // --- ТИПИ ПИТАНЬ ---
 export const QUESTION_TYPES = [
-  { value: 'multiple-choice', label: 'Вибір (А, Β, Γ)' },
-  { value: 'true-false', label: 'Так/Ні (Σωστό/Λάθος)' },
-  { value: 'text', label: 'Вписати слово' },
-  { value: 'matching', label: 'З’єднання (Matching)' },
-  { value: 'fill-in-the-blanks', label: 'Заповнення пропусків' },
-  { value: 'image-choice', label: 'Вибір зображення' }
+  { value: 'multiple-choice', label: 'Επιλογή (Α, Β, Γ)' },
+  { value: 'true-false', label: 'Ναι/Όχι (Σωστό/Λάθος)' },
+  { value: 'text', label: 'Συμπλήρωση Λέξης' },
+  { value: 'matching', label: 'Αντιστοίχιση' },
+  { value: 'fill-in-the-blanks', label: 'Συμπλήρωση Κενών' },
+  { value: 'image-choice', label: 'Επιλογή Εικόνας' }
 ];
 
 // --- РОЛІ КОРИСТУВАЧІВ ---

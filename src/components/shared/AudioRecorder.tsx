@@ -124,7 +124,7 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
       
     } catch (err) {
       console.error("Upload error:", err);
-      setError("Σφάλμα κατά την αποθήκευση (Помилка завантаження).");
+      setError("Σφάλμα κατά την αποθήκευση (Σφάλμα φόρτωσης).");
     } finally {
       setIsUploading(false);
     }

@@ -179,7 +179,7 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                                             {item.title || `Θέμα ${item.order}`}
                                                         </h3>
                                                         <div className="flex items-center gap-2 text-xs font-bold text-slate-300 uppercase tracking-wider">
-                                                            <span>Premium Only</span>
+                                                            <span>Μόνο Premium</span>
                                                         </div>
                                                     </div>
                                                     {/* Watermark overlay */}

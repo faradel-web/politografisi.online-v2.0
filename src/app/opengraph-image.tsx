@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-// Налаштування зображення
+// Ρυθμίσεις зображення
 export const runtime = 'edge'; // Використовуємо швидкий Edge runtime
 export const alt = 'Politografisi.gr - Προετοιμασία για Εξετάσεις Πολιτογράφησης';
 export const size = {

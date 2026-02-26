@@ -10,7 +10,7 @@ import Link from "next/link";
 
 // --- ΚΑΤΗΓΟΡΙΕΣ ---
 const CATEGORIES = [
-  // Група 1: Теорія
+  // Група 1: Θεωρία
   { id: 'history', label: 'Ιστορία', collection: 'questions_history', mode: 'theory' },
   { id: 'politics', label: 'Πολιτική', collection: 'questions_politics', mode: 'theory' },
   { id: 'culture', label: 'Πολιτισμός', collection: 'questions_culture', mode: 'theory' },
@@ -247,7 +247,7 @@ export default function ImportPage() {
       const parsed = JSON.parse(jsonInput);
       const rawData = Array.isArray(parsed) ? parsed : (parsed.themes || parsed.questions || []);
 
-      if (rawData.length === 0) throw new Error("JSON пустий або має неправильний формат.");
+      if (rawData.length === 0) throw new Error("Το JSON είναι άδειο ή έχει λανθασμένη μορφή.");
 
       const batch = writeBatch(db);
       let count = 0;

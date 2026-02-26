@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 // Перевірка ключів (локалізовано грецькою)
-if (firebaseConfig.apiKey.includes("ВАШ_РЕАЛЬНИЙ")) {
+if (firebaseConfig.apiKey.includes("ΤΟ_ΠΡΑΓΜΑΤΙΚΟ_ΣΑΣ")) {
   console.error("🔴 ΣΦΑΛΜΑ: Ξεχάσατε να εισάγετε τα πραγματικά κλειδιά στο src/lib/firebase.ts!");
 }
 

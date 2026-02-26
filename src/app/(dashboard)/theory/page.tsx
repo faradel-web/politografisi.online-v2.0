@@ -76,7 +76,7 @@ export default function StudyHubPage() {
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">{cat.sub}</p>
         </div>
 
-        {/* КНОПКИ: Тільки Теорія */}
+        {/* КНОПКИ: Тільки Θεωρία */}
         <div className="grid grid-cols-1 mt-auto">
           <Link
             href={theoryHref}

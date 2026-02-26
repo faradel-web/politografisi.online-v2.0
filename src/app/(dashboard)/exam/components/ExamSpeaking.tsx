@@ -14,7 +14,7 @@ interface ExamSpeakingProps {
 export default function ExamSpeaking({ data, answers, setAnswers }: ExamSpeakingProps) {
   const { lesson0, lessonRandom } = data || {};
   
-  // Локальний стейт для візуальної кнопки "Зберегти розділ"
+  // Локальний стейт для візуальної кнопки "Αποθήκευση розділ"
   const [sectionSaved, setSectionSaved] = useState(false);
 
   if (!lesson0) return null;
@@ -31,7 +31,7 @@ export default function ExamSpeaking({ data, answers, setAnswers }: ExamSpeaking
               {speakingTasks.map((item, idx) => (
                   <div key={idx} className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col">
                       
-                      {/* Заголовок завдання */}
+                      {/* Τίτλος завдання */}
                       <div className="flex items-center gap-2 mb-6 text-emerald-600">
                           <Mic size={24}/>
                           <h2 className="font-black uppercase text-sm">{item.t}</h2>

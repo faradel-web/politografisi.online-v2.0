@@ -75,7 +75,7 @@ export default function Header() {
                     })}
                 </nav>
 
-                {/* Права частина */}
+                {/* Δεξί τμήμα */}
                 <div className="flex items-center gap-3 sm:gap-4 shrink-0">
 
                     {/* Desktop Admin Actions */}
@@ -99,7 +99,7 @@ export default function Header() {
                         </Link>
                     )}
 
-                    {/* Профіль (Завжди видимий) */}
+                    {/* Προφίλ (Завжди видимий) */}
                     <Link
                         href="/profile"
                         className="flex items-center gap-3 hover:bg-slate-50 p-1.5 sm:p-2 -mr-2 rounded-xl transition-all cursor-pointer group/profile"

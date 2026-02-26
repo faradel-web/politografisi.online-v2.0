@@ -63,7 +63,7 @@ export default function LoginPage() {
          const querySnapshot = await getDocs(q);
 
          if (querySnapshot.empty) {
-             throw new Error("Ο αριθμός δεν βρέθηκε (Номер не знайдено)");
+             throw new Error("Ο αριθμός δεν βρέθηκε");
          }
          // Отримуємо email знайденого користувача
          emailToSend = querySnapshot.docs[0].data().email;

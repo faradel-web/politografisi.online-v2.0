@@ -50,13 +50,13 @@ interface KnowledgeSource {
 }
 
 const CATEGORIES = [
-  { id: "history", label: "Ιστορία (Історія)" },
-  { id: "politics", label: "Πολιτική (Πολιтика)" },
-  { id: "geography", label: "Γεωγραφία (Географія)" },
-  { id: "culture", label: "Πολιτισμός (Культура)" },
-  { id: "reading", label: "Ανάγνωση (Читання)" },
-  { id: "listening", label: "Ακρόαση (Аудіювання)" },
-  { id: "speaking", label: "Προφορικά (Говоріння)" },
+  { id: "history", label: "Ιστορία (Ιστορία)" },
+  { id: "politics", label: "Πολιτικοί Θεσμοί" },
+  { id: "geography", label: "Γεωγραφία (Γεωγραφία)" },
+  { id: "culture", label: "Πολιτισμός (Πολιτισμός)" },
+  { id: "reading", label: "Ανάγνωση (Κατανόηση Γραπτού)" },
+  { id: "listening", label: "Ακρόαση (Κατανόηση Προφορικού)" },
+  { id: "speaking", label: "Προφορικά (Παραγωγή Προφορικού)" },
 ];
 
 export default function AdminTheoryGlobal() {
@@ -194,7 +194,7 @@ export default function AdminTheoryGlobal() {
   };
 
   const handleGDocSave = async () => {
-      if (!gDocLink || !gDocText) return alert("Заповніть посилання та текст!");
+      if (!gDocLink || !gDocText) return alert("Συμπληρώστε τον σύνδεσμο και το κείμενο!");
       setIsProcessingSource(true);
       try {
           const formattedText = `\n[GOOGLE DOC LINK: ${gDocLink}]\nCONTENT: ${gDocText}`;
@@ -332,7 +332,7 @@ export default function AdminTheoryGlobal() {
         await deleteDoc(doc(db, "theory_content", id));
         await loadLessons();
     } catch (error) {
-        alert("Помилка видалення: " + error);
+        alert("Σφάλμα διαγραφής: " + error);
     }
   };
 

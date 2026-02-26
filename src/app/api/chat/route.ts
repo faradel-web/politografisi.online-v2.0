@@ -66,15 +66,15 @@ export async function POST(req: Request) {
     const { message, context } = body;
 
     // --- DEBUG LOGGING ---
-    console.log(`--- ЗАПИТ ВІД IP: ${ip} ---`);
-    console.log(`--- ДОВЖИНА КОНТЕКСТУ: ${context ? context.length : 0} символів ---`);
+    console.log(`--- ΑΙΤΗΣΗ ΑΠΟ IP: ${ip} ---`);
+    console.log(`--- ΜΗΚΟΣ ΠΛΑΙΣΙΟΥ: ${context ? context.length : 0} χαρακτήρες ---`);
     
     if (!context || context.length < 50) {
-        console.warn("⚠️ УВАГА: Контекст порожній або дуже малий!");
+        console.warn("⚠️ ΠΡΟΣΟΧΗ: Το πλαίσιο είναι άδειο ή πολύ μικρό!");
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("GEMINI_API_KEY не знайдено");
+    if (!apiKey) throw new Error("Το GEMINI_API_KEY δεν βρέθηκε");
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ text });
 
   } catch (error: any) {
-    console.error("--- ❌ ПОМИЛКА ---", error);
+    console.error("--- ❌ ΣΦΑΛΜΑ ---", error);
     return NextResponse.json({ 
       text: "Παρουσιάστηκε τεχνικό σφάλμα. Δοκιμάστε ξανά." 
     }, { status: 500 });

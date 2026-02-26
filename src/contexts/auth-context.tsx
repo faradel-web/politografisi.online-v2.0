@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   useEffect(() => {
-    // 1. Слухаємо зміни стану авторизації (Вхід/Вихід)
+    // 1. Слухаємо зміни стану авторизації (Είσοδος/Έξοδος)
     const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         const userDocRef = doc(db, "users", authUser.uid);
@@ -168,11 +168,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Якщо це НЕ email (немає @), вважаємо, що це телефон
       if (!identifier.includes("@")) {
-        console.log("Вхід за телефоном. Введено:", identifier);
+        console.log("Είσοδος με τηλέφωνο. Εισήχθη:", identifier);
         
         // 1. Очистка номера (прибираємо всі пробіли всередині, наприклад "69 123" -> "69123")
         const cleanPhone = identifier.replace(/\s+/g, '');
-        console.log("Шукаємо в базі за номером:", cleanPhone);
+        console.log("Αναζήτηση στη βάση δεδομένων με αριθμό:", cleanPhone);
 
         // 2. Шукаємо користувача
         const usersRef = collection(db, "users");
@@ -182,20 +182,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-          console.warn("Користувача з таким телефоном не знайдено.");
-          throw new Error("Ο αριθμός τηλεφώνου δεν βρέθηκε (Номер телефону не знайдено)");
+          console.warn("Δεν βρέθηκε χρήστης με αυτό το τηλέφωνο.");
+          throw new Error("Ο αριθμός τηλεφώνου δεν βρέθηκε");
         }
 
         // 3. Беремо email знайденого користувача
         const userData = querySnapshot.docs[0].data();
         
         if (!userData.email) {
-            console.error("Користувача знайдено, але поле email відсутнє.");
+            console.error("Ο χρήστης βρέθηκε, αλλά λείπει το πεδίο email.");
             throw new Error("Δεν υπάρχει email συνδεδεμένο με αυτό το τηλέφωνο.");
         }
 
         emailToUse = userData.email;
-        console.log("Знайдено email:", emailToUse);
+        console.log("Βρέθηκε email:", emailToUse);
       }
 
       // 4. Стандартний вхід Firebase (Email + Password)
@@ -207,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Додаткова діагностика для помилки прав доступу (Firestore Rules)
       if (error.code === 'permission-denied' || error.message.includes('Missing or insufficient permissions')) {
-          console.error("УВАГА: Помилка прав доступу. Потрібно дозволити 'read' для колекції 'users' у Firebase Console.");
+          console.error("ΠΡΟΣΟΧΗ: Σφάλμα δικαιωμάτων πρόσβασης. Πρέπει να επιτραπεί 'read' για τη συλλογή 'users' στο Firebase Console.");
       }
       
       throw error;

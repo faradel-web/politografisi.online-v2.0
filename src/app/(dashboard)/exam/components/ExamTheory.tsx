@@ -13,7 +13,7 @@ interface ExamTheoryProps {
 export default function ExamTheory({ data, answers, setAnswers }: ExamTheoryProps) {
   // Локальний стейт компонента: яке питання зараз відкрите
   const [currentTheoryIndex, setCurrentTheoryIndex] = useState(0);
-  // Локальний стейт для візуальної кнопки "Зберегти розділ"
+  // Локальний стейт для візуальної кнопки "Αποθήκευση розділ"
   const [sectionSaved, setSectionSaved] = useState(false);
 
   const q = data[currentTheoryIndex];

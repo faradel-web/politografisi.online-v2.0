@@ -19,7 +19,7 @@ export default function MapTestPage() {
           </Link>
           <h1 className="text-3xl font-black text-slate-900 flex items-center gap-3">
             <MapPin className="text-blue-600" />
-            Тест Інтерактивної Карти
+            Τεστ Інтерактивної Карти
           </h1>
           <p className="text-slate-500 mt-2 font-medium">
             Натисніть на будь-яку точку на карті (острів чи материк), щоб побачити, як система визначає координати.
@@ -34,7 +34,7 @@ export default function MapTestPage() {
         {/* --- БЛОК РЕЗУЛЬТАТУ --- */}
         <div className="mt-6 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Координати (lat / lng)</h3>
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Συντεταγμένες (lat / lng)</h3>
                 <div className="font-mono text-2xl font-black text-slate-800 tracking-tight">
                     {coords 
                         ? `${coords.lat.toFixed(1)} / ${coords.lng.toFixed(1)}` 

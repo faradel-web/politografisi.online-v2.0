@@ -128,19 +128,19 @@ export default function StatsPage() {
             validExamsCount++;
 
             // --- РОЗРАХУНОК ДЛЯ РАДАРУ (У відсотках від максимуму секції) ---
-            // Теорія (max 40)
+            // Θεωρία (max 40)
             totals.theory += (s_theory / 40) * 100; counts.theory++;
             
-            // Читання/Письмо (max 30: 9+9+12)
+            // Κατανόηση Γραπτού/Письмо (max 30: 9+9+12)
             const rwTotal = s_read + s_write + (data.scores?.readingB || 0); // Врахувати всі підсекції, якщо є
             // Спрощено для радару: (Read + Write) / 30
             // Оскільки структура score плоска (reading містить Part A+B), то (reading + writing) / 30
             totals.rw += ((s_read + s_write) / 30) * 100; counts.rw++;
             
-            // Аудіювання (max 15)
+            // Κατανόηση Προφορικού (max 15)
             totals.list += (s_list / 15) * 100; counts.list++;
             
-            // Говоріння (max 15)
+            // Παραγωγή Προφορικού (max 15)
             totals.speak += (s_speak / 15) * 100; counts.speak++;
         });
 

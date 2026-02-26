@@ -18,18 +18,18 @@ const PAGE_TITLE = "Γεωγραφία (Updated Editor)";
 
 // --- НОВИЙ СПИСОК ТИПІВ ---
 const EDITOR_MODES = [
-  { id: 'SINGLE', label: 'Тест (1 відп.)', icon: List },
-  { id: 'MULTI', label: 'Мульти-вибір', icon: CheckSquare },
-  { id: 'MATCHING', label: 'Пари (Matching)', icon: RefreshCcw },
-  { id: 'FILL_GAP', label: 'Пропуски', icon: AlignLeft },
+  { id: 'SINGLE', label: 'Τεστ (1 απάντηση)', icon: List },
+  { id: 'MULTI', label: 'Πολλαπλή επιλογή', icon: CheckSquare },
+  { id: 'MATCHING', label: 'Αντιστοίχιση', icon: RefreshCcw },
+  { id: 'FILL_GAP', label: 'Κενά', icon: AlignLeft },
   { id: 'TRUE_FALSE', label: 'True / False', icon: ToggleLeft },
-  { id: 'OPEN', label: 'Відкрите', icon: FileText },
-  { id: 'MAP', label: 'Інтерактивна Карта', icon: MapIcon }, // Специфічний тип
+  { id: 'OPEN', label: 'Ανοιχτό Ερώτημα', icon: FileText },
+  { id: 'MAP', label: 'Διαδραστικός Χάρτης', icon: MapIcon }, // Специфічний тип
 ];
 
 export default function GeographyEditorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold">Завантаження...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold">Φόρτωση...</div>}>
       <EditorContent />
     </Suspense>
   );
@@ -162,7 +162,7 @@ function EditorContent() {
 
   // MAP Logic
   const handleMapClick = (coords: { lat: number, lng: number }) => {
-    if (!currentLabel.trim()) return alert("Введіть назву точки!");
+    if (!currentLabel.trim()) return alert("Εισαγάγετε το όνομα του σημείου!");
     const newPoint: MapPoint = { 
         id: Math.random().toString(36).substr(2,9),
         lat: coords.lat, 
@@ -188,7 +188,7 @@ function EditorContent() {
         };
 
         if (mode === 'MAP') {
-            if (mapPoints.length === 0) return alert("Додайте хоча б одну точку!");
+            if (mapPoints.length === 0) return alert("Προσθέστε τουλάχιστον ένα σημείο!");
             baseDoc.points = mapPoints;
             baseDoc.tolerance = mapTolerance;
         }
@@ -220,10 +220,10 @@ function EditorContent() {
 
         if (editId) {
             await updateDoc(doc(db, COLLECTION_NAME, editId), baseDoc);
-            alert("Оновлено!");
+            alert("Ενημερώθηκε!");
         } else {
             await addDoc(collection(db, COLLECTION_NAME), { ...baseDoc, createdAt: serverTimestamp() });
-            if(confirm("Створено! Додати ще?")) {
+            if(confirm("Δημιουργήθηκε! Να προστεθεί κι άλλο;")) {
                 setOrder(prev => prev + 1);
                 setQuestionText("");
                 // Reset Map
@@ -237,7 +237,7 @@ function EditorContent() {
                 router.push('/admin/manage');
             }
         }
-    } catch (e: any) { alert("Помилка: " + e.message); } 
+    } catch (e: any) { alert("Σφάλμα: " + e.message); } 
     finally { setIsSaving(false); }
   };
 
@@ -247,7 +247,7 @@ function EditorContent() {
     <div className="min-h-screen bg-slate-50 p-6 font-sans pb-40">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-            <Link href="/admin/manage" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors"><ArrowLeft size={18}/> Назад</Link>
+            <Link href="/admin/manage" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors"><ArrowLeft size={18}/> Πίσω</Link>
             <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">{COLLECTION_NAME}</div>
         </div>
 
@@ -259,12 +259,12 @@ function EditorContent() {
                 </div>
                 
                 <div className="space-y-4">
-                    <textarea value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder="Текст запитання..." className="w-full p-4 bg-slate-50 border rounded-2xl text-lg font-bold outline-none"/>
+                    <textarea value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder="Κείμενο ερώτησης..." className="w-full p-4 bg-slate-50 border rounded-2xl text-lg font-bold outline-none"/>
                     
                     {mode !== 'MAP' && (
                         <div className="flex gap-2">
                             <ImageIcon className="text-slate-400"/>
-                            <input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="URL зображення" className="flex-1 bg-transparent outline-none text-sm"/>
+                            <input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="URL εικόνας" className="flex-1 bg-transparent outline-none text-sm"/>
                         </div>
                     )}
                 </div>
@@ -287,13 +287,13 @@ function EditorContent() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="space-y-6">
                                 <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                                    <h3 className="font-bold text-blue-900 mb-2 flex items-center gap-2"><MapPin size={16}/> Додати точку</h3>
-                                    <input value={currentLabel} onChange={(e) => setCurrentLabel(e.target.value)} placeholder="Назва (напр. Афіни)" className="w-full p-3 bg-white border border-blue-200 rounded-lg font-bold outline-none"/>
-                                    <p className="text-xs text-blue-600 mt-2">Введіть назву і клікніть на карті.</p>
+                                    <h3 className="font-bold text-blue-900 mb-2 flex items-center gap-2"><MapPin size={16}/> Προσθήκη σημείου</h3>
+                                    <input value={currentLabel} onChange={(e) => setCurrentLabel(e.target.value)} placeholder="Όνομα (π.χ. Αθήνα)" className="w-full p-3 bg-white border border-blue-200 rounded-lg font-bold outline-none"/>
+                                    <p className="text-xs text-blue-600 mt-2">Εισαγάγετε το όνομα και κάντε κλικ στον χάρτη.</p>
                                 </div>
 
                                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-[300px] overflow-y-auto">
-                                    <h3 className="font-bold text-slate-700 mb-2">Точки ({mapPoints.length})</h3>
+                                    <h3 className="font-bold text-slate-700 mb-2">Σημεία ({mapPoints.length})</h3>
                                     {mapPoints.map((pt, i) => (
                                         <div key={i} className="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-100 mb-1">
                                             <span className="font-bold text-sm text-slate-800">{pt.label}</span>
@@ -303,7 +303,7 @@ function EditorContent() {
                                 </div>
 
                                 <div className="bg-orange-50 p-4 rounded-xl border border-orange-100">
-                                    <label className="text-xs font-bold text-orange-800 block mb-1">Радіус похибки (км)</label>
+                                    <label className="text-xs font-bold text-orange-800 block mb-1">Ακτίνα σφάλματος (χλμ)</label>
                                     <input type="number" value={mapTolerance} onChange={(e) => setMapTolerance(Number(e.target.value))} className="w-full p-2 bg-white rounded-lg font-bold text-center border border-orange-200 outline-none"/>
                                 </div>
                             </div>
@@ -323,7 +323,7 @@ function EditorContent() {
                                     if (mode === 'SINGLE') setCorrectIndices([i]);
                                     else setCorrectIndices(prev => prev.includes(i) ? prev.filter(x=>x!==i) : [...prev, i]);
                                 }} className="w-8 h-8 rounded bg-white border flex items-center justify-center font-bold">{['A','B','C','D'][i]}</button>
-                                <input value={opt} onChange={e => {const n=[...options]; n[i]=e.target.value; setOptions(n)}} className="flex-1 bg-transparent outline-none" placeholder={`Варіант ${i+1}`}/>
+                                <input value={opt} onChange={e => {const n=[...options]; n[i]=e.target.value; setOptions(n)}} className="flex-1 bg-transparent outline-none" placeholder={`Επιλογή ${i+1}`}/>
                             </div>
                         ))}
                     </div>
@@ -335,29 +335,29 @@ function EditorContent() {
                     <div className="space-y-3">
                         {pairs.map((p, i) => (
                             <div key={i} className="flex gap-2">
-                                <input value={p.left} onChange={e => {const n=[...pairs]; n[i].left=e.target.value; setPairs(n)}} className="flex-1 p-3 bg-slate-50 rounded-xl border" placeholder="Ліва частина"/>
-                                <input value={p.right} onChange={e => {const n=[...pairs]; n[i].right=e.target.value; setPairs(n)}} className="flex-1 p-3 bg-emerald-50 rounded-xl border border-emerald-100" placeholder="Права частина"/>
+                                <input value={p.left} onChange={e => {const n=[...pairs]; n[i].left=e.target.value; setPairs(n)}} className="flex-1 p-3 bg-slate-50 rounded-xl border" placeholder="Αριστερό τμήμα"/>
+                                <input value={p.right} onChange={e => {const n=[...pairs]; n[i].right=e.target.value; setPairs(n)}} className="flex-1 p-3 bg-emerald-50 rounded-xl border border-emerald-100" placeholder="Δεξί τμήμα"/>
                             </div>
                         ))}
-                        <button type="button" onClick={() => setPairs([...pairs, {left:"", right:""}])} className="text-xs font-bold text-blue-500">+ Додати пару</button>
+                        <button type="button" onClick={() => setPairs([...pairs, {left:"", right:""}])} className="text-xs font-bold text-blue-500">+ Προσθήκη Ζεύγους</button>
                     </div>
                 )}
 
                 {mode === 'FILL_GAP' && (
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase text-slate-400">Речення</label>
+                            <label className="text-xs font-bold uppercase text-slate-400">Πρόταση</label>
                             {sentences.map((s, i) => (
                                 <div key={i} className="flex gap-2">
-                                    <input value={s} onChange={e => {const n=[...sentences]; n[i]=e.target.value; setSentences(n)}} className="flex-[3] p-3 bg-slate-50 rounded-xl border" placeholder="Текст (використовуйте (1))..."/>
-                                    <input value={blankAnswers[i]} onChange={e => {const n=[...blankAnswers]; n[i]=e.target.value; setBlankAnswers(n)}} className="flex-1 p-3 bg-white border border-blue-200 rounded-xl font-bold" placeholder="Відповідь"/>
+                                    <input value={s} onChange={e => {const n=[...sentences]; n[i]=e.target.value; setSentences(n)}} className="flex-[3] p-3 bg-slate-50 rounded-xl border" placeholder="Κείμενο (χρησιμοποιήστε (1))..."/>
+                                    <input value={blankAnswers[i]} onChange={e => {const n=[...blankAnswers]; n[i]=e.target.value; setBlankAnswers(n)}} className="flex-1 p-3 bg-white border border-blue-200 rounded-xl font-bold" placeholder="Απάντηση"/>
                                 </div>
                             ))}
-                            <button type="button" onClick={() => {setSentences([...sentences, ""]); setBlankAnswers([...blankAnswers, ""])}} className="text-xs font-bold text-blue-500">+ Додати речення</button>
+                            <button type="button" onClick={() => {setSentences([...sentences, ""]); setBlankAnswers([...blankAnswers, ""])}} className="text-xs font-bold text-blue-500">+ Προσθήκη Πρότασης</button>
                         </div>
                         <div>
-                            <label className="text-xs font-bold uppercase text-slate-400">Банк слів (Опціонально)</label>
-                            <input value={wordBank.join(", ")} onChange={e => setWordBank(e.target.value.split(",").map(s=>s.trim()))} className="w-full p-3 bg-slate-50 rounded-xl border" placeholder="Слова через кому..."/>
+                            <label className="text-xs font-bold uppercase text-slate-400">Τράπεζα λέξεων (Προαιρετικά)</label>
+                            <input value={wordBank.join(", ")} onChange={e => setWordBank(e.target.value.split(",").map(s=>s.trim()))} className="w-full p-3 bg-slate-50 rounded-xl border" placeholder="Λέξεις χωρισμένες με κόμμα..."/>
                         </div>
                     </div>
                 )}
@@ -366,7 +366,7 @@ function EditorContent() {
                     <div className="space-y-3">
                         {tfItems.map((item, i) => (
                             <div key={i} className="flex items-center gap-3 p-2 bg-slate-50 rounded-xl">
-                                <input value={item.text} onChange={e => {const n=[...tfItems]; n[i].text=e.target.value; setTfItems(n)}} className="flex-1 bg-transparent outline-none" placeholder="Твердження..."/>
+                                <input value={item.text} onChange={e => {const n=[...tfItems]; n[i].text=e.target.value; setTfItems(n)}} className="flex-1 bg-transparent outline-none" placeholder="Δήλωση..."/>
                                 <button type="button" onClick={() => {const n=[...tfItems]; n[i].isTrue=!n[i].isTrue; setTfItems(n)}} className={`px-3 py-1 rounded text-xs font-bold ${item.isTrue ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
                                     {item.isTrue ? "TRUE" : "FALSE"}
                                 </button>
@@ -376,13 +376,13 @@ function EditorContent() {
                 )}
 
                 {mode === 'OPEN' && (
-                    <textarea value={modelAnswer} onChange={e => setModelAnswer(e.target.value)} className="w-full p-4 bg-purple-50 rounded-xl border border-purple-100 min-h-[150px]" placeholder="Еталонна відповідь..."/>
+                    <textarea value={modelAnswer} onChange={e => setModelAnswer(e.target.value)} className="w-full p-4 bg-purple-50 rounded-xl border border-purple-100 min-h-[150px]" placeholder="Πρότυπη απάντηση..."/>
                 )}
 
             </div>
 
             <button disabled={isSaving} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-lg shadow-xl flex items-center justify-center gap-2">
-                {isSaving ? <Loader2 className="animate-spin"/> : <Save/>} Зберегти
+                {isSaving ? <Loader2 className="animate-spin"/> : <Save/>} Αποθήκευση
             </button>
         </form>
 

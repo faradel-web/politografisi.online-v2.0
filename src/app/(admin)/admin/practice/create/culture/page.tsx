@@ -18,17 +18,17 @@ const PAGE_TITLE = "Πολιτισμός (Updated Editor)";
 
 // --- NEW TYPES ---
 const EDITOR_MODES = [
-  { id: 'SINGLE', label: 'Тест (1 відп.)', icon: List },
-  { id: 'MULTI', label: 'Мульти-вибір', icon: CheckSquare },
-  { id: 'MATCHING', label: 'Пари (Matching)', icon: RefreshCcw },
-  { id: 'FILL_GAP', label: 'Пропуски / Inline', icon: AlignLeft },
+  { id: 'SINGLE', label: 'Τεστ (1 απάντηση)', icon: List },
+  { id: 'MULTI', label: 'Πολλαπλή επιλογή', icon: CheckSquare },
+  { id: 'MATCHING', label: 'Αντιστοίχιση', icon: RefreshCcw },
+  { id: 'FILL_GAP', label: 'Κενά / Inline', icon: AlignLeft },
   { id: 'TRUE_FALSE', label: 'True / False', icon: ToggleLeft },
-  { id: 'OPEN', label: 'Відкрите', icon: FileText },
+  { id: 'OPEN', label: 'Ανοιχτό Ερώτημα', icon: FileText },
 ];
 
 export default function CultureEditorPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold">Завантаження...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold">Φόρτωση...</div>}>
       <EditorContent />
     </Suspense>
   );
@@ -217,17 +217,17 @@ function EditorContent() {
 
         if (editId) {
             await updateDoc(doc(db, COLLECTION_NAME, editId), baseDoc);
-            alert("Оновлено!");
+            alert("Ενημερώθηκε!");
         } else {
             await addDoc(collection(db, COLLECTION_NAME), { ...baseDoc, createdAt: serverTimestamp() });
-            if(confirm("Створено! Додати ще?")) {
+            if(confirm("Δημιουργήθηκε! Να προστεθεί κι άλλο;")) {
                 setOrder(prev => prev + 1);
                 setQuestionText("");
             } else {
                 router.push('/admin/manage');
             }
         }
-    } catch (e: any) { alert("Помилка: " + e.message); } 
+    } catch (e: any) { alert("Σφάλμα: " + e.message); } 
     finally { setIsSaving(false); }
   };
 
@@ -245,7 +245,7 @@ function EditorContent() {
     <div className="min-h-screen bg-slate-50 p-6 font-sans pb-40">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-            <Link href="/admin/manage" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors"><ArrowLeft size={18}/> Назад</Link>
+            <Link href="/admin/manage" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold transition-colors"><ArrowLeft size={18}/> Πίσω</Link>
             <div className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">{COLLECTION_NAME}</div>
         </div>
 
@@ -257,10 +257,10 @@ function EditorContent() {
                 </div>
                 
                 <div className="space-y-4">
-                    <textarea value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder="Текст запитання..." className="w-full p-4 bg-slate-50 border rounded-2xl text-lg font-bold outline-none"/>
+                    <textarea value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder="Κείμενο ερώτησης..." className="w-full p-4 bg-slate-50 border rounded-2xl text-lg font-bold outline-none"/>
                     <div className="flex gap-2">
                         <ImageIcon className="text-slate-400"/>
-                        <input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="URL зображення" className="flex-1 bg-transparent outline-none text-sm"/>
+                        <input value={imageUrl} onChange={e => setImageUrl(e.target.value)} placeholder="URL εικόνας" className="flex-1 bg-transparent outline-none text-sm"/>
                     </div>
                 </div>
             </div>
@@ -290,10 +290,10 @@ function EditorContent() {
                                                 if (mode === 'SINGLE') setCorrectIndices([i]);
                                                 else setCorrectIndices(prev => prev.includes(i) ? prev.filter(x=>x!==i) : [...prev, i]);
                                             }} className="w-8 h-8 rounded-lg bg-white border flex items-center justify-center font-black">{['A','B','C','D'][i]}</button>
-                                            <span className="text-[10px] font-bold text-slate-400 uppercase">Варіант {i+1}</span>
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase">Επιλογή {i+1}</span>
                                         </div>
                                         {isImage && <img src={opt} className="h-32 w-full object-cover rounded-xl mb-2 border"/>}
-                                        <input value={opt} onChange={e => {const n=[...options]; n[i]=e.target.value; setOptions(n)}} className="w-full bg-transparent outline-none border-b border-dashed" placeholder="Текст або URL..."/>
+                                        <input value={opt} onChange={e => {const n=[...options]; n[i]=e.target.value; setOptions(n)}} className="w-full bg-transparent outline-none border-b border-dashed" placeholder="Κείμενο ή URL..."/>
                                         <label className="absolute top-4 right-4 cursor-pointer text-slate-300 hover:text-slate-600"><Upload size={16}/><input type="file" hidden accept="image/*" onChange={async (e) => {if(e.target.files?.[0]) {const url = await handleFileUpload(e.target.files[0]); const n=[...options]; n[i]=url; setOptions(n);}}}/></label>
                                     </div>
                                 )
@@ -307,11 +307,11 @@ function EditorContent() {
                         {pairs.map((p, i) => (
                             <div key={i} className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <input value={p.left} onChange={e => {const n=[...pairs]; n[i].left=e.target.value; setPairs(n)}} className="w-full p-3 bg-slate-50 rounded-xl border" placeholder="Ліва частина"/>
+                                    <input value={p.left} onChange={e => {const n=[...pairs]; n[i].left=e.target.value; setPairs(n)}} className="w-full p-3 bg-slate-50 rounded-xl border" placeholder="Αριστερό τμήμα"/>
                                     <div className="flex gap-2"><input value={p.leftImg || ""} onChange={e => {const n=[...pairs]; n[i].leftImg=e.target.value; setPairs(n)}} className="flex-1 text-xs bg-transparent outline-none" placeholder="URL (opt)"/></div>
                                 </div>
                                 <div className="space-y-1">
-                                    <input value={p.right} onChange={e => {const n=[...pairs]; n[i].right=e.target.value; setPairs(n)}} className="w-full p-3 bg-emerald-50 rounded-xl border border-emerald-100" placeholder="Права частина"/>
+                                    <input value={p.right} onChange={e => {const n=[...pairs]; n[i].right=e.target.value; setPairs(n)}} className="w-full p-3 bg-emerald-50 rounded-xl border border-emerald-100" placeholder="Δεξί τμήμα"/>
                                     <div className="flex gap-2 items-center">
                                         <input value={p.rightImg || ""} onChange={e => {const n=[...pairs]; n[i].rightImg=e.target.value; setPairs(n)}} className="flex-1 text-xs bg-transparent outline-none" placeholder="URL (opt)"/>
                                         <label className="cursor-pointer text-slate-300 hover:text-emerald-500"><Upload size={12}/><input type="file" hidden onChange={async (e) => {if(e.target.files?.[0]) {const u = await handleFileUpload(e.target.files[0]); const n=[...pairs]; n[i].rightImg=u; setPairs(n);}}} /></label>
@@ -320,7 +320,7 @@ function EditorContent() {
                                 </div>
                             </div>
                         ))}
-                        <button type="button" onClick={() => setPairs([...pairs, {left:"", right:""}])} className="text-xs font-bold text-blue-500">+ Додати пару</button>
+                        <button type="button" onClick={() => setPairs([...pairs, {left:"", right:""}])} className="text-xs font-bold text-blue-500">+ Προσθήκη Ζεύγους</button>
                     </div>
                 )}
 
@@ -329,21 +329,21 @@ function EditorContent() {
                         <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
                             <div className="flex items-center gap-2">
                                 <SlidersHorizontal size={16} className="text-slate-400"/>
-                                <span className="text-xs font-bold uppercase text-slate-500">Режим:</span>
+                                <span className="text-xs font-bold uppercase text-slate-500">Λειτουργία:</span>
                                 <span className={`text-xs font-black px-2 py-1 rounded ${isInlineMode ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                                    {isInlineMode ? "INLINE (Варіанти для кожного)" : "GLOBAL (Банк слів)"}
+                                    {isInlineMode ? "INLINE (Επιλογές για κάθε ένα)" : "GLOBAL (Τράπεζα λέξεων)"}
                                 </span>
                             </div>
-                            <button type="button" onClick={() => setIsInlineMode(!isInlineMode)} className="text-xs font-bold text-slate-400 hover:text-slate-900 underline">Змінити</button>
+                            <button type="button" onClick={() => setIsInlineMode(!isInlineMode)} className="text-xs font-bold text-slate-400 hover:text-slate-900 underline">Αλλαγή</button>
                         </div>
 
                         <div className="space-y-2">
-                            <textarea value={fillSentence} onChange={e => setFillSentence(e.target.value)} rows={4} className="w-full p-4 bg-slate-50 rounded-xl border outline-none" placeholder="Текст із пропусками (1), (2)..."/>
+                            <textarea value={fillSentence} onChange={e => setFillSentence(e.target.value)} rows={4} className="w-full p-4 bg-slate-50 rounded-xl border outline-none" placeholder="Κείμενο με κενά (1), (2)..."/>
                         </div>
 
                         {!isInlineMode && (
                             <div className="space-y-2 bg-slate-50 p-4 rounded-xl">
-                                <label className="text-xs font-black uppercase text-slate-400">Банк Слів</label>
+                                <label className="text-xs font-black uppercase text-slate-400">Τράπεζα λέξεων</label>
                                 <div className="flex flex-wrap gap-2">
                                     {fillOptions.map((opt, i) => (
                                         <div key={i} className="flex items-center gap-1 bg-white border px-3 py-2 rounded-lg">
@@ -359,13 +359,13 @@ function EditorContent() {
                         <div className="grid grid-cols-1 gap-4">
                             {getFillKeys(fillSentence).map((key) => (
                                 <div key={key} className="p-4 border rounded-xl flex flex-col gap-2">
-                                    <span className="text-xs font-bold uppercase text-slate-400">Пропуск {key}</span>
+                                    <span className="text-xs font-bold uppercase text-slate-400">Κενό {key}</span>
                                     {isInlineMode && (
                                         <input 
                                             value={(inlineChoices[key] || []).join(", ")}
                                             onChange={(e) => setInlineChoices({...inlineChoices, [key]: e.target.value.split(",").map(s=>s.trim())})}
                                             className="w-full p-2 bg-slate-50 rounded text-sm border-none outline-none"
-                                            placeholder="Варіанти через кому..."
+                                            placeholder="Επιλογές χωρισμένες με κόμμα..."
                                         />
                                     )}
                                     <select 
@@ -373,7 +373,7 @@ function EditorContent() {
                                         onChange={(e) => setFillCorrectMap({...fillCorrectMap, [key]: e.target.value})}
                                         className="w-full p-2 bg-emerald-50 text-emerald-800 font-bold rounded outline-none"
                                     >
-                                        <option value="">-- Правильна відповідь --</option>
+                                        <option value="">-- Σωστή απάντηση --</option>
                                         {(isInlineMode ? (inlineChoices[key] || []) : fillOptions).map((opt, i) => (
                                             <option key={i} value={opt}>{opt}</option>
                                         ))}
@@ -389,9 +389,9 @@ function EditorContent() {
                         {tfItems.map((item, i) => (
                             <div key={i} className="flex flex-col md:flex-row md:items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                                 <div className="flex-1 space-y-2">
-                                    <input value={item.text || ""} onChange={e => {const n=[...tfItems]; n[i].text=e.target.value; setTfItems(n)}} className="w-full bg-transparent outline-none p-2 font-medium" placeholder="Твердження..."/>
+                                    <input value={item.text || ""} onChange={e => {const n=[...tfItems]; n[i].text=e.target.value; setTfItems(n)}} className="w-full bg-transparent outline-none p-2 font-medium" placeholder="Δήλωση..."/>
                                     <div className="flex items-center gap-2">
-                                        <input value={item.imageUrl || ""} onChange={e => {const n=[...tfItems]; n[i].imageUrl=e.target.value; setTfItems(n)}} className="flex-1 text-xs bg-transparent outline-none text-slate-400" placeholder="URL картинки..."/>
+                                        <input value={item.imageUrl || ""} onChange={e => {const n=[...tfItems]; n[i].imageUrl=e.target.value; setTfItems(n)}} className="flex-1 text-xs bg-transparent outline-none text-slate-400" placeholder="URL εικόνας..."/>
                                         <label className="cursor-pointer text-slate-300 hover:text-pink-500"><Upload size={14}/><input type="file" hidden onChange={async (e) => {if(e.target.files?.[0]) {const u = await handleFileUpload(e.target.files[0]); const n=[...tfItems]; n[i].imageUrl=u; setTfItems(n);}}} /></label>
                                     </div>
                                     {item.imageUrl && <img src={item.imageUrl} className="h-20 rounded-lg border object-cover"/>}
@@ -401,17 +401,17 @@ function EditorContent() {
                                 </button>
                             </div>
                         ))}
-                        <button type="button" onClick={() => setTfItems([...tfItems, {id: Math.random().toString(), text:"", isTrue:true}])} className="text-xs font-bold text-blue-500">+ Додати</button>
+                        <button type="button" onClick={() => setTfItems([...tfItems, {id: Math.random().toString(), text:"", isTrue:true}])} className="text-xs font-bold text-blue-500">+ Προσθήκη</button>
                     </div>
                 )}
 
                 {mode === 'OPEN' && (
-                    <textarea value={modelAnswer} onChange={e => setModelAnswer(e.target.value)} className="w-full p-4 bg-emerald-50/30 border border-emerald-100 rounded-xl outline-none" placeholder="Еталон..."/>
+                    <textarea value={modelAnswer} onChange={e => setModelAnswer(e.target.value)} className="w-full p-4 bg-emerald-50/30 border border-emerald-100 rounded-xl outline-none" placeholder="Πρότυπο..."/>
                 )}
             </div>
 
             <button disabled={isSaving || isUploading} className="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black text-xl shadow-xl flex items-center justify-center gap-3">
-                {isSaving ? <Loader2 className="animate-spin"/> : <Save/>} Зберегти
+                {isSaving ? <Loader2 className="animate-spin"/> : <Save/>} Αποθήκευση
             </button>
         </form>
 

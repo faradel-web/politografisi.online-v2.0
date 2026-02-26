@@ -87,7 +87,7 @@ export default function ExamSessionPage() {
     setIsSubmitting(true);
     if (timerRef.current) clearInterval(timerRef.current);
 
-    console.log("🏁 ПОЧАТОК ФІНАЛЬНОГО ПІДРАХУНКУ");
+    console.log("🏁 ΕΝΑΡΞΗ ΤΕΛΙΚΗΣ ΚΑΤΑΜΕΤΡΗΣΗΣ");
 
     // 🔥 1. АСИНХРОННА ПЕРЕВІРКА AI ДЛЯ ВІДКРИТИХ ПИТАНЬ ТЕОРІЇ (ПОЛІТИКА/ІСТОРІЯ)
     const theoryAiFeedback: Record<number, any> = {};
