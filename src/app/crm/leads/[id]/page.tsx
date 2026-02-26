@@ -70,7 +70,7 @@ export default function UserProfilePage() {
                         data = userSnap.data();
                     } else {
                         alert("Ο χρήστης δεν βρέθηκε");
-                        router.push('/leads');
+                        router.push('/crm/leads');
                         return;
                     }
                 }
@@ -217,7 +217,7 @@ export default function UserProfilePage() {
 
             {/* HEADER */}
             <div className="flex items-center gap-4 mb-8">
-                <button onClick={() => router.push('/leads')} className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
+                <button onClick={() => router.push('/crm/leads')} className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
                     <ArrowLeft size={20} className="text-slate-600" />
                 </button>
                 <div>
