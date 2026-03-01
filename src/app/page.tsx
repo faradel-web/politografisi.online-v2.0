@@ -332,20 +332,20 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* UPDATED: REAL SCREENSHOT PLACEHOLDER */}
+              {/* UPDATED: REAL SCREENSHOT INTEGRATED */}
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-3xl transform rotate-3 blur-sm opacity-30 group-hover:rotate-6 transition-transform duration-500"></div>
-                <div className="bg-slate-900 rounded-3xl p-2 border border-slate-700 shadow-2xl relative overflow-hidden aspect-[4/3] flex items-center justify-center bg-slate-950">
-                  {/* Placeholder for Screenshot */}
-                  <div className="text-center p-8">
-                    <Laptop className="h-16 w-16 text-blue-500 mx-auto mb-4 opacity-50" />
-                    <p className="text-slate-400 font-medium text-sm">
-                      Εδώ θα μπει screenshot του Dashboard<br />
-                      <span className="text-xs opacity-50">(Τοποθετήστε εικόνα: /public/dashboard-mockup.png)</span>
-                    </p>
-                  </div>
-                  {/* Uncomment below when you have the image */}
-                  {/* <img src="/dashboard-mockup.png" alt="Platform Screenshot" className="rounded-2xl w-full h-full object-cover"/> */}
+                <div className="bg-slate-900 rounded-3xl p-1 border border-slate-700 shadow-2xl relative overflow-hidden aspect-[4/3] flex items-center justify-center">
+                  <Image
+                    src="/dashboard-mockup.png"
+                    alt="Platform Dashboard Screenshot"
+                    width={1200}
+                    height={900}
+                    className="rounded-2xl w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    priority
+                  />
+                  {/* Subtle overlay for depth */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent pointer-events-none"></div>
                 </div>
               </div>
             </div>
