@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import ContactForm from "@/components/landing/ContactForm"; // ✅ Імпорт нової форми
@@ -155,11 +156,7 @@ export default function Home() {
         <section className="relative pt-24 pb-32 overflow-hidden bg-gradient-to-b from-blue-50/50 to-white">
           <div className="relative max-w-5xl mx-auto px-4 text-center">
 
-            <div className="inline-block mb-8 animate-in fade-in zoom-in duration-700">
-              <div className="h-20 w-20 bg-blue-700 text-white text-4xl font-bold flex items-center justify-center rounded-2xl mx-auto shadow-xl shadow-blue-200 transform rotate-3" aria-hidden="true">
-                P
-              </div>
-            </div>
+
 
             <h1 className="text-4xl md:text-6xl font-black text-blue-950 mb-6 leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
               Έξυπνη προετοιμασία, <br />

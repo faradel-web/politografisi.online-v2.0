@@ -7,6 +7,7 @@ import {
     ShieldCheck, PenTool, Menu, X, LogOut
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { USER_ROLES } from "@/lib/constants";
 
@@ -45,8 +46,14 @@ export default function Header() {
                 {/* Логотип */}
                 <div className="flex items-center gap-8 shrink-0">
                     <Link href="/dashboard" className="flex items-center gap-3 group">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-900 font-bold text-xl text-white shadow-md shadow-blue-200 group-hover:bg-blue-800 transition-colors">
-                            P
+                        <div className="relative h-12 w-12 flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <Image
+                                src="/logo-circle.jpg"
+                                alt="Politografisi Logo"
+                                fill
+                                sizes="48px"
+                                className="object-contain mix-blend-multiply contrast-[1.2] brightness-[1.05]"
+                            />
                         </div>
                         <span className="hidden sm:block font-montserrat text-lg font-black tracking-wide text-slate-900">
                             POLITOGRAFISI.ONLINE
@@ -64,8 +71,8 @@ export default function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${isActive
-                                        ? "bg-white text-blue-700 shadow-sm ring-1 ring-black/5"
-                                        : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
+                                    ? "bg-white text-blue-700 shadow-sm ring-1 ring-black/5"
+                                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-200/50"
                                     }`}
                             >
                                 <Icon className={`h-4 w-4 ${isActive ? "text-blue-600" : "text-slate-400"}`} />
@@ -164,8 +171,8 @@ export default function Header() {
                                         href={link.href}
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${isActive
-                                                ? "bg-blue-50 text-blue-700"
-                                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                            ? "bg-blue-50 text-blue-700"
+                                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                                             }`}
                                     >
                                         <Icon className={`h-5 w-5 ${isActive ? "text-blue-600" : "text-slate-400"}`} />

@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 // Ρυθμίσεις зображення
 export const runtime = 'edge'; // Використовуємо швидкий Edge runtime
-export const alt = 'Politografisi.gr - Προετοιμασία για Εξετάσεις Πολιτογράφησης';
+export const alt = 'Politografisi.online - Προετοιμασία για Εξετάσεις Πολιτογράφησης';
 export const size = {
   width: 1200,
   height: 630,
@@ -36,7 +36,7 @@ export default async function Image() {
         <div style={{ position: 'absolute', bottom: '-50px', right: '-50px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
 
         {/* Логотип "P" як на лендінгу */}
-         <div
+        <div
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -65,7 +65,7 @@ export default async function Image() {
             textShadow: '0 2px 10px rgba(0,0,0,0.2)',
           }}
         >
-          Politografisi.gr
+          Politografisi.online
         </div>
 
         {/* Підзаголовок / Слоган */}
@@ -78,12 +78,12 @@ export default async function Image() {
             lineHeight: 1.4,
           }}
         >
-         Έξυπνη προετοιμασία, σίγουρη επιτυχία στις Εξετάσεις Πολιτογράφησης (ΠΕΓΠ).
+          Έξυπνη προετοιμασία, σίγουρη επιτυχία στις Εξετάσεις Πολιτογράφησης (ΠΕΓΠ).
         </div>
 
-         {/* Футер банера */}
+        {/* Футер банера */}
         <div style={{ position: 'absolute', bottom: 40, display: 'flex', gap: '20px', opacity: 0.7, fontSize: 20, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
-           <span>Tests</span> • <span>Video & Audio</span> • <span>AI Tutor</span>
+          <span>Tests</span> • <span>Video & Audio</span> • <span>AI Tutor</span>
         </div>
       </div>
     ),
