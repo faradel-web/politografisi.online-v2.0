@@ -83,67 +83,71 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-slate-900 text-white fixed h-full z-10 flex flex-col shadow-xl">
-        <div className="p-6 border-b border-slate-800 flex items-center justify-center gap-2">
-          <div className="bg-blue-600 p-1 rounded-lg">
-            <LayoutDashboard className="h-5 w-5 text-white" />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* HEADER TOP NAVIGATION */}
+      <header className="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+
+          <div className="flex items-center gap-2">
+            <div className="bg-blue-600 p-1.5 rounded-lg flex-shrink-0">
+              <LayoutDashboard className="h-5 w-5 text-white" />
+            </div>
+            <h1 className="text-lg font-black tracking-wider text-white whitespace-nowrap">ADMIN PANEL</h1>
           </div>
-          <h1 className="text-lg font-black tracking-wider text-white">ADMIN PANEL</h1>
-        </div>
 
-        <nav className="flex-1 p-4 space-y-2">
-          {menuItems.map((item) => {
-            const isActive = item.href === "/admin"
-              ? pathname === "/admin"
-              : pathname.startsWith(item.href);
+          <nav className="flex items-center gap-4 overflow-x-auto w-full xl:w-auto pb-2 xl:pb-0 no-scrollbar text-sm font-bold">
+            {menuItems.map((item) => {
+              const isActive = item.href === "/admin"
+                ? pathname === "/admin"
+                : pathname.startsWith(item.href);
 
-            const Icon = item.icon;
+              const Icon = item.icon;
 
-            return (
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all font-medium duration-200 whitespace-nowrap ${isActive
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.title}
+                </Link>
+              );
+            })}
+
+            {/* ВЕРТИКАЛЬНА ЛІНІЯ РОЗДІЛЬНИК */}
+            <div className="h-6 w-px bg-slate-700 mx-1 hidden sm:block"></div>
+
+            {/* ✅ КНОПКА CRM (ТІЛЬКИ ДЛЯ АДМІНА) */}
+            {role === USER_ROLES.ADMIN && (
               <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium duration-200 ${isActive
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20 translate-x-1"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white hover:translate-x-1"
-                  }`}
+                href="/crm"
+                className="flex items-center gap-1.5 px-3 py-2 text-indigo-400 hover:text-indigo-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap"
               >
-                <Icon className="h-5 w-5" />
-                {item.title}
+                <Database className="h-4 w-4" />
+                CRM
               </Link>
-            );
-          })}
-        </nav>
+            )}
 
-        {/* Footer Sidebar */}
-        <div className="p-4 border-t border-slate-800 space-y-1">
-
-          {/* ✅ КНОПКА CRM (ТІЛЬКИ ДЛЯ АДМІНА) */}
-          {role === USER_ROLES.ADMIN && (
-            <Link
-              href="/crm"
-              className="w-full flex items-center gap-3 px-4 py-3 text-indigo-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1 text-left font-bold"
-            >
-              <Database className="h-5 w-5" />
-              CRM (Leads)
+            <Link href="/dashboard" className="flex items-center gap-1.5 px-3 py-2 text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap">
+              <FileText className="h-4 w-4" />
+              Site
             </Link>
-          )}
 
-          <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-emerald-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1 mb-1">
-            <FileText className="h-5 w-5" />
-            Προβολή Site
-          </Link>
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-slate-800 rounded-xl transition-all hover:translate-x-1">
-            <LogOut className="h-5 w-5" />
-            Αποσύνδεση
-          </Link>
+            <Link href="/" className="flex items-center gap-1.5 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap">
+              <LogOut className="h-4 w-4" />
+              Έξοδος
+            </Link>
+          </nav>
+
         </div>
-      </aside>
+      </header>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 ml-64 min-h-screen transition-all duration-300">
+      <main className="flex-1 min-h-screen transition-all duration-300 overflow-x-hidden">
         {children}
       </main>
     </div>

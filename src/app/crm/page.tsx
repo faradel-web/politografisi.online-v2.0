@@ -189,7 +189,7 @@ export default function CrmDashboard() {
   const handleActivityClick = (item: ActivityItem) => {
     if (item.kind === 'user' || item.kind === 'lead') {
       // Ми додаємо параметр ?id=... до посилання
-      router.push(`/leads?id=${item.id}`);
+      router.push(`/crm/leads?id=${item.id}`);
     }
   };
 
