@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 // 1. Імпорт нових шрифтів (Geologica та Vollkorn)
 import { Geologica, Vollkorn } from "next/font/google";
 // 2. ВАЖЛИВО: Імпорт глобальних стилів
-import "./globals.css"; 
+import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 
 // Налаштовуємо Geologica (основний шрифт)
-const geologica = Geologica({ 
-  subsets: ["latin", "greek"], 
+const geologica = Geologica({
+  subsets: ["latin", "greek"],
   variable: "--font-geologica",
   display: "swap",
-  adjustFontFallback: false, 
+  adjustFontFallback: false,
 });
 
 // Налаштовуємо Vollkorn (акцентний шрифт)
-const vollkorn = Vollkorn({ 
+const vollkorn = Vollkorn({
   subsets: ["latin", "greek"],
   variable: "--font-vollkorn",
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s | Politografisi.online", // Автоматично додає суфікс до заголовків інших сторінок
   },
   description: "Η Νο1 πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ). Τεστ, Βίντεο, Ήχος και AI Προσομοιώσεις.",
-  
+
   // Ρυθμίσεις для Facebook, LinkedIn, Viber, Telegram
   openGraph: {
     title: "Politografisi.online | Έξυπνη Προετοιμασία",
@@ -51,6 +51,9 @@ export const metadata: Metadata = {
   },
 };
 
+import CookieConsent from "@/components/shared/CookieConsent";
+import Analytics from "@/components/shared/Analytics";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -63,6 +66,8 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <CookieConsent />
+        <Analytics />
       </body>
     </html>
   );
