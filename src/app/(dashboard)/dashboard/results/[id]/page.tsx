@@ -173,11 +173,25 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
         else if (type === 'FILL_GAP') {
             if (q.textParts) {
                 let hits = 0;
-                q.textParts.forEach((_: any, i: number) => {
-                    const correct = q.correctAnswers?.[String(i)] || q.correctAnswers?.[i];
-                    if (String(ans[i] || "").trim().toLowerCase() === String(correct || "").trim().toLowerCase()) hits++;
+                let totalGaps = 0;
+                q.textParts.forEach((text: any) => {
+                    const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
+                    for (let g = 0; g < gapsCount; g++) {
+                        const correctData = q.correctAnswers?.[String(totalGaps)];
+                        const userVal = String(ans[String(totalGaps)] || "").trim().toLowerCase();
+                        let isCorrect = false;
+
+                        if (Array.isArray(correctData)) {
+                            isCorrect = correctData.some(v => String(v).trim().toLowerCase() === userVal);
+                        } else {
+                            isCorrect = String(correctData || "").trim().toLowerCase() === userVal;
+                        }
+
+                        if (isCorrect) hits++;
+                        totalGaps++;
+                    }
                 });
-                score = (hits / q.textParts.length) * maxScore;
+                score = totalGaps > 0 ? (hits / totalGaps) * maxScore : 0;
                 isCorrect = score === maxScore;
             }
         }
@@ -338,23 +352,55 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
 
                 {/* C. FILL GAP */}
                 {type.includes('FILL') && (
-                    <div className="space-y-2">
-                        {(q.textParts || []).map((text: string, i: number) => {
-                            const userVal = userAnswer?.[i] || "---";
-                            const correctVal = q.correctAnswers?.[String(i)] || q.correctAnswers?.[i];
-                            const correct = String(userVal).trim().toLowerCase() === String(correctVal).trim().toLowerCase();
+                    <div className="space-y-4">
+                        {(() => {
+                            let totalGaps = 0;
+                            return (q.textParts || []).map((text: string, partIdx: number) => {
+                                const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
 
-                            return (
-                                <div key={i} className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 leading-relaxed">
-                                    <p className="mb-2 text-sm sm:text-base">{text}</p>
-                                    <div className="flex items-center gap-2 text-sm flex-wrap">
-                                        <span className="text-slate-400 font-bold">Απάντηση:</span>
-                                        <span className={`font-bold px-2 py-1 rounded ${correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{userVal}</span>
-                                        {!correct && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold">Σωστό: {correctVal}</span>}
+                                return (
+                                    <div key={partIdx} className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 leading-relaxed shadow-sm">
+                                        <p className="mb-4 text-sm sm:text-base font-serif">{text}</p>
+
+                                        <div className="flex flex-col gap-3">
+                                            {Array.from({ length: gapsCount }).map((_, localIdx) => {
+                                                const currentGapKey = String(totalGaps++);
+
+                                                const userVal = userAnswer?.[currentGapKey] || "---";
+                                                const correctData = q.correctAnswers?.[currentGapKey];
+                                                const correctVal = Array.isArray(correctData) ? correctData.join(', ') : (correctData || "");
+
+                                                const cleanUserVal = String(userVal).trim().toLowerCase();
+                                                let isCorrect = false;
+
+                                                if (Array.isArray(correctData)) {
+                                                    isCorrect = correctData.some(v => String(v).trim().toLowerCase() === cleanUserVal);
+                                                } else {
+                                                    isCorrect = String(correctData || "").trim().toLowerCase() === cleanUserVal;
+                                                }
+
+                                                return (
+                                                    <div key={currentGapKey} className="flex flex-col gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                                        {gapsCount > 1 && <span className="text-[10px] font-bold text-slate-400 uppercase">Κενό {localIdx + 1}</span>}
+                                                        <div className="flex items-center gap-2 text-sm flex-wrap">
+                                                            <span className="text-slate-400 font-bold">Απάντηση:</span>
+                                                            <span className={`font-bold px-2 py-1 rounded ${isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                                {userVal}
+                                                            </span>
+                                                            {!isCorrect && correctVal && (
+                                                                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold border border-slate-200 shadow-sm">
+                                                                    Σωστό: {correctVal}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            )
-                        })}
+                                );
+                            });
+                        })()}
                     </div>
                 )}
 

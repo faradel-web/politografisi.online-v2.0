@@ -296,7 +296,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Α
                                 </div>
-                                <Quiz questions={questionsA} mode="practice" layout="list" />
+                                <Quiz key={`list-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" />
                             </div>
                         )}
 
@@ -305,7 +305,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β
                                 </div>
-                                <Quiz questions={questionsB} mode="practice" layout="list" />
+                                <Quiz key={`list-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" />
                             </div>
                         )}
                     </div>
@@ -351,7 +351,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Α (Κατανόηση Κειμένου)
                                 </div>
-                                <Quiz questions={questionsA} mode="practice" layout="list" />
+                                <Quiz key={`read-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" />
                             </div>
                         )}
 
@@ -360,7 +360,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β (Χρήση Γλώσσας)
                                 </div>
-                                <Quiz questions={questionsB} mode="practice" layout="list" />
+                                <Quiz key={`read-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" />
                             </div>
                         )}
 

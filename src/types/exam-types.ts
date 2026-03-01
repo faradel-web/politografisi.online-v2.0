@@ -10,7 +10,7 @@ export enum QuestionDomain {
 }
 
 // Повний перелік типів, знайдений у всіх редакторах
-export type QuestionType = 
+export type QuestionType =
   | 'SINGLE'        // Вибір одного (Radio). DB: multiple-choice, image-choice, implicit_single
   | 'MULTI'         // Вибір кількох (Checkbox). DB: multiple-choice-multiple
   | 'TRUE_FALSE'    // Правда/Неправда (Текст або Εικόνες). DB: true-false, true-false-image
@@ -88,10 +88,10 @@ export interface MatchingQuestion extends BaseQuestion {
 // 5. FILL GAP (Найскладніший тип - покриває всі варіації)
 export interface FillGapQuestion extends BaseQuestion {
   type: 'FILL_GAP';
-  
+
   // Текст завдання. Може бути масивом речень (History) або одним текстом (Culture)
-  textParts: string[]; 
-  
+  textParts: string[];
+
   // Λειτουργία: 'GLOBAL' (банк слів знизу) або 'INLINE' (випадаючий список у тексті)
   mode: 'GLOBAL' | 'INLINE' | 'TYPING';
 
@@ -100,7 +100,7 @@ export interface FillGapQuestion extends BaseQuestion {
   inlineChoices?: Record<string, string[]>; // Для INLINE {"1": ["А", "Б"], "2": ["В", "Г"]}
 
   // Правильні відповіді (ключ = номер пропуску "1", "2")
-  correctAnswers: Record<string, string>; 
+  correctAnswers: Record<string, string | string[]>;
 }
 
 // 6. MAP (Γεωγραφία)
@@ -118,13 +118,13 @@ export interface OpenQuestion extends BaseQuestion {
 }
 
 // Універсальний тип (Union)
-export type AnyQuestion = 
-  | SingleChoiceQuestion 
-  | MultiChoiceQuestion 
-  | TrueFalseQuestion 
-  | MatchingQuestion 
-  | FillGapQuestion 
-  | MapQuestion 
+export type AnyQuestion =
+  | SingleChoiceQuestion
+  | MultiChoiceQuestion
+  | TrueFalseQuestion
+  | MatchingQuestion
+  | FillGapQuestion
+  | MapQuestion
   | OpenQuestion;
 
 // ==============================================================================
@@ -135,7 +135,7 @@ export type AnyQuestion =
 export type TheoryDocument = AnyQuestion & {
   order: number;
   category: 'history' | 'politics' | 'culture' | 'geography';
-  createdAt: any; 
+  createdAt: any;
 };
 
 // КОЛЕКЦІЯ: lessons_reading
@@ -143,20 +143,20 @@ export interface ReadingDocument {
   id: string;
   order: number;
   title: string;
-  
+
   // Контент статті
-  textContent: string; 
+  textContent: string;
   imageUrls?: string[];
 
   parts: {
     // Part A: Завжди тести (Single Choice)
-    partA: SingleChoiceQuestion[]; 
-    
+    partA: SingleChoiceQuestion[];
+
     // Part B: Γραμματική (Mixed: Fill, Match, TF, Single)
     partB: AnyQuestion[];
-    
+
     // Part C: Письмо (Open)
-    partC: OpenQuestion; 
+    partC: OpenQuestion;
   };
 }
 
@@ -165,14 +165,14 @@ export interface ListeningDocument {
   id: string;
   order: number;
   title: string;
-  
+
   audioUrl: string;
   transcript?: string; // Текст аудіо (знайдено в Listening Editor)
 
   parts: {
     // Part A: 5 питань Single Choice
     partA: SingleChoiceQuestion[];
-    
+
     // Part B: 5 питань True/False (Σ/Λ)
     partB: TrueFalseQuestion[];
   };
@@ -183,8 +183,8 @@ export interface SpeakingDocument {
   id: string;
   order: number;
   title: string;
-  
+
   prompt: string; // Текст завдання
-  imageUrls?: string[]; 
+  imageUrls?: string[];
   tips?: string[]; // Підказки (опціонально)
 }

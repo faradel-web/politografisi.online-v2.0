@@ -172,11 +172,22 @@ export default function ExamSessionPage() {
                 }
                 else if (q.type?.includes('FILL_GAP') && q.textParts) {
                     let hits = 0;
-                    q.textParts.forEach((_: any, i: number) => {
-                        const correct = q.correctAnswers?.[String(i)] || q.correctAnswers?.[i];
-                        if (String(ans[i] || "").trim().toLowerCase() === String(correct || "").trim().toLowerCase()) hits++;
+                    let totalGaps = 0;
+                    q.textParts.forEach((text: any) => {
+                        const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
+                        for (let g = 0; g < gapsCount; g++) {
+                            const correctData = q.correctAnswers?.[String(totalGaps)];
+                            const userVal = String(ans[String(totalGaps)] || "").trim().toLowerCase();
+
+                            const isCorrect = Array.isArray(correctData)
+                                ? correctData.some(v => String(v).trim().toLowerCase() === userVal)
+                                : String(correctData || "").trim().toLowerCase() === userVal;
+
+                            if (isCorrect) hits++;
+                            totalGaps++;
+                        }
                     });
-                    questionScore = (hits / q.textParts.length) * 2;
+                    questionScore = totalGaps > 0 ? (hits / totalGaps) * 2 : 0;
                 }
             }
 
@@ -191,11 +202,49 @@ export default function ExamSessionPage() {
                 const userAns = userAnswers[i];
                 if (userAns === undefined || userAns === null || userAns === "") return 0;
 
-                if (q.type === 'FILL_GAP' || q.type === 'OPEN' || q.type === 'SHORT_ANSWER') {
-                    const correctText = q.correctAnswers ? (q.correctAnswers['0'] || Object.values(q.correctAnswers)[0]) : q.modelAnswer;
-                    if (!correctText) return 0;
+                if (q.type === 'FILL_GAP') {
+                    let hits = 0;
+                    let totalGaps = 0;
+                    const textParts = q.textParts || [q.question.includes('->') ? q.question.split('->')[1] : q.question];
 
-                    const aiRes = await gradeShortAnswer(q.question, String(userAns), String(correctText));
+                    const checks = textParts.map(async (text: any) => {
+                        const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
+                        for (let g = 0; g < gapsCount; g++) {
+                            const currentGapKey = String(totalGaps);
+                            totalGaps++;
+
+                            const correctData = q.correctAnswers?.[currentGapKey];
+                            if (!correctData) continue;
+
+                            const userVal = String(userAns[currentGapKey] || "").trim().toLowerCase();
+                            let isCorrect = false;
+
+                            if (Array.isArray(correctData)) {
+                                isCorrect = correctData.some(v => String(v).trim().toLowerCase() === userVal);
+                            } else {
+                                isCorrect = String(correctData || "").trim().toLowerCase() === userVal;
+                            }
+
+                            // AI fallback for FILL_GAP too, if configured:
+                            if (!isCorrect && userVal.length > 1) {
+                                const refText = Array.isArray(correctData) ? correctData[0] : correctData;
+                                const aiRes = await gradeShortAnswer(text, userVal, String(refText));
+                                if (aiRes.isCorrect) isCorrect = true;
+                            }
+
+                            if (isCorrect) hits++;
+                        }
+                    });
+
+                    await Promise.all(checks);
+                    return totalGaps > 0 ? (hits / totalGaps) * pointsPerQ : 0;
+                }
+
+                if (q.type === 'OPEN' || q.type === 'SHORT_ANSWER') {
+                    const correctData = q.modelAnswer || (q.correctAnswers ? Object.values(q.correctAnswers)[0] : "");
+                    if (!correctData) return 0;
+
+                    const aiRes = await gradeShortAnswer(q.question, String(userAns), String(correctData));
                     return aiRes.isCorrect ? pointsPerQ : 0;
                 }
 
