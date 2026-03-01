@@ -45,7 +45,7 @@ export default function Header() {
 
                 {/* Логотип */}
                 <div className="flex items-center gap-8 shrink-0">
-                    <Link href="/dashboard" className="flex items-center gap-3 group">
+                    <Link href="/dashboard" className="flex items-center gap-2.5 group">
                         <div className="relative h-12 w-12 flex items-center justify-center group-hover:scale-105 transition-transform">
                             <Image
                                 src="/logo-circle.jpg"
@@ -55,8 +55,8 @@ export default function Header() {
                                 className="object-contain mix-blend-multiply contrast-[1.2] brightness-[1.05]"
                             />
                         </div>
-                        <span className="hidden sm:block font-montserrat text-lg font-black tracking-wide text-slate-900">
-                            POLITOGRAFISI.ONLINE
+                        <span className="font-montserrat font-black text-lg md:text-xl text-blue-950 tracking-tight leading-none">
+                            POLITOGRAFISI<span className="text-blue-600">.ONLINE</span>
                         </span>
                     </Link>
                 </div>

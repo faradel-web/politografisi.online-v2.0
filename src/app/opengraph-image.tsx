@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 // Ρυθμίσεις зображення
-export const runtime = 'edge'; // Використовуємо швидкий Edge runtime
 export const alt = 'Politografisi.online - Προετοιμασία για Εξετάσεις Πολιτογράφησης';
 export const size = {
   width: 1200,
@@ -11,6 +12,10 @@ export const contentType = 'image/png';
 
 // Функція генерації
 export default async function Image() {
+  const logoPath = join(process.cwd(), 'public', 'logo-circle.jpg');
+  const logoBuffer = readFileSync(logoPath);
+  const logoBase64 = `data:image/jpeg;base64,${logoBuffer.toString('base64')}`;
+
   return new ImageResponse(
     (
       // CSS-in-JS дизайн банера
@@ -35,24 +40,26 @@ export default async function Image() {
         <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
         <div style={{ position: 'absolute', bottom: '-50px', right: '-50px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
 
-        {/* Логотип "P" як на лендінгу */}
+        {/* Логотип як на лендінгу */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '100px',
-            height: '100px',
-            backgroundColor: 'rgba(255,255,255,0.1)',
-            borderRadius: '24px',
+            width: '120px',
+            height: '120px',
+            backgroundColor: 'white',
+            borderRadius: '50%',
             marginBottom: '32px',
-            border: '4px solid rgba(255,255,255,0.2)',
-            fontSize: '64px',
-            fontWeight: '900',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+            overflow: 'hidden',
           }}
         >
-          P
+          <img
+            src={logoBase64}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            alt="Logo"
+          />
         </div>
 
         {/* Головний заголовок */}
@@ -81,10 +88,6 @@ export default async function Image() {
           Έξυπνη προετοιμασία, σίγουρη επιτυχία στις Εξετάσεις Πολιτογράφησης (ΠΕΓΠ).
         </div>
 
-        {/* Футер банера */}
-        <div style={{ position: 'absolute', bottom: 40, display: 'flex', gap: '20px', opacity: 0.7, fontSize: 20, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
-          <span>Tests</span> • <span>Video & Audio</span> • <span>AI Tutor</span>
-        </div>
       </div>
     ),
     // Опції
