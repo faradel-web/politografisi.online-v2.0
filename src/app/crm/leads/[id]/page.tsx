@@ -217,24 +217,24 @@ export default function UserProfilePage() {
 
             {/* HEADER */}
             <div className="flex items-center gap-4 mb-8">
-                <button onClick={() => router.push('/crm/leads')} className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
-                    <ArrowLeft size={20} className="text-slate-600" />
+                <button onClick={() => router.push('/crm/leads')} className="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                    <ArrowLeft size={20} className="text-slate-600 dark:text-slate-400" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-black text-slate-800 flex items-center gap-2 uppercase tracking-tight">
+                    <h1 className="text-2xl font-black text-slate-800 dark:text-white flex items-center gap-2 uppercase tracking-tight">
                         {profile.lastName.toUpperCase()} {profile.firstName}
-                        {profile.isArchived && <span className="bg-slate-100 text-slate-500 text-[10px] px-2 py-1 rounded-lg border font-bold">ARCHIVED</span>}
+                        {profile.isArchived && <span className="bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-[10px] px-2 py-1 rounded-lg border dark:border-slate-600 font-bold">ARCHIVED</span>}
                     </h1>
-                    <p className="text-sm text-slate-500 font-medium">{profile.email}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{profile.email}</p>
                 </div>
                 <div className="ml-auto flex gap-2">
                     {isEditing ? (
                         <>
-                            <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-slate-500 font-bold text-sm hover:bg-slate-100 rounded-xl transition-colors">Ακύρωση</button>
+                            <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-slate-500 dark:text-slate-400 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors">Ακύρωση</button>
                             <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transition-colors flex items-center gap-2"><Save size={18} /> Αποθήκευση</button>
                         </>
                     ) : (
-                        <button onClick={() => setIsEditing(true)} className="px-6 py-2 bg-white text-slate-700 border border-slate-200 font-bold rounded-xl hover:bg-slate-50 transition-all shadow-sm text-sm">
+                        <button onClick={() => setIsEditing(true)} className="px-6 py-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm">
                             Επεξεργασία
                         </button>
                     )}
@@ -245,14 +245,14 @@ export default function UserProfilePage() {
 
                 {/* ЛІВА КОЛОНКА */}
                 <div className="space-y-6">
-                    <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50">
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
                         <div className="flex justify-center mb-6">
-                            <div className="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 border-4 border-white shadow-lg overflow-hidden relative">
+                            <div className="w-32 h-32 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-300 border-4 border-white dark:border-slate-700 shadow-lg overflow-hidden relative">
                                 {profile.photoURL ? (
                                     <img
                                         src={profile.photoURL}
                                         alt="avatar"
-                                        referrerPolicy="no-referrer" // Критично для Google
+                                        referrerPolicy="no-referrer"
                                         className="w-full h-full object-cover"
                                         onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.add('bg-slate-100'); }}
                                     />
@@ -264,30 +264,30 @@ export default function UserProfilePage() {
                             <div>
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ρόλος (Role)</label>
                                 {isEditing && profile.type === 'user' ? (
-                                    <select value={editForm.role} onChange={e => setEditForm({ ...editForm, role: e.target.value })} className="w-full p-2 bg-slate-50 rounded-xl border border-slate-200 font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500">
+                                    <select value={editForm.role} onChange={e => setEditForm({ ...editForm, role: e.target.value })} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100">
                                         <option value="student">Σπουδαστής</option><option value="editor">Συντάκτης</option><option value="admin">Διαχειριστής</option>
                                     </select>
                                 ) : (
-                                    <div className="flex items-center gap-2 mt-1"><Shield size={16} className="text-blue-600" /><span className="font-bold text-slate-800">{getRoleLabel(profile.role)}</span></div>
+                                    <div className="flex items-center gap-2 mt-1"><Shield size={16} className="text-blue-600" /><span className="font-bold text-slate-800 dark:text-slate-200">{getRoleLabel(profile.role)}</span></div>
                                 )}
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Όνομα</label>{isEditing ? (<input type="text" value={editForm.firstName} onChange={e => setEditForm({ ...editForm, firstName: e.target.value })} className="w-full p-2 bg-slate-50 rounded-xl border border-slate-200 font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500" />) : <p className="font-bold text-slate-800">{profile.firstName}</p>}</div>
-                                <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Επώνυμο</label>{isEditing ? (<input type="text" value={editForm.lastName} onChange={e => setEditForm({ ...editForm, lastName: e.target.value })} className="w-full p-2 bg-slate-50 rounded-xl border border-slate-200 font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500" />) : <p className="font-bold text-slate-800">{profile.lastName}</p>}</div>
+                                <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Όνομα</label>{isEditing ? (<input type="text" value={editForm.firstName} onChange={e => setEditForm({ ...editForm, firstName: e.target.value })} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100" />) : <p className="font-bold text-slate-800 dark:text-slate-200">{profile.firstName}</p>}</div>
+                                <div><label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Επώνυμο</label>{isEditing ? (<input type="text" value={editForm.lastName} onChange={e => setEditForm({ ...editForm, lastName: e.target.value })} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100" />) : <p className="font-bold text-slate-800 dark:text-slate-200">{profile.lastName}</p>}</div>
                             </div>
                             <div>
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Τηλέφωνο</label>
-                                {isEditing ? (<input type="text" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} className="w-full p-2 bg-slate-50 rounded-xl border border-slate-200 font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500" />) : (<div className="flex items-center gap-2 mt-1 text-slate-700 font-medium"><Phone size={16} className="text-slate-400" /> {profile.phone}</div>)}
+                                {isEditing ? (<input type="text" value={editForm.phone} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-sm mt-1 outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100" />) : (<div className="flex items-center gap-2 mt-1 text-slate-700 dark:text-slate-300 font-medium"><Phone size={16} className="text-slate-400" /> {profile.phone}</div>)}
                             </div>
                             {profile.type === 'user' && (
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Λήξη Συνδρομής</label>
-                                    {isEditing ? (<input type="date" value={editForm.subDate} onChange={e => setEditForm({ ...editForm, subDate: e.target.value })} className="w-full p-2 bg-green-50 rounded-xl border border-green-200 font-bold text-sm mt-1 text-green-800 outline-none focus:ring-2 focus:ring-green-500" />) : (<div className={`flex items-center gap-2 mt-1 font-bold ${profile.subscriptionEndsAt && profile.subscriptionEndsAt.toDate() > new Date() ? 'text-green-600' : 'text-red-500'}`}><Calendar size={16} /> {profile.subscriptionEndsAt ? new Date(profile.subscriptionEndsAt.toDate()).toLocaleDateString('el-GR') : "Ανενεργή"}</div>)}
+                                    {isEditing ? (<input type="date" value={editForm.subDate} onChange={e => setEditForm({ ...editForm, subDate: e.target.value })} className="w-full p-2 bg-green-50 dark:bg-green-950/30 rounded-xl border border-green-200 dark:border-green-800 font-bold text-sm mt-1 text-green-800 dark:text-green-300 outline-none focus:ring-2 focus:ring-green-500" />) : (<div className={`flex items-center gap-2 mt-1 font-bold ${profile.subscriptionEndsAt && profile.subscriptionEndsAt.toDate() > new Date() ? 'text-green-600' : 'text-red-500'}`}><Calendar size={16} /> {profile.subscriptionEndsAt ? new Date(profile.subscriptionEndsAt.toDate()).toLocaleDateString('el-GR') : "Ανενεργή"}</div>)}
                                 </div>
                             )}
-                            <div className="pt-4 border-t border-slate-100">
+                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ημερομηνία Εγγραφής</label>
-                                <p className="text-sm font-medium text-slate-600 mt-1">{profile.createdAt ? new Date(profile.createdAt.toDate ? profile.createdAt.toDate() : profile.createdAt).toLocaleDateString('el-GR') : "-"}</p>
+                                <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">{profile.createdAt ? new Date(profile.createdAt.toDate ? profile.createdAt.toDate() : profile.createdAt).toLocaleDateString('el-GR') : "-"}</p>
                             </div>
                         </div>
                     </div>
@@ -296,36 +296,36 @@ export default function UserProfilePage() {
                 {/* ПРАВА КОЛОНКА */}
                 <div className="lg:col-span-2 space-y-6">
 
-                    <div className="flex gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
-                        <button onClick={() => setActiveTab('overview')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-white shadow-md text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}>Επισκόπηση</button>
-                        <button onClick={() => setActiveTab('history')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'history' ? 'bg-white shadow-md text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}>Ιστορικό Μηνυμάτων</button>
-                        {profile.type === 'user' && <button onClick={() => setActiveTab('finance')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'finance' ? 'bg-white shadow-md text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}>Οικονομικά</button>}
+                    <div className="flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl w-fit">
+                        <button onClick={() => setActiveTab('overview')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-white dark:bg-slate-700 shadow-md text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Επισκόπηση</button>
+                        <button onClick={() => setActiveTab('history')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'history' ? 'bg-white dark:bg-slate-700 shadow-md text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Ιστορικό Μηνυμάτων</button>
+                        {profile.type === 'user' && <button onClick={() => setActiveTab('finance')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'finance' ? 'bg-white dark:bg-slate-700 shadow-md text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>Οικονομικά</button>}
                     </div>
 
                     {/* OVERVIEW */}
                     {activeTab === 'overview' && (
-                        <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center min-h-[300px]">
-                            <div className={`p-4 rounded-full mb-4 ${profile.isArchived ? 'bg-slate-100 text-slate-400' : 'bg-green-50 text-green-600'}`}>{profile.isArchived ? <AlertOctagon size={32} /> : <CheckCircle size={32} />}</div>
-                            <h3 className="text-xl font-black text-slate-800">Κατάσταση: {profile.isArchived ? "Αρχειοθετημένος" : "Ενεργός"}</h3>
-                            <p className="text-slate-500 max-w-sm mt-2 text-sm">Συνοπτική εικόνα της δραστηριότητας του χρήστη.</p>
+                        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center min-h-[300px]">
+                            <div className={`p-4 rounded-full mb-4 ${profile.isArchived ? 'bg-slate-100 dark:bg-slate-800 text-slate-400' : 'bg-green-50 dark:bg-green-900/30 text-green-600'}`}>{profile.isArchived ? <AlertOctagon size={32} /> : <CheckCircle size={32} />}</div>
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white">Κατάσταση: {profile.isArchived ? "Αρχειοθετημένος" : "Ενεργός"}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-sm mt-2 text-sm">Συνοπτική εικόνα της δραστηριότητας του χρήστη.</p>
                         </div>
                     )}
 
                     {/* HISTORY (MESSAGES) */}
                     {activeTab === 'history' && (
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm min-h-[300px]">
-                            <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 uppercase text-sm tracking-wide"><MessageSquare size={18} /> Ιστορικό Επικοινωνίας</h3>
+                        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm min-h-[300px]">
+                            <h3 className="font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2 uppercase text-sm tracking-wide"><MessageSquare size={18} /> Ιστορικό Επικοινωνίας</h3>
                             <div className="space-y-4">
                                 {messages.map(m => (
-                                    <div key={m.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
+                                    <div key={m.id} className="p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 hover:border-slate-200 dark:hover:border-slate-600 transition-colors">
                                         <div className="flex justify-between items-start mb-2">
-                                            <span className="text-[10px] font-bold uppercase bg-white border border-slate-200 px-2 py-1 rounded text-slate-500 tracking-wide">{m.topic}</span>
+                                            <span className="text-[10px] font-bold uppercase bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-2 py-1 rounded text-slate-500 dark:text-slate-300 tracking-wide">{m.topic}</span>
                                             <span className="text-[10px] font-bold text-slate-400">{new Date(m.date.toDate()).toLocaleString('el-GR')}</span>
                                         </div>
-                                        <p className="text-sm text-slate-700 font-medium leading-relaxed mb-3">"{m.text}"</p>
+                                        <p className="text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed mb-3">"{m.text}"</p>
 
                                         {/* УПРАВЛІННЯ ПОВІДОМЛЕННЯМ */}
-                                        <div className="flex justify-end items-center gap-2 border-t border-slate-200 pt-3">
+                                        <div className="flex justify-end items-center gap-2 border-t border-slate-200 dark:border-slate-700 pt-3">
                                             <select
                                                 value={m.status}
                                                 onChange={(e) => handleMessageStatusChange(m.id, e.target.value)}
@@ -337,7 +337,7 @@ export default function UserProfilePage() {
                                                 <option value="answered">✅ Απαντήθηκε</option>
                                                 <option value="archived">⚪ Αρχείο</option>
                                             </select>
-                                            <button onClick={() => handleDeleteMessage(m.id)} className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                            <button onClick={() => handleDeleteMessage(m.id)} className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors">
                                                 <Trash2 size={16} />
                                             </button>
                                         </div>
@@ -350,17 +350,17 @@ export default function UserProfilePage() {
 
                     {/* FINANCE */}
                     {activeTab === 'finance' && profile.type === 'user' && (
-                        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm min-h-[300px]">
-                            <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 uppercase text-sm tracking-wide"><CreditCard size={18} /> Ιστορικό Πληρωμών</h3>
+                        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm min-h-[300px]">
+                            <h3 className="font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2 uppercase text-sm tracking-wide"><CreditCard size={18} /> Ιστορικό Πληρωμών</h3>
                             <table className="w-full text-left text-sm">
-                                <thead className="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 bg-slate-50/50">
+                                <thead className="text-[10px] font-bold text-slate-400 uppercase border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800">
                                     <tr><th className="p-4 rounded-tl-xl">Ημερομηνία</th><th className="p-4">Περιγραφή</th><th className="p-4 text-right rounded-tr-xl">Ποσό</th></tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-50">
+                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                                     {transactions.map(t => (
-                                        <tr key={t.id} className="hover:bg-slate-50 transition-colors">
-                                            <td className="p-4 text-slate-500 font-medium">{new Date(t.date.toDate()).toLocaleDateString('el-GR')}</td>
-                                            <td className="p-4 font-bold text-slate-700">{t.description}</td>
+                                        <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <td className="p-4 text-slate-500 dark:text-slate-400 font-medium">{new Date(t.date.toDate()).toLocaleDateString('el-GR')}</td>
+                                            <td className="p-4 font-bold text-slate-700 dark:text-slate-200">{t.description}</td>
                                             <td className="p-4 text-right font-black text-green-600">+€{t.amount}</td>
                                         </tr>
                                     ))}

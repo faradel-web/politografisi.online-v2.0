@@ -187,22 +187,22 @@ export default function TransactionsPage() {
         <div className="max-w-6xl mx-auto p-4 md:p-8 pb-20 space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <button onClick={() => router.push('/crm')} className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors mb-2 text-sm font-bold">
+                    <button onClick={() => router.push('/crm')} className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors mb-2 text-sm font-bold">
                         <ArrowLeft size={16} /> Επιστροφή στο Dashboard
                     </button>
-                    <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Οικονομικά</h1>
-                    <p className="text-slate-500 font-medium">Διαχείριση Εσόδων & Εξόδων</p>
+                    <h1 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Οικονομικά</h1>
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">Διαχείριση Εσόδων & Εξόδων</p>
                 </div>
                 <button
                     onClick={openAddModal}
-                    className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold shadow-sm hover:bg-black transition-all flex items-center gap-2"
+                    className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold shadow-sm hover:bg-black dark:hover:bg-slate-700 transition-all flex items-center gap-2"
                 >
                     <Plus size={18} /> Νέα Συναλλαγή
                 </button>
             </div>
 
-            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
-                <div className="p-4 bg-slate-50 border-b border-slate-100 hidden md:grid grid-cols-12 gap-4 text-xs font-bold text-slate-400 uppercase tracking-wide">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 hidden md:grid grid-cols-12 gap-4 text-xs font-bold text-slate-400 uppercase tracking-wide">
                     <div className="col-span-2">Ημερομηνια</div>
                     <div className="col-span-1">Τυπος</div>
                     <div className="col-span-3">Συναλλασσομενος / Κατηγορια</div>
@@ -210,68 +210,68 @@ export default function TransactionsPage() {
                     <div className="col-span-1 text-right">Ποσο</div>
                     <div className="col-span-2 text-right">Ενεργειες</div>
                 </div>
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800">
                     {transactions.map(t => {
                         const d = getValidDate(t.date);
                         return (
-                            <div key={t.id} className="p-4 md:grid grid-cols-12 gap-4 items-center hover:bg-slate-50 transition-colors">
-                                <div className="col-span-2 text-sm font-medium text-slate-600 mb-2 md:mb-0">
+                            <div key={t.id} className="p-4 md:grid grid-cols-12 gap-4 items-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                <div className="col-span-2 text-sm font-medium text-slate-600 dark:text-slate-400 mb-2 md:mb-0">
                                     {d ? d.toLocaleDateString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
                                 </div>
                                 <div className="col-span-1 mb-2 md:mb-0">
-                                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${t.type === 'income' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${t.type === 'income' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' : 'bg-red-100 dark:bg-red-900/30 text-red-600'}`}>
                                         {t.type === 'income' ? <ArrowDownRight size={16} /> : <ArrowUpRight size={16} />}
                                     </span>
                                 </div>
-                                <div className="col-span-3 font-bold text-slate-800 mb-1 md:mb-0">
+                                <div className="col-span-3 font-bold text-slate-800 dark:text-slate-200 mb-1 md:mb-0">
                                     {t.type === 'income' ? (t.userName || 'Άγνωστος (Έσοδο)') : getCategoryLabel(t.category)}
                                 </div>
-                                <div className="col-span-3 text-slate-500 text-sm mb-2 md:mb-0">
+                                <div className="col-span-3 text-slate-500 dark:text-slate-400 text-sm mb-2 md:mb-0">
                                     {t.description}
                                 </div>
                                 <div className={`col-span-1 text-right font-black ${t.type === 'income' ? 'text-green-600' : 'text-red-600'} mb-2 md:mb-0`}>
                                     {t.type === 'income' ? '+' : '-'}€{t.amount}
                                 </div>
                                 <div className="col-span-2 flex justify-end gap-2">
-                                    <button onClick={() => openEditModal(t)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><Edit size={16} /></button>
-                                    <button onClick={() => handleDelete(t.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                                    <button onClick={() => openEditModal(t)} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"><Edit size={16} /></button>
+                                    <button onClick={() => handleDelete(t.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"><Trash2 size={16} /></button>
                                 </div>
                             </div>
                         );
                     })}
                     {transactions.length === 0 && (
-                        <div className="p-10 text-center text-slate-400 italic">Δεν υπάρχουν οικονομικές συναλλαγές.</div>
+                        <div className="p-10 text-center text-slate-400 dark:text-slate-500 italic">Δεν υπάρχουν οικονομικές συναλλαγές.</div>
                     )}
                 </div>
             </div>
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200">
-                    <div className="bg-white rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
-                        <div className="flex justify-between items-center pb-4 border-b border-slate-100">
-                            <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2"><Wallet /> {editingId ? 'Επεξεργασία Συναλλαγής' : 'Νέα Συναλλαγή'}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-full transition-colors"><X /></button>
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200 dark:border-slate-700">
+                        <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-800">
+                            <h3 className="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2"><Wallet /> {editingId ? 'Επεξεργασία Συναλλαγής' : 'Νέα Συναλλαγή'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400"><X /></button>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-50 rounded-xl">
-                            <button type="button" onClick={() => setTransType('income')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'income' ? 'bg-white text-green-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Έσοδα (In)</button>
-                            <button type="button" onClick={() => setTransType('expense')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'expense' ? 'bg-white text-red-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Έξοδα (Out)</button>
+                        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                            <button type="button" onClick={() => setTransType('income')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'income' ? 'bg-white dark:bg-slate-700 text-green-700 dark:text-green-400 shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>Έσοδα (In)</button>
+                            <button type="button" onClick={() => setTransType('expense')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'expense' ? 'bg-white dark:bg-slate-700 text-red-700 dark:text-red-400 shadow-sm' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>Έξοδα (Out)</button>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΠΟΣΟ (€)</label><input type="number" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} className="w-full p-3 bg-slate-50 rounded-xl font-bold outline-none focus:ring-2 focus:ring-slate-900 transition-all" /></div>
-                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΗΜΕΡΟΜΗΝΙΑ</label><input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full p-3 bg-slate-50 rounded-xl font-bold outline-none focus:ring-2 focus:ring-slate-900 transition-all" /></div>
+                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΠΟΣΟ (€)</label><input type="number" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-900 dark:text-slate-100" /></div>
+                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΗΜΕΡΟΜΗΝΙΑ</label><input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })} className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-900 dark:text-slate-100" /></div>
                         </div>
 
                         {transType === 'income' ? (
-                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΣΠΟΥΔΑΣΤΗΣ</label><div className="relative"><User className="absolute left-3 top-3.5 text-slate-400" size={16} /><select value={formData.userId} onChange={(e) => setFormData({ ...formData, userId: e.target.value })} className="w-full pl-10 p-3 bg-slate-50 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900 appearance-none"><option value="">Επιλογή...</option>{users.map(u => <option key={u.id} value={u.id}>{u.lastName} {u.firstName}</option>)}</select></div></div>
+                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΣΠΟΥΔΑΣΤΗΣ</label><div className="relative"><User className="absolute left-3 top-3.5 text-slate-400" size={16} /><select value={formData.userId} onChange={(e) => setFormData({ ...formData, userId: e.target.value })} className="w-full pl-10 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-slate-900 dark:text-slate-100"><option value="">Επιλογή...</option>{users.map(u => <option key={u.id} value={u.id}>{u.lastName} {u.firstName}</option>)}</select></div></div>
                         ) : (
-                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΚΑΤΗΓΟΡΙΑ</label><div className="relative"><Tag className="absolute left-3 top-3.5 text-slate-400" size={16} /><select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full pl-10 p-3 bg-slate-50 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900 appearance-none"><option value="editors">Επιμελητές</option><option value="hosting">Hosting</option><option value="ads">Διαφήμιση</option><option value="ai">AI Tools</option><option value="other">Άλλα</option></select></div></div>
+                            <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΚΑΤΗΓΟΡΙΑ</label><div className="relative"><Tag className="absolute left-3 top-3.5 text-slate-400" size={16} /><select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full pl-10 p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-slate-900 dark:text-slate-100"><option value="editors">Επιμελητές</option><option value="hosting">Hosting</option><option value="ads">Διαφήμιση</option><option value="ai">AI Tools</option><option value="other">Άλλα</option></select></div></div>
                         )}
 
-                        <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΣΧΟΛΙΑ</label><input type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Λεπτομέρειες..." className="w-full p-3 bg-slate-50 rounded-xl font-medium outline-none focus:ring-2 focus:ring-slate-900" /></div>
+                        <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΣΧΟΛΙΑ</label><input type="text" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Λεπτομέρειες..." className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100" /></div>
 
-                        <button onClick={handleSave} className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-black transition-all shadow-lg mt-2 flex items-center justify-center gap-2"><Save size={18} /> Αποθήκευση</button>
+                        <button onClick={handleSave} className="w-full py-4 bg-slate-900 dark:bg-blue-700 text-white font-bold rounded-xl hover:bg-black dark:hover:bg-blue-800 transition-all shadow-lg mt-2 flex items-center justify-center gap-2"><Save size={18} /> Αποθήκευση</button>
                     </div>
                 </div>
             )}

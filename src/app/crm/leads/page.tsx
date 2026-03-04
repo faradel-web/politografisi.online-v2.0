@@ -328,37 +328,37 @@ export default function CrmUnifiedPage() {
     const guestLeads = activeContacts.filter(c => !c.isRegistered);
 
     const renderSection = (title: string, icon: any, data: UnifiedContact[], colorClass: string) => (
-        <div className={`rounded-2xl shadow-sm border overflow-hidden mb-8 ${colorClass}`}>
-            <div className="p-4 border-b border-slate-200/50 flex justify-between items-center bg-white/50 backdrop-blur-sm">
+        <div className={`rounded-2xl shadow-sm border overflow-hidden mb-8 ${colorClass} dark:border-slate-700 dark:bg-slate-800/50`}>
+            <div className="p-4 border-b border-slate-200/50 dark:border-slate-700 flex justify-between items-center bg-white/50 dark:bg-slate-800 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${colorClass.replace('border-', 'bg-').replace('200', '100')} text-slate-700`}>{icon}</div>
-                    <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+                    <div className={`p-2 rounded-lg ${colorClass.replace('border-', 'bg-').replace('200', '100')} text-slate-700 dark:text-slate-300`}>{icon}</div>
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-white">{title}</h2>
                 </div>
-                <span className="text-xs font-bold px-3 py-1 bg-white rounded-full text-slate-500 shadow-sm border border-slate-100">{data.length}</span>
+                <span className="text-xs font-bold px-3 py-1 bg-white dark:bg-slate-700 rounded-full text-slate-500 dark:text-slate-300 shadow-sm border border-slate-100 dark:border-slate-600">{data.length}</span>
             </div>
-            <div className="overflow-x-auto bg-white">
+            <div className="overflow-x-auto bg-white dark:bg-slate-900">
                 <table className="w-full text-left border-collapse">
-                    <thead className="bg-slate-50/50 text-xs uppercase text-slate-400 font-bold">
+                    <thead className="bg-slate-50/50 dark:bg-slate-800 text-xs uppercase text-slate-400 font-bold">
                         <tr><th className="p-4 w-1/4">User Info</th><th className="p-4 w-1/4">Contact</th><th className="p-4 w-1/2">Requests</th><th className="p-4 text-right">Manage</th></tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-sm">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 text-sm">
                         {data.length === 0 ? <tr><td colSpan={4} className="p-6 text-center text-slate-400 italic text-xs">No records.</td></tr> :
                             data.map(contact => (
-                                <tr key={contact.id} onClick={() => router.push(`/crm/leads/${contact.id}`)} className="hover:bg-blue-50 transition-colors align-top cursor-pointer group">
+                                <tr key={contact.id} onClick={() => router.push(`/crm/leads/${contact.id}`)} className="hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors align-top cursor-pointer group">
                                     <td className="p-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200 relative group-hover:border-blue-200">
+                                            <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-600 relative group-hover:border-blue-200">
                                                 {contact.isConflict && <div className="absolute inset-0 bg-red-100 flex items-center justify-center z-10"><AlertOctagon className="text-red-600" size={16} /></div>}
                                                 {!contact.isConflict && (contact.avatar ? <img src={contact.avatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <UserCircle size={16} className="text-slate-400" />)}
                                             </div>
                                             <div>
-                                                <p className={`font-bold ${contact.isConflict ? 'text-red-600' : 'text-slate-800'} group-hover:text-blue-700`}>{contact.lastName.toUpperCase()} {contact.firstName}</p>
+                                                <p className={`font-bold ${contact.isConflict ? 'text-red-600' : 'text-slate-800 dark:text-slate-200'} group-hover:text-blue-700`}>{contact.lastName.toUpperCase()} {contact.firstName}</p>
                                                 <div className="mt-1">{contact.isRegistered && renderSubscriptionInfo(contact.subscriptionEndsAt, contact.role)}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <div className="text-[11px] space-y-1 text-slate-600">
+                                        <div className="text-[11px] space-y-1 text-slate-600 dark:text-slate-400">
                                             <div className="flex items-center gap-1"><Mail size={12} /> {contact.email}</div>
                                             <div className="flex items-center gap-1"><Phone size={12} /> {contact.phone}</div>
                                         </div>
@@ -366,10 +366,10 @@ export default function CrmUnifiedPage() {
                                     <td className="p-4">
                                         <div className="space-y-2">
                                             {contact.requests.map((req) => (
-                                                <div key={req.docId} className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex justify-between items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                                                <div key={req.docId} className="bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border border-slate-100 dark:border-slate-700 flex justify-between items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-2 mb-1">{getTopicLabel(req.topic)} <span className="text-[9px] text-slate-400">{formatDate(req.createdAt)}</span></div>
-                                                        <p className="text-[11px] text-slate-700 italic">"{req.message}"</p>
+                                                        <p className="text-[11px] text-slate-700 dark:text-slate-300 italic">"{req.message}"</p>
                                                     </div>
                                                     <div className="flex items-center gap-1">
                                                         <select
@@ -392,8 +392,8 @@ export default function CrmUnifiedPage() {
                                     </td>
                                     <td className="p-4 text-right">
                                         <div className="flex justify-end gap-1">
-                                            <button onClick={(e) => { e.stopPropagation(); setArchivingContact(contact); }} className="p-2 bg-slate-100 text-slate-500 hover:bg-slate-200 rounded-xl transition-all" title="Αρχειοθέτηση"><Archive size={16} /></button>
-                                            <button onClick={(e) => { e.stopPropagation(); router.push(`/crm/leads/${contact.id}`); }} className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm" title="Προφίλ"><UserCog size={16} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); setArchivingContact(contact); }} className="p-2 bg-slate-100 dark:bg-slate-700 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-xl transition-all" title="Αρχειοθέτηση"><Archive size={16} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); router.push(`/crm/leads/${contact.id}`); }} className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm" title="Προφίλ"><UserCog size={16} /></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -411,22 +411,22 @@ export default function CrmUnifiedPage() {
     return (
         <div className="space-y-6 pb-20 max-w-7xl mx-auto p-4">
             {/* HEADER */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div><h1 className="text-2xl font-black text-slate-800 uppercase tracking-tight">CRM Leads</h1><p className="text-sm text-slate-500">Ενεργές επαφές: {activeContacts.length}</p></div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div><h1 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">CRM Leads</h1><p className="text-sm text-slate-500 dark:text-slate-400">Ενεργές επαφές: {activeContacts.length}</p></div>
                 <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button onClick={() => router.push('/crm')} className="flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-50 transition-all shadow-sm text-sm"><LayoutDashboard size={16} /> Dashboard</button>
-                    <div className="relative flex-1 md:w-64"><Search className="absolute left-3 top-2.5 text-slate-400 h-4 w-4" /><input type="text" placeholder="Αναζήτηση..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500" /></div>
+                    <button onClick={() => router.push('/crm')} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm text-sm"><LayoutDashboard size={16} /> Dashboard</button>
+                    <div className="relative flex-1 md:w-64"><Search className="absolute left-3 top-2.5 text-slate-400 h-4 w-4" /><input type="text" placeholder="Αναζήτηση..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-blue-500 dark:text-slate-100" /></div>
                     <button onClick={() => router.push('/crm/archive')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl font-bold hover:bg-black transition-all shadow-lg text-sm"><Archive size={16} /> Αρχειοθήκη <ChevronRight size={14} /></button>
                 </div>
             </div>
 
             {/* ✅ ВКЛАДКИ (TABS) */}
             <div className="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar">
-                <button onClick={() => setActiveTab('all')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>Όλοι ({activeContacts.length})</button>
-                <button onClick={() => setActiveTab('paid')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'paid' ? 'bg-green-600 text-white border-green-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-green-50'}`}>Συνδρομητές ({paidStudents.length})</button>
-                <button onClick={() => setActiveTab('free')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'free' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-blue-50'}`}>Εγγεγραμμένοι ({freeStudents.length})</button>
-                <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'leads' ? 'bg-slate-600 text-white border-slate-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}>Αιτήματα ({guestLeads.length})</button>
-                <button onClick={() => setActiveTab('admins')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'admins' ? 'bg-red-600 text-white border-red-600' : 'bg-white text-slate-500 border-slate-200 hover:bg-red-50'}`}>Διαχειριστές ({adminUsers.length + editorUsers.length})</button>
+                <button onClick={() => setActiveTab('all')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>Όλοι ({activeContacts.length})</button>
+                <button onClick={() => setActiveTab('paid')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'paid' ? 'bg-green-600 text-white border-green-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-green-50 dark:hover:bg-green-900/20'}`}>Συνδρομητές ({paidStudents.length})</button>
+                <button onClick={() => setActiveTab('free')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'free' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}>Εγγεγραμμένοι ({freeStudents.length})</button>
+                <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'leads' ? 'bg-slate-600 text-white border-slate-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'}`}>Αιτήματα ({guestLeads.length})</button>
+                <button onClick={() => setActiveTab('admins')} className={`px-4 py-2 rounded-xl font-bold text-sm whitespace-nowrap transition-all border ${activeTab === 'admins' ? 'bg-red-600 text-white border-red-600' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20'}`}>Διαχειριστές ({adminUsers.length + editorUsers.length})</button>
             </div>
 
             {/* SECTIONS З УМОВНИМ РЕНДЕРИНГОМ */}
@@ -446,22 +446,22 @@ export default function CrmUnifiedPage() {
             {/* ARCHIVE MODAL */}
             {archivingContact && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-200 dark:border-slate-700">
                         <div className="p-6 text-center border-b border-slate-100">
                             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-500"><Archive size={32} /></div>
-                            <h3 className="text-xl font-black text-slate-800 uppercase">Αρχειοθέτηση</h3>
-                            <p className="text-sm text-slate-500 mt-1">Επιλέξτε την αιτία αρχειοθέτησης για τον χρήστη <br /><b>{archivingContact.email}</b></p>
+                            <h3 className="text-xl font-black text-slate-800 dark:text-white uppercase">Αρχειοθέτηση</h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Επιλέξτε την αιτία αρχειοθέτησης για τον χρήστη <br /><b>{archivingContact.email}</b></p>
                         </div>
-                        <div className="p-4 grid grid-cols-1 gap-2 bg-slate-50/50">
+                        <div className="p-4 grid grid-cols-1 gap-2 bg-slate-50/50 dark:bg-slate-800">
                             {archivingContact.isRegistered ? (
                                 <>
-                                    <button onClick={() => confirmArchive('completed')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-green-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-green-100 text-green-600 rounded-lg group-hover:scale-110 transition-transform"><GraduationCap size={20} /></div><div><div className="font-bold text-slate-800">Ολοκλήρωση</div><div className="text-[10px] text-slate-400">Ολοκλήρωσαν την εκπαίδευση</div></div></button>
-                                    <button onClick={() => confirmArchive('paused')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-orange-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg group-hover:scale-110 transition-transform"><PauseCircle size={20} /></div><div><div className="font-bold text-slate-800">Διακοπή</div><div className="text-[10px] text-slate-400">Διέκοψαν / Σε αναμονή</div></div></button>
+                                    <button onClick={() => confirmArchive('completed')} className="flex items-center gap-3 w-full p-4 bg-white dark:bg-slate-700 hover:bg-green-50 dark:hover:bg-green-900/20 border border-slate-200 dark:border-slate-600 rounded-2xl text-left transition-all group"><div className="p-2 bg-green-100 text-green-600 rounded-lg group-hover:scale-110 transition-transform"><GraduationCap size={20} /></div><div><div className="font-bold text-slate-800 dark:text-white">Ολοκλήρωση</div><div className="text-[10px] text-slate-400">Ολοκλήρωσαν την εκπαίδευση</div></div></button>
+                                    <button onClick={() => confirmArchive('paused')} className="flex items-center gap-3 w-full p-4 bg-white dark:bg-slate-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 border border-slate-200 dark:border-slate-600 rounded-2xl text-left transition-all group"><div className="p-2 bg-orange-100 text-orange-600 rounded-lg group-hover:scale-110 transition-transform"><PauseCircle size={20} /></div><div><div className="font-bold text-slate-800 dark:text-white">Διακοπή</div><div className="text-[10px] text-slate-400">Διέκοψαν / Σε αναμονή</div></div></button>
                                 </>
                             ) : (
                                 <>
-                                    <button onClick={() => confirmArchive('potential')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-blue-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><Timer size={20} /></div><div><div className="font-bold text-slate-800">Ενδιαφέρον</div><div className="text-[10px] text-slate-400">Σκέφτονται / Μελλοντικά</div></div></button>
-                                    <button onClick={() => confirmArchive('spam')} className="flex items-center gap-3 w-full p-4 bg-white hover:bg-red-50 border border-slate-200 rounded-2xl text-left transition-all group"><div className="p-2 bg-red-100 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><Skull size={20} /></div><div><div className="font-bold text-slate-800">Απόρριψη / Spam</div><div className="text-[10px] text-slate-400">Δεν ενδιαφέρεται καθόλου</div></div></button>
+                                    <button onClick={() => confirmArchive('potential')} className="flex items-center gap-3 w-full p-4 bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 border border-slate-200 dark:border-slate-600 rounded-2xl text-left transition-all group"><div className="p-2 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><Timer size={20} /></div><div><div className="font-bold text-slate-800 dark:text-white">Ενδιαφέρον</div><div className="text-[10px] text-slate-400">Σκέφτονται / Μελλοντικά</div></div></button>
+                                    <button onClick={() => confirmArchive('spam')} className="flex items-center gap-3 w-full p-4 bg-white dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 border border-slate-200 dark:border-slate-600 rounded-2xl text-left transition-all group"><div className="p-2 bg-red-100 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><Skull size={20} /></div><div><div className="font-bold text-slate-800 dark:text-white">Απόρριψη / Spam</div><div className="text-[10px] text-slate-400">Δεν ενδιαφέρεται καθόλου</div></div></button>
                                 </>
                             )}
                         </div>

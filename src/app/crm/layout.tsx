@@ -1,22 +1,28 @@
-import type { Metadata } from "next";
+"use client";
+
 import { ShieldAlert, LayoutDashboard, Wallet, Users, Archive, Settings } from "lucide-react";
 import Link from "next/link";
-
-export const metadata: Metadata = {
-  title: "CRM | Politografisi Admin",
-  description: "Restricted Access",
-  robots: "noindex, nofollow", // Важливо! Щоб Google не індексував адмінку
-};
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import { usePathname } from "next/navigation";
 
 export default function CrmLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const navLinks = [
+    { href: "/crm", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/crm/transactions", label: "Οικονομικά", icon: Wallet },
+    { href: "/crm/leads", label: "Χρήστες & Leads", icon: Users },
+    { href: "/crm/archive", label: "Αρχειοθήκη", icon: Archive },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 font-sans">
-      {/* Верхня панель CRM (Тільки для адміна) */}
-      <header className="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
+      {/* Верхня панель CRM */}
+      <header className="bg-slate-900 dark:bg-slate-950 text-white p-4 shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <Link href="/crm" className="flex items-center gap-2 font-black tracking-wider text-lg hover:opacity-80 transition-opacity">
             <ShieldAlert className="text-red-500" size={24} />
@@ -24,23 +30,36 @@ export default function CrmLayout({
             <span className="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded uppercase">CRM</span>
           </Link>
 
-          <nav className="flex items-center gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar text-sm font-bold">
-            <Link href="/crm" className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors whitespace-nowrap">
-              <LayoutDashboard size={16} /> Dashboard
-            </Link>
-            <Link href="/crm/transactions" className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors whitespace-nowrap">
-              <Wallet size={16} /> Οικονομικά
-            </Link>
-            <Link href="/crm/leads" className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors whitespace-nowrap">
-              <Users size={16} /> Χρήστες & Leads
-            </Link>
-            <Link href="/crm/archive" className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors whitespace-nowrap">
-              <Archive size={16} /> Αρχειοθήκη
-            </Link>
-            <Link href="/admin" className="flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors whitespace-nowrap border-l border-slate-700 pl-6 ml-2">
+          <nav className="flex items-center gap-5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar text-sm font-bold">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center gap-1.5 whitespace-nowrap transition-colors ${isActive
+                      ? "text-white border-b-2 border-red-500 pb-0.5"
+                      : "text-slate-300 hover:text-white"
+                    }`}
+                >
+                  <Icon size={16} />
+                  {link.label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/admin"
+              className="flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors whitespace-nowrap border-l border-slate-700 pl-5 ml-1"
+            >
               <Settings size={16} /> Admin
             </Link>
           </nav>
+
+          {/* Theme Toggle */}
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

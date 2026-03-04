@@ -210,16 +210,16 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     const isNextLocked = isRestricted && (currentIndex + 1) >= LIMIT;
 
     const MobileTabs = () => (
-        <div className="lg:hidden flex border-b border-slate-200 mb-6 bg-white sticky top-[73px] z-30 shadow-sm">
+        <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 mb-6 bg-white dark:bg-slate-900 sticky top-[73px] z-30 shadow-sm">
             <button
                 onClick={() => setMobileView('content')}
-                className={`flex-1 py-4 text-sm font-black uppercase tracking-wide flex items-center justify-center gap-2 border-b-2 transition-colors ${mobileView === 'content' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 py-4 text-sm font-black uppercase tracking-wide flex items-center justify-center gap-2 border-b-2 transition-colors ${mobileView === 'content' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-400'}`}
             >
                 <AlignLeft size={18} /> Περιεχόμενο
             </button>
             <button
                 onClick={() => setMobileView('questions')}
-                className={`flex-1 py-4 text-sm font-black uppercase tracking-wide flex items-center justify-center gap-2 border-b-2 transition-colors ${mobileView === 'questions' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                className={`flex-1 py-4 text-sm font-black uppercase tracking-wide flex items-center justify-center gap-2 border-b-2 transition-colors ${mobileView === 'questions' ? 'border-blue-600 text-blue-600 bg-blue-50/50' : 'border-transparent text-slate-400 hover:text-slate-600 dark:text-slate-400'}`}
             >
                 <ListChecks size={18} /> Ερωτήσεις
             </button>
@@ -242,13 +242,13 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-auto lg:h-[calc(100vh-100px)]">
                     <div className={`h-full flex flex-col lg:sticky lg:top-24 gap-4 ${mobileView === 'content' ? 'block' : 'hidden'} lg:flex`}>
 
-                        <div className="bg-white rounded-[2rem] p-6 border border-slate-200 shadow-sm shrink-0">
+                        <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 shrink-0 shadow-inner">
                                     <Headphones size={24} />
                                 </div>
                                 <div>
-                                    <h1 className="text-lg font-black text-slate-800 leading-tight">{lesson.title}</h1>
+                                    <h1 className="text-lg font-black text-slate-800 dark:text-slate-200 leading-tight">{lesson.title}</h1>
                                     <p className="text-xs text-purple-600 font-bold uppercase tracking-wider">Listening Exercise</p>
                                 </div>
                             </div>
@@ -263,9 +263,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         </div>
 
                         {lesson.transcript && (
-                            <div className={`bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col relative transition-all duration-300 ease-in-out ${showTranscript ? 'flex-1 overflow-hidden min-h-0' : 'flex-none'}`}>
+                            <div className={`bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative transition-all duration-300 ease-in-out ${showTranscript ? 'flex-1 overflow-hidden min-h-0' : 'flex-none'}`}>
 
-                                <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center shrink-0">
+                                <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50/50 flex justify-between items-center shrink-0">
                                     <span className="font-black text-slate-400 uppercase tracking-widest text-xs flex items-center gap-2">
                                         <AlignLeft size={16} /> Κείμενο (Transcript)
                                     </span>
@@ -280,7 +280,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
 
                                 {showTranscript && (
                                     <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
-                                        <div className="prose prose-slate prose-lg max-w-none font-medium text-slate-600 leading-loose whitespace-pre-wrap">
+                                        <div className="prose prose-slate prose-lg max-w-none font-medium text-slate-600 dark:text-slate-400 leading-loose whitespace-pre-wrap break-words">
                                             {lesson.transcript}
                                         </div>
                                     </div>
@@ -301,7 +301,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         )}
 
                         {questionsB.length > 0 && (
-                            <div className="space-y-4 border-t-2 border-slate-100 pt-8">
+                            <div className="space-y-4 border-t-2 border-slate-100 dark:border-slate-800 pt-8">
                                 <div className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β
                                 </div>
@@ -336,12 +336,12 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
             <>
                 <MobileTabs />
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-auto lg:h-[calc(100vh-100px)]">
-                    <div className={`bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm lg:overflow-y-auto custom-scrollbar ${mobileView === 'content' ? 'block' : 'hidden'} lg:block`}>
-                        <div className="flex items-center gap-3 mb-6 text-blue-600 border-b border-blue-50 pb-4">
+                    <div className={`bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm lg:overflow-y-auto custom-scrollbar ${mobileView === 'content' ? 'block' : 'hidden'} lg:block`}>
+                        <div className="flex items-center gap-3 mb-6 text-blue-600 dark:text-blue-400 border-b border-blue-50 dark:border-blue-900/30 pb-4">
                             <BookOpen size={24} /><h2 className="font-black uppercase tracking-widest text-sm">Κείμενο</h2>
                         </div>
                         {lesson.imageUrls?.[0] && <img src={lesson.imageUrls[0]} className="w-full rounded-2xl mb-6 object-cover" />}
-                        <div className="prose prose-lg prose-slate max-w-none font-serif leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: pA_Text || "" }} />
+                        <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: pA_Text || "" }} />
                     </div>
 
                     <div className={`lg:overflow-y-auto custom-scrollbar pr-2 space-y-12 pb-20 ${mobileView === 'questions' ? 'block' : 'hidden'} lg:block`}>
@@ -356,7 +356,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         )}
 
                         {questionsB.length > 0 && (
-                            <div className="space-y-4 border-t-2 border-slate-100 pt-8">
+                            <div className="space-y-4 border-t-2 border-slate-100 dark:border-slate-800 pt-8">
                                 <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β (Χρήση Γλώσσας)
                                 </div>
@@ -365,29 +365,29 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         )}
 
                         {writingPrompt && (
-                            <div className="space-y-4 border-t-2 border-slate-100 pt-8">
-                                <div className="px-4 py-2 bg-orange-100 text-orange-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
+                            <div className="space-y-4 border-t-2 border-slate-100 dark:border-slate-800 pt-8">
+                                <div className="px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Γ (Παραγωγή Λόγου)
                                 </div>
-                                <div className="bg-white p-6 rounded-[2.5rem] border border-orange-100 shadow-sm">
-                                    <h3 className="font-black text-orange-900 mb-4 flex gap-2 items-center"><PenTool className="text-orange-600" /> Writing Task</h3>
-                                    <div className="mb-4 text-slate-800 font-medium p-4 bg-orange-50 rounded-xl whitespace-pre-wrap">{writingPrompt}</div>
-                                    <textarea className="w-full h-48 p-4 border-2 rounded-xl focus:border-orange-300 outline-none" placeholder="Γράψτε εδώ..." value={essay} onChange={e => setEssay(e.target.value)} />
+                                <div className="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] border border-orange-100 dark:border-orange-900/30 shadow-sm">
+                                    <h3 className="font-black text-orange-900 dark:text-orange-400 mb-4 flex gap-2 items-center"><PenTool className="text-orange-600 dark:text-orange-500" /> Writing Task</h3>
+                                    <div className="mb-4 text-slate-800 dark:text-slate-200 font-medium p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl break-words">{writingPrompt}</div>
+                                    <textarea className="w-full h-48 p-4 border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-xl focus:border-orange-300 dark:focus:border-orange-700 outline-none" placeholder="Γράψτε εδώ..." value={essay} onChange={e => setEssay(e.target.value)} />
 
                                     <div className="mt-4 flex justify-between items-center">
                                         <span className="text-xs font-bold text-slate-400">Λέξεις: {essay.trim().split(/\s+/).filter(w => w).length}</span>
-                                        <button onClick={handleEssayCheck} disabled={isGradingEssay || essay.length < 10} className="bg-slate-900 text-white px-6 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-slate-800 disabled:opacity-50">
+                                        <button onClick={handleEssayCheck} disabled={isGradingEssay || essay.length < 10} className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-6 py-2 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-50">
                                             {isGradingEssay ? <Loader2 className="animate-spin h-4 w-4" /> : <Sparkles size={16} />} Έλεγχος AI
                                         </button>
                                     </div>
 
                                     {essayFeedback && (
-                                        <div className="mt-4 p-4 bg-orange-50 rounded-xl border border-orange-100 text-sm">
-                                            <div className="flex justify-between font-bold text-orange-800 mb-2">
+                                        <div className="mt-4 p-4 bg-orange-50 dark:bg-orange-900/10 rounded-xl border border-orange-100 dark:border-orange-900/30 text-sm">
+                                            <div className="flex justify-between font-bold text-orange-800 dark:text-orange-400 mb-2">
                                                 <span>AI Feedback</span>
-                                                <span>{essayFeedback.score}/12</span>
+                                                <span className="bg-orange-100 dark:bg-orange-900/30 px-3 py-1 rounded-lg border border-orange-200 dark:border-orange-900/50">{essayFeedback.score}/12</span>
                                             </div>
-                                            <p className="text-slate-700 italic">{essayFeedback.feedback}</p>
+                                            <p className="text-slate-700 dark:text-slate-300 italic">{essayFeedback.feedback}</p>
                                         </div>
                                     )}
                                 </div>
@@ -405,26 +405,26 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
 
         return (
             <div className="max-w-4xl mx-auto p-4 md:p-8">
-                <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
-                    <div className="p-10 text-center border-b border-slate-100 bg-gradient-to-b from-orange-50/30 to-white">
-                        <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner text-orange-600"><Mic size={40} /></div>
-                        <h1 className="text-3xl font-black text-slate-900 mb-2">{lesson.title}</h1>
+                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+                    <div className="p-10 text-center border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-orange-50/30 dark:from-orange-900/10 to-white dark:to-slate-900">
+                        <div className="w-24 h-24 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner text-orange-600 dark:text-orange-400"><Mic size={40} /></div>
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">{lesson.title}</h1>
                     </div>
 
                     <div className="p-8 md:p-10">
                         {images.length > 0 && (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                                 {images.map((url: string, i: number) => (
-                                    <img key={i} src={url} className="w-full h-64 object-cover rounded-2xl border-4 border-slate-50 shadow-sm" />
+                                    <img key={i} src={url} className="w-full h-64 object-cover rounded-2xl border-4 border-slate-50 dark:border-slate-800 shadow-sm" />
                                 ))}
                             </div>
                         )}
 
-                        <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 mb-10 text-slate-800 font-medium leading-relaxed whitespace-pre-wrap">
+                        <div className="bg-slate-50 dark:bg-slate-950/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 mb-10 text-slate-800 dark:text-slate-200 font-medium leading-relaxed break-words">
                             {prompt}
                         </div>
 
-                        <div className="text-center bg-orange-50/30 p-8 rounded-[2.5rem] border border-orange-100">
+                        <div className="text-center bg-orange-50/30 dark:bg-orange-900/10 p-8 rounded-[2.5rem] border border-orange-100 dark:border-orange-900/30">
                             <div className="flex justify-center mb-6 scale-110">
                                 <AudioRecorder onUploadComplete={setSpeakingUrl} />
                             </div>
@@ -436,12 +436,12 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                             )}
 
                             {speakingFeedback && (
-                                <div className="mt-8 text-left bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm">
-                                    <div className="flex justify-between font-bold text-emerald-900 mb-2">
+                                <div className="mt-8 text-left bg-white dark:bg-slate-900 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm">
+                                    <div className="flex justify-between font-bold text-emerald-900 dark:text-emerald-400 mb-2">
                                         <span>AI Feedback</span>
-                                        <span className="bg-emerald-100 px-3 py-1 rounded-lg">{speakingFeedback.score}/15</span>
+                                        <span className="bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 rounded-lg border border-emerald-200 dark:border-emerald-900/50">{speakingFeedback.score}/15</span>
                                     </div>
-                                    <p className="text-slate-700 italic">"{speakingFeedback.feedback}"</p>
+                                    <p className="text-slate-700 dark:text-slate-300 italic">"{speakingFeedback.feedback}"</p>
                                 </div>
                             )}
                         </div>
@@ -469,7 +469,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
 
         content = (
             <main className={`flex-1 mx-auto w-full p-4 md:p-10 ${q.type === 'MAP' ? "max-w-6xl" : "max-w-4xl"}`}>
-                <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 dark:border-slate-800 overflow-hidden">
                     <div className="p-8 md:p-12">
                         <Quiz
                             key={lesson.id}
@@ -483,7 +483,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                     </div>
 
                     {isNextLocked && (
-                        <div className="bg-slate-50 border-t p-6 flex justify-center">
+                        <div className="bg-slate-50 dark:bg-slate-950/50 border-t p-6 flex justify-center">
                             <Link href="/profile" className="px-10 py-4 rounded-2xl font-black transition-all shadow-lg flex items-center gap-2 bg-amber-500 text-white hover:bg-amber-600 animate-pulse">
                                 <Lock size={18} /> Ξεκλείδωμα Premium
                             </Link>
@@ -495,23 +495,23 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-            <div className="bg-white border-b px-6 py-4 sticky top-0 z-40 flex items-center justify-between shadow-sm">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950/50 flex flex-col font-sans border-t border-transparent">
+            <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 sticky top-0 z-40 flex items-center justify-between shadow-sm">
                 <div className="flex items-center gap-4">
-                    <Link href={`/practice/${category}`} className="p-2 hover:bg-slate-100 rounded-full transition-colors"><ArrowLeft className="h-5 w-5 text-slate-600" /></Link>
+                    <Link href={`/practice/${category}`} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"><ArrowLeft className="h-5 w-5 text-slate-600 dark:text-slate-400" /></Link>
                     <div>
                         <h1 className="text-sm font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                            {lesson?.type?.includes('map') ? <MapPin className="h-4 w-4 text-blue-500" /> : <GraduationCap className="h-4 w-4" />}
+                            {lesson?.type?.includes('map') ? <MapPin className="h-4 w-4 text-blue-500" /> : <GraduationCap className="h-4 w-4 text-slate-400" />}
                             {category}
                         </h1>
-                        <div className="text-xs font-bold text-blue-600">Μάθημα {currentIndex + 1} / {allLessons.length}</div>
+                        <div className="text-xs font-bold text-blue-600 dark:text-blue-400">Μάθημα {currentIndex + 1} / {allLessons.length}</div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl">
-                    <button disabled={currentIndex === 0} onClick={() => goToLesson(currentIndex - 1)} className="p-2 hover:bg-white rounded-lg disabled:opacity-30 transition-all shadow-sm"><ChevronLeft className="h-5 w-5" /></button>
-                    <div className="px-3 font-mono font-bold text-sm">{currentIndex + 1}</div>
-                    <button disabled={currentIndex === allLessons.length - 1 || isNextLocked} onClick={() => goToLesson(currentIndex + 1)} className={`p-2 rounded-lg transition-all shadow-sm ${isNextLocked ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'hover:bg-white disabled:opacity-30'}`}>{isNextLocked ? <Lock className="h-4 w-4" /> : <ChevronRight className="h-5 w-5" />}</button>
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <button disabled={currentIndex === 0} onClick={() => goToLesson(currentIndex - 1)} className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg disabled:opacity-30 transition-all shadow-sm"><ChevronLeft className="h-5 w-5 text-slate-700 dark:text-slate-300" /></button>
+                    <div className="px-3 font-mono font-bold text-sm text-slate-700 dark:text-slate-300">{currentIndex + 1}</div>
+                    <button disabled={currentIndex === allLessons.length - 1 || isNextLocked} onClick={() => goToLesson(currentIndex + 1)} className={`p-2 rounded-lg transition-all shadow-sm ${isNextLocked ? 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed' : 'hover:bg-white dark:hover:bg-slate-700 disabled:opacity-30'}`}>{isNextLocked ? <Lock className="h-4 w-4 text-slate-400" /> : <ChevronRight className="h-5 w-5 text-slate-700 dark:text-slate-300" />}</button>
                 </div>
             </div>
 

@@ -104,7 +104,7 @@ export default function UserDashboardPage() {
     }, [user]);
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50">
             <Loader2 className="animate-spin h-10 w-10 text-blue-600" />
         </div>
     );
@@ -115,24 +115,24 @@ export default function UserDashboardPage() {
             {/* 1. HEADER: ПРИВІТАННЯ ΚΑΙ ΚΟΥΜΠΙ АРХΙΚΗΣ */}
             <header className="py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight font-serif mb-2">
+                    <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight font-serif mb-2">
                         Γεια σου, <span className="text-blue-600">{user?.displayName?.split(' ')[0] || "Σπουδαστή"}</span>! 👋
                     </h1>
-                    <p className="text-slate-500 font-medium text-lg flex items-center gap-2">
+                    <p className="text-slate-500 dark:text-slate-400 font-medium text-lg flex items-center gap-2">
                         Έτοιμοι για το επόμενο βήμα; <Sparkles size={18} className="text-yellow-500 fill-yellow-500" />
                     </p>
                 </div>
                 <Link
                     href="/"
-                    className="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
+                    className="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 dark:bg-slate-950/50 transition-all shadow-sm hover:shadow-md"
                 >
                     <Home size={18} /> Αρχική Σελίδα
                 </Link>
             </header>
 
             {/* 2. HERO SECTION (ВІДЕО) */}
-            <section className="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 border border-blue-50/50 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-70 pointer-events-none"></div>
+            <section className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 dark:shadow-blue-900/10 border border-blue-50/50 dark:border-slate-800/50 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl -mr-20 -mt-20 opacity-70 dark:opacity-30 pointer-events-none"></div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
 
                     {/* VIDEO PLACEHOLDER */}
@@ -142,7 +142,7 @@ export default function UserDashboardPage() {
 
                         {/* Play Button */}
                         <div className="relative z-10 flex flex-col items-center gap-4 transition-transform duration-500 group-hover:scale-105">
-                            <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg group-hover:bg-white/20 transition-all">
+                            <div className="w-20 h-20 bg-white dark:bg-slate-900/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg group-hover:bg-white dark:bg-slate-900/20 transition-all">
                                 <PlayCircle size={40} className="text-white fill-white/20" />
                             </div>
                             <span className="text-white font-black uppercase tracking-widest text-sm bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
@@ -152,14 +152,14 @@ export default function UserDashboardPage() {
                     </div>
 
                     {/* MOTIVATIONAL TEXT */}
-                    <div className="space-y-6">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-black uppercase tracking-widest">
+                    <div className="space-y-6 relative z-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-700/30">
                             <GraduationCap size={16} /> Πιστοποίηση Ελληνομάθειας
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 leading-tight font-serif">
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white leading-tight font-serif">
                             Ο δρόμος προς την <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Επιτυχία</span>
                         </h2>
-                        <p className="text-slate-600 font-medium leading-relaxed text-lg">
+                        <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed text-lg">
                             Η πλατφόρμα που σας προετοιμάζει ολοκληρωμένα για τις Εξετάσεις Πολιτογράφησης. Μελέτη, εξάσκηση και προσομοίωση σε ένα μέρος.
                         </p>
                     </div>
@@ -169,43 +169,43 @@ export default function UserDashboardPage() {
             {/* 3. MAIN ACTIONS (ΤΡΙ ΚНОПКИ) */}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* THEORY CARD */}
-                <Link href="/theory" className="group bg-gradient-to-br from-indigo-50 to-white p-8 rounded-[2.5rem] border border-indigo-100 shadow-sm hover:shadow-xl hover:border-indigo-200 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                <Link href="/theory" className="group bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/40 dark:to-slate-900 p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-900/30 shadow-sm hover:shadow-xl hover:border-indigo-200 dark:hover:border-indigo-700/50 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 dark:bg-indigo-900/20 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
 
                     <div>
-                        <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200"><BookOpen size={28} /></div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2 font-serif">Θεωρία</h3>
-                        <p className="text-slate-500 font-medium">Υλικό μελέτης και σημειώσεις.</p>
+                        <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30"><BookOpen size={28} /></div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Θεωρία</h3>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Υλικό μελέτης και σημειώσεις.</p>
                     </div>
-                    <div className="mt-6 flex items-center gap-2 text-indigo-700 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
+                    <div className="mt-6 flex items-center gap-2 text-indigo-700 dark:text-indigo-400 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
                         Μελέτη <ArrowRight size={16} />
                     </div>
                 </Link>
 
                 {/* PRACTICE CARD */}
-                <Link href="/practice" className="group bg-gradient-to-br from-emerald-50 to-white p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm hover:shadow-xl hover:border-emerald-200 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                <Link href="/practice" className="group bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/40 dark:to-slate-900 p-8 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/30 shadow-sm hover:shadow-xl hover:border-emerald-200 dark:hover:border-emerald-700/50 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 dark:bg-emerald-900/20 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
 
                     <div>
-                        <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-200"><PenTool size={28} /></div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2 font-serif">Εξάσκηση</h3>
-                        <p className="text-slate-500 font-medium">Ασκήσεις ανά κατηγορία.</p>
+                        <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30"><PenTool size={28} /></div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Εξάσκηση</h3>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Ασκήσεις ανά κατηγορία.</p>
                     </div>
-                    <div className="mt-6 flex items-center gap-2 text-emerald-700 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
+                    <div className="mt-6 flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
                         Εξάσκηση <ArrowRight size={16} />
                     </div>
                 </Link>
 
                 {/* EXAM CARD */}
-                <Link href="/exam" className="group bg-slate-900 p-8 rounded-[2.5rem] shadow-xl shadow-slate-900/20 text-white relative overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col justify-between min-h-[220px]">
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -ml-16 -mb-16 group-hover:bg-yellow-400/10 transition-colors"></div>
+                <Link href="/exam" className="group bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-900 p-8 rounded-[2.5rem] border border-amber-100 dark:border-amber-900/20 shadow-sm hover:shadow-xl hover:border-amber-200 dark:hover:border-amber-700/40 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-100 dark:bg-amber-900/15 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
 
                     <div>
-                        <div className="w-14 h-14 bg-white/10 backdrop-blur-sm text-yellow-400 rounded-2xl flex items-center justify-center mb-6 border border-white/10 group-hover:bg-yellow-400 group-hover:text-slate-900 transition-all"><Timer size={28} /></div>
-                        <h3 className="text-2xl font-black mb-2 font-serif text-white">Προσομοίωση</h3>
-                        <p className="text-slate-400 font-medium group-hover:text-slate-300 transition-colors">Τελικό Τεστ σε πραγματικές συνθήκες.</p>
+                        <div className="w-14 h-14 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-amber-200 dark:shadow-amber-900/30"><Timer size={28} /></div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Προσομοίωση</h3>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Τελικό Τεστ σε πραγματικές συνθήκες.</p>
                     </div>
-                    <div className="mt-6 flex items-center gap-2 text-yellow-400 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
+                    <div className="mt-6 flex items-center gap-2 text-amber-600 dark:text-amber-400 font-black text-sm uppercase tracking-wider group-hover:gap-3 transition-all">
                         Ξεκινήστε <ArrowRight size={16} />
                     </div>
                 </Link>
@@ -214,7 +214,7 @@ export default function UserDashboardPage() {
             {/* 4. OVERVIEW & STATS (BENTO GRID) */}
             <section>
                 <div className="flex items-center justify-between mb-6 px-2 mt-4">
-                    <h2 className="text-lg font-black text-slate-900 uppercase tracking-widest flex items-center gap-2"><BarChart3 size={20} className="text-slate-400" /> Επισκόπηση & Πόροι</h2>
+                    <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2"><BarChart3 size={20} className="text-slate-400" /> Επισκόπηση & Πόροι</h2>
                     {stats.totalExams > 0 && (
                         <Link href="/dashboard/stats" className="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors group bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:border-blue-200">
                             Αναλυτική Στατιστική <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -225,38 +225,38 @@ export default function UserDashboardPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* BLOCK 1: EXAM PERFORMANCE */}
-                    <Link href="/dashboard/stats" className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:border-purple-200 hover:shadow-md transition-all cursor-pointer relative overflow-hidden lg:col-span-1">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <Link href="/dashboard/stats" className="group bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:border-purple-200 dark:hover:border-purple-900/50 hover:shadow-md transition-all cursor-pointer relative overflow-hidden lg:col-span-1">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><Trophy size={24} /></div>
+                            <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><Trophy size={24} /></div>
                             <div>
-                                <h3 className="text-lg font-black text-slate-900">Η Πρόοδός μου</h3>
+                                <h3 className="text-lg font-black text-slate-900 dark:text-white">Η Πρόοδός μου</h3>
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stats.totalExams} Ολοκληρωμένα Τεστ</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-slate-50 p-4 rounded-2xl group-hover:bg-purple-50/50 transition-colors border border-slate-100 group-hover:border-purple-100">
-                                <div className="text-2xl font-black text-slate-900 mb-1">{stats.averageScore}%</div>
+                            <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl group-hover:bg-purple-50/50 dark:group-hover:bg-purple-900/10 transition-colors border border-slate-100 dark:border-slate-800 group-hover:border-purple-100 dark:group-hover:border-purple-900/50">
+                                <div className="text-2xl font-black text-slate-900 dark:text-white mb-1">{stats.averageScore}%</div>
                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Μέσος Όρος</div>
                             </div>
-                            <div className="bg-slate-50 p-4 rounded-2xl group-hover:bg-purple-50/50 transition-colors border border-slate-100 group-hover:border-purple-100">
-                                <div className="text-2xl font-black text-slate-900 mb-1">{stats.successRate}%</div>
+                            <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl group-hover:bg-purple-50/50 dark:group-hover:bg-purple-900/10 transition-colors border border-slate-100 dark:border-slate-800 group-hover:border-purple-100 dark:group-hover:border-purple-900/50">
+                                <div className="text-2xl font-black text-slate-900 dark:text-white mb-1">{stats.successRate}%</div>
                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Επιτυχία</div>
                             </div>
                         </div>
                     </Link>
 
                     {/* BLOCK 2: QUESTIONS BASE */}
-                    <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-50 rounded-full blur-2xl -ml-10 -mb-10 opacity-50"></div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-2xl -ml-10 -mb-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
                         <div className="flex items-center gap-4 mb-4 relative z-10">
-                            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center"><Layers size={24} /></div>
-                            <h3 className="text-lg font-black text-slate-900">Βάση Ερωτήσεων</h3>
+                            <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center"><Layers size={24} /></div>
+                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Βάση Ερωτήσεων</h3>
                         </div>
                         <div className="relative z-10">
-                            <div className="text-4xl font-black text-slate-900 mb-1 font-serif">{contentStats.totalQuestions}</div>
+                            <div className="text-4xl font-black text-slate-900 dark:text-white mb-1 font-serif">{contentStats.totalQuestions}</div>
                             <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                                 Διαθέσιμες Ασκήσεις <CheckCircle size={14} className="text-emerald-500" />
                             </div>
@@ -264,14 +264,14 @@ export default function UserDashboardPage() {
                     </div>
 
                     {/* BLOCK 3: THEORY FILES */}
-                    <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-2xl -mr-10 -mb-10 opacity-50"></div>
+                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden group">
+                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-2xl -mr-10 -mb-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
                         <div className="flex items-center gap-4 mb-4 relative z-10">
-                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center"><FileText size={24} /></div>
-                            <h3 className="text-lg font-black text-slate-900">Υλικό Θεωρίας</h3>
+                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center"><FileText size={24} /></div>
+                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Υλικό Θεωρίας</h3>
                         </div>
                         <div className="relative z-10">
-                            <div className="text-4xl font-black text-slate-900 mb-1 font-serif">{contentStats.totalTheoryFiles}</div>
+                            <div className="text-4xl font-black text-slate-900 dark:text-white mb-1 font-serif">{contentStats.totalTheoryFiles}</div>
                             <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
                                 Ενότητες & Αρχεία <CheckCircle size={14} className="text-blue-500" />
                             </div>

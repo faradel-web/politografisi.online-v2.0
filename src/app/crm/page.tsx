@@ -231,19 +231,19 @@ export default function CrmDashboard() {
     <div className="max-w-7xl mx-auto p-4 md:p-8 pb-20 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tight">Dashboard</h1>
-          <p className="text-slate-500 font-medium">Επισκόπηση & Οικονομικά</p>
+          <h1 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Dashboard</h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">Επισκόπηση & Οικονομικά</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => router.push('/admin')}
-            className="px-5 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold hover:bg-slate-200 transition-all flex items-center gap-2 text-sm shadow-sm"
+            className="px-5 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-2 text-sm shadow-sm"
           >
             <LayoutDashboard size={16} /> Admin Panel
           </button>
           <button
             onClick={() => router.push('/crm/transactions')}
-            className="px-5 py-2.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl font-bold hover:bg-blue-100 transition-all flex items-center gap-2 text-sm shadow-sm"
+            className="px-5 py-2.5 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded-xl font-bold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all flex items-center gap-2 text-sm shadow-sm"
           >
             <Wallet size={16} /> Οικονομικά
           </button>
@@ -258,10 +258,10 @@ export default function CrmDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 min-h-[500px]">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none min-h-[500px]">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-slate-100 rounded-full"><Clock size={20} className="text-slate-600" /></div>
-              <h2 className="text-xl font-black text-slate-800 uppercase">Πρόσφατη Δραστηριότητα</h2>
+              <h2 className="text-xl font-black text-slate-800 dark:text-white uppercase">Πρόσφατη Δραστηριότητα</h2>
             </div>
 
             <div className="space-y-6 relative before:absolute before:left-[19px] before:top-10 before:bottom-0 before:w-[2px] before:bg-slate-100">
@@ -275,13 +275,13 @@ export default function CrmDashboard() {
                     {item.icon}
                   </div>
 
-                  <div className="flex-1 bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-blue-200 transition-all group-hover:bg-white group-hover:shadow-md">
+                  <div className="flex-1 bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-600 transition-all group-hover:bg-white dark:group-hover:bg-slate-700 group-hover:shadow-md">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="font-bold text-slate-800 text-sm md:text-base group-hover:text-blue-600 transition-colors">{item.title}</p>
-                        <p className="text-slate-500 text-xs md:text-sm mt-0.5">{item.subtitle}</p>
+                        <p className="font-bold text-slate-800 dark:text-white text-sm md:text-base group-hover:text-blue-600 transition-colors">{item.title}</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs md:text-sm mt-0.5">{item.subtitle}</p>
                       </div>
-                      <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-lg border border-slate-100 whitespace-nowrap">
+                      <span className="text-[10px] font-bold text-slate-400 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg border border-slate-100 dark:border-slate-700 whitespace-nowrap">
                         {item.date.toLocaleDateString('el-GR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -301,20 +301,20 @@ export default function CrmDashboard() {
         <div className="space-y-6">
           <button onClick={() => setIsModalOpen(true)} className="w-full py-5 bg-slate-900 text-white rounded-3xl font-black text-lg hover:bg-black transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-3 active:scale-95"><Plus size={24} /> <span>Νέα Συναλλαγή</span></button>
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-5 rounded-3xl border border-green-100 shadow-sm">
-              <div className="p-2 bg-green-50 w-fit rounded-xl mb-3 text-green-600"><TrendingUp size={20} /></div>
+            <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-green-100 dark:border-slate-800 shadow-sm">
+              <div className="p-2 bg-green-50 dark:bg-green-900/20 w-fit rounded-xl mb-3 text-green-600"><TrendingUp size={20} /></div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">Έσοδα</p>
-              <p className="text-xl font-black text-slate-800">€{totalIncome}</p>
+              <p className="text-xl font-black text-slate-800 dark:text-white">€{totalIncome}</p>
             </div>
-            <div className="bg-white p-5 rounded-3xl border border-red-100 shadow-sm">
-              <div className="p-2 bg-red-50 w-fit rounded-xl mb-3 text-red-600"><TrendingDown size={20} /></div>
+            <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-red-100 dark:border-slate-800 shadow-sm">
+              <div className="p-2 bg-red-50 dark:bg-red-900/20 w-fit rounded-xl mb-3 text-red-600"><TrendingDown size={20} /></div>
               <p className="text-[10px] font-bold text-slate-400 uppercase">Έξοδα</p>
-              <p className="text-xl font-black text-slate-800">€{totalExpense}</p>
+              <p className="text-xl font-black text-slate-800 dark:text-white">€{totalExpense}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg shadow-slate-200/50">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/50 dark:shadow-none">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-800">Επισκόπηση</h3>
+              <h3 className="font-bold text-slate-800 dark:text-white">Επισκόπηση</h3>
               <span className={`text-xs font-black px-2 py-1 rounded-lg ${totalIncome - totalExpense >= 0 ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>{totalIncome - totalExpense >= 0 ? '+' : ''}€{totalIncome - totalExpense}</span>
             </div>
             <div className="h-[200px] w-full">
@@ -330,14 +330,14 @@ export default function CrmDashboard() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center pb-4 border-b border-slate-100">
-              <h3 className="font-bold text-lg text-slate-800 flex items-center gap-2"><Wallet /> Νέα Συναλλαγή</h3>
+              <h3 className="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2"><Wallet /> Νέα Συναλλαγή</h3>
               <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-full transition-colors"><X /></button>
             </div>
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-50 rounded-xl">
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-50 dark:bg-slate-800 rounded-xl">
               <button onClick={() => setTransType('income')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'income' ? 'bg-white text-green-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Έσοδα (In)</button>
-              <button onClick={() => setTransType('expense')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'expense' ? 'bg-white text-red-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Έξοδα (Out)</button>
+              <button onClick={() => setTransType('expense')} className={`py-2 rounded-lg font-bold text-sm transition-all ${transType === 'expense' ? 'bg-white dark:bg-slate-700 text-red-700 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Έξοδα (Out)</button>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className="text-[10px] font-bold text-slate-400 uppercase ml-1">ΠΟΣΟ (€)</label><input type="number" value={formData.amount} onChange={(e) => setFormData({ ...formData, amount: e.target.value })} className="w-full p-3 bg-slate-50 rounded-xl font-bold outline-none focus:ring-2 focus:ring-slate-900 transition-all" /></div>

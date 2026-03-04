@@ -200,7 +200,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
     };
 
     const MobileTabs = () => (
-        <div className="lg:hidden flex border-b border-slate-200 mb-6 bg-white sticky top-[73px] z-10 shadow-sm">
+        <div className="lg:hidden flex border-b border-slate-200 dark:border-slate-800 mb-6 bg-white dark:bg-slate-900 sticky top-[73px] z-10 shadow-sm">
             <button
                 onClick={() => setMobileView('content')}
                 className={`flex-1 py-3 text-sm font-bold flex items-center justify-center gap-2 border-b-2 ${mobileView === 'content' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400'}`}
@@ -232,7 +232,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                         <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm shrink-0 ${score === maxScore ? 'bg-green-200 text-green-800' : score > 0 ? 'bg-amber-200 text-amber-800' : 'bg-red-200 text-red-800'}`}>
                             {idx + 1}
                         </span>
-                        <h4 className="font-bold text-slate-800 text-base sm:text-lg leading-snug">{q.question}</h4>
+                        <h4 className="font-bold text-slate-800 dark:text-slate-200 text-base sm:text-lg leading-snug break-words">{q.question}</h4>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                         {score === maxScore
@@ -241,16 +241,16 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                 ? <div className="text-amber-600 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-amber-100 px-2 sm:px-3 py-1 rounded-full shrink-0"><CheckCircle size={14} /> <span className="hidden sm:inline">Μερικώς Σωστό</span></div>
                                 : <div className="text-red-600 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-red-100 px-2 sm:px-3 py-1 rounded-full shrink-0"><XCircle size={14} /> <span className="hidden sm:inline">Λάθος</span></div>
                         }
-                        <div className="text-xs font-black text-slate-500 mr-1 mt-1">{score}/{maxScore} pts</div>
+                        <div className="text-xs font-black text-slate-500 dark:text-slate-400 mr-1 mt-1">{score}/{maxScore} pts</div>
                     </div>
                 </div>
 
-                {q.imageUrl && !type.includes('MAP') && <img src={q.imageUrl} className="max-h-48 rounded-lg border mb-4 bg-white object-contain w-full sm:w-auto" alt="" />}
+                {q.imageUrl && !type.includes('MAP') && <img src={q.imageUrl} className="max-h-48 rounded-lg border mb-4 bg-white dark:bg-slate-900 object-contain w-full sm:w-auto" alt="" />}
 
                 {/* 🔥 F. OPEN QUESTIONS (Ανοιχτές ερωτήσεις AI) */}
                 {(type.includes('OPEN') || type.includes('SHORT')) && (
                     <div className="space-y-4">
-                        <div className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 whitespace-pre-wrap">
+                        <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 break-words">
                             <span className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Η απάντησή σας:</span>
                             {userAnswer || <span className="italic opacity-50">Δεν δόθηκε απάντηση.</span>}
                         </div>
@@ -261,18 +261,18 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                 return (
                                     <div className={`p-4 rounded-2xl border-2 ${feedback.score === 2 ? 'bg-emerald-50 border-emerald-200' : feedback.score === 1 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
                                         <div className="flex justify-between items-center mb-3">
-                                            <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                                            <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-purple-500" /> AI Αξιολόγηση
                                             </h4>
                                             <span className={`font-black px-3 py-1 rounded-lg text-sm ${feedback.score === 2 ? 'bg-emerald-100 text-emerald-800' : feedback.score === 1 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}>
                                                 {feedback.score}/2
                                             </span>
                                         </div>
-                                        <p className="text-sm text-slate-700 leading-relaxed mb-3">{feedback.feedback}</p>
+                                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">{feedback.feedback}</p>
                                         {feedback.improvedAnswer && (
-                                            <div className="text-sm bg-white/50 p-3 rounded-xl border border-slate-200/60">
+                                            <div className="text-sm bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800/60">
                                                 <span className="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Πρότυπο Απάντησης:</span>
-                                                <span className="italic text-slate-600">{feedback.improvedAnswer}</span>
+                                                <span className="italic text-slate-600 dark:text-slate-400">{feedback.improvedAnswer}</span>
                                             </div>
                                         )}
                                     </div>
@@ -281,9 +281,9 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
 
                             if (q.modelAnswer) {
                                 return (
-                                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-xl border border-slate-200 dark:border-slate-800">
                                         <span className="block text-xs font-bold text-slate-400 mb-1 uppercase">Πρότυπο Απάντησης:</span>
-                                        <span className="text-sm text-slate-700">{q.modelAnswer}</span>
+                                        <span className="text-sm text-slate-700 dark:text-slate-300">{q.modelAnswer}</span>
                                     </div>
                                 )
                             }
@@ -308,7 +308,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                 isTarget = q.correctAnswerIndex === i;
                             }
 
-                            let style = "bg-white border-slate-100 text-slate-500";
+                            let style = "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400";
                             if (isTarget) style = "bg-green-100 border-green-300 text-green-800 font-bold";
                             else if (isSelected) style = "bg-red-100 border-red-300 text-red-800 font-bold";
 
@@ -335,10 +335,10 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             const correct = userVal === correctVal;
 
                             return (
-                                <div key={i} className={`p-3 rounded-xl border flex justify-between items-center ${correct ? 'bg-white border-green-200' : 'bg-white border-red-200'}`}>
+                                <div key={i} className={`p-3 rounded-xl border flex justify-between items-center ${correct ? 'bg-white dark:bg-slate-900 border-green-200' : 'bg-white dark:bg-slate-900 border-red-200'}`}>
                                     <div className="flex items-center gap-3">
                                         {item.imageUrl && <img src={item.imageUrl} className="w-10 h-10 rounded border" alt="" />}
-                                        <span className="text-xs sm:text-sm font-bold text-slate-700">{item.text}</span>
+                                        <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">{item.text}</span>
                                     </div>
                                     <div className="flex gap-2 text-[10px] sm:text-xs font-bold shrink-0">
                                         <span className={userVal === true ? (correctVal ? "text-green-600 bg-green-50 px-2 py-1 rounded" : "text-red-500 bg-red-50 px-2 py-1 rounded") : "text-slate-300 px-2 py-1"}>ΣΩΣΤΟ</span>
@@ -359,8 +359,8 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                 const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
 
                                 return (
-                                    <div key={partIdx} className="p-4 bg-white rounded-xl border border-slate-200 text-slate-700 leading-relaxed shadow-sm">
-                                        <p className="mb-4 text-sm sm:text-base font-serif">{text}</p>
+                                    <div key={partIdx} className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 leading-relaxed shadow-sm">
+                                        <p className="mb-4 text-sm sm:text-base font-serif break-words">{text}</p>
 
                                         <div className="flex flex-col gap-3">
                                             {Array.from({ length: gapsCount }).map((_, localIdx) => {
@@ -380,7 +380,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                                 }
 
                                                 return (
-                                                    <div key={currentGapKey} className="flex flex-col gap-1 w-full bg-slate-50 p-3 rounded-lg border border-slate-100">
+                                                    <div key={currentGapKey} className="flex flex-col gap-1 w-full bg-slate-50 dark:bg-slate-950/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
                                                         {gapsCount > 1 && <span className="text-[10px] font-bold text-slate-400 uppercase">Κενό {localIdx + 1}</span>}
                                                         <div className="flex items-center gap-2 text-sm flex-wrap">
                                                             <span className="text-slate-400 font-bold">Απάντηση:</span>
@@ -388,7 +388,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                                                 {userVal}
                                                             </span>
                                                             {!isCorrect && correctVal && (
-                                                                <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold border border-slate-200 shadow-sm">
+                                                                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded font-bold border border-slate-200 dark:border-slate-800 shadow-sm">
                                                                     Σωστό: {correctVal}
                                                                 </span>
                                                             )}
@@ -413,15 +413,15 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             const correct = userVal === correctVal;
 
                             return (
-                                <div key={i} className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border gap-2 ${correct ? 'bg-white border-green-200' : 'bg-white border-red-200'}`}>
+                                <div key={i} className={`flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border gap-2 ${correct ? 'bg-white dark:bg-slate-900 border-green-200' : 'bg-white dark:bg-slate-900 border-red-200'}`}>
                                     <div className="flex items-center gap-2 flex-1">
-                                        <span className="bg-slate-100 text-slate-500 px-2 py-1 rounded text-xs font-bold">{i + 1}</span>
+                                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-1 rounded text-xs font-bold">{i + 1}</span>
                                         {pair.leftImg && <img src={pair.leftImg} className="w-8 h-8 rounded" alt="" />}
-                                        <span className="font-bold text-sm text-slate-700">{pair.left}</span>
+                                        <span className="font-bold text-sm text-slate-700 dark:text-slate-300 break-words">{pair.left}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className={`font-bold text-sm px-2 py-1 rounded ${correct ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>{userVal || "---"}</span>
-                                        {!correct && <span className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">({pair.right})</span>}
+                                        {!correct && <span className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-1 rounded">({pair.right})</span>}
                                     </div>
                                 </div>
                             )
@@ -478,17 +478,17 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
         );
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50"><Loader2 className="animate-spin text-blue-600 h-10 w-10" /></div>;
-    if (!result || !result.examSnapshot) return <div className="p-20 text-center text-slate-500 font-medium">Δεν βρέθηκαν δεδομένα εξέτασης.</div>;
+    if (loading) return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50"><Loader2 className="animate-spin text-blue-600 h-10 w-10" /></div>;
+    if (!result || !result.examSnapshot) return <div className="p-20 text-center text-slate-500 dark:text-slate-400 font-medium">Δεν βρέθηκαν δεδομένα εξέτασης.</div>;
 
     const { examSnapshot, answers, aiFeedback } = result;
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 font-sans">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950/50 pb-20 font-sans">
 
-            <div className="bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-4 sticky top-0 z-20 shadow-sm">
+            <div className="bg-white dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 px-4 py-4 sticky top-0 z-20 shadow-sm">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <Link href="/dashboard/stats" className="flex items-center text-slate-500 hover:text-blue-600 font-bold text-sm transition-colors group">
+                    <Link href="/dashboard/stats" className="flex items-center text-slate-500 dark:text-slate-400 hover:text-blue-600 font-bold text-sm transition-colors group">
                         <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> <span className="hidden sm:inline">Επιστροφή</span>
                     </Link>
                     <div className="text-sm font-bold text-slate-400 font-mono">
@@ -499,11 +499,11 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
 
             <div className="max-w-[1600px] mx-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
 
-                <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
                     <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-10 -mr-20 -mt-20 pointer-events-none ${result.isPassed ? 'bg-green-500' : 'bg-red-500'}`}></div>
                     <div className="z-10 text-center md:text-left">
-                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2">Αποτελέσματα</h1>
-                        <p className="text-slate-500 font-medium text-sm sm:text-base">Αναλυτική ανασκόπηση των απαντήσεων.</p>
+                        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2">Αποτελέσματα</h1>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-base">Αναλυτική ανασκόπηση των απαντήσεων.</p>
                     </div>
                     <div className={`z-10 flex items-center gap-4 sm:gap-6 px-6 py-4 rounded-3xl border-2 ${result.isPassed ? 'bg-green-50 border-green-100 text-green-800' : 'bg-red-50 border-red-100 text-red-800'}`}>
                         <div className="text-right">
@@ -518,46 +518,46 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white p-4 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-2">
+                    <div className="bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-blue-600">
                             <BookOpen size={16} />
-                            <span className="font-bold text-sm text-slate-700">Θεωρία</span>
+                            <span className="font-bold text-sm text-slate-700 dark:text-slate-300">Θεωρία</span>
                         </div>
                         <div className="flex items-end gap-1">
-                            <span className="text-2xl font-black text-slate-900">{result.scores?.theory || 0}</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white">{result.scores?.theory || 0}</span>
                             <span className="text-sm text-slate-400 font-bold mb-1">/40</span>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-2">
+                    <div className="bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-orange-600">
                             <PenTool size={16} />
-                            <span className="font-bold text-sm text-slate-700">Ανάγνωση & Έκθεση</span>
+                            <span className="font-bold text-sm text-slate-700 dark:text-slate-300">Ανάγνωση & Έκθεση</span>
                         </div>
                         <div className="flex items-end gap-1">
-                            <span className="text-2xl font-black text-slate-900">{(result.scores?.reading || 0) + (result.scores?.writing || 0)}</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white">{(result.scores?.reading || 0) + (result.scores?.writing || 0)}</span>
                             <span className="text-sm text-slate-400 font-bold mb-1">/30</span>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-2">
+                    <div className="bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-purple-600">
                             <PlayCircle size={16} />
-                            <span className="font-bold text-sm text-slate-700">Ακουστική</span>
+                            <span className="font-bold text-sm text-slate-700 dark:text-slate-300">Ακουστική</span>
                         </div>
                         <div className="flex items-end gap-1">
-                            <span className="text-2xl font-black text-slate-900">{result.scores?.listening || 0}</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white">{result.scores?.listening || 0}</span>
                             <span className="text-sm text-slate-400 font-bold mb-1">/15</span>
                         </div>
                     </div>
 
-                    <div className="bg-white p-4 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col gap-2">
+                    <div className="bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
                         <div className="flex items-center gap-2 text-emerald-600">
                             <Mic size={16} />
-                            <span className="font-bold text-sm text-slate-700">Ομιλία</span>
+                            <span className="font-bold text-sm text-slate-700 dark:text-slate-300">Ομιλία</span>
                         </div>
                         <div className="flex items-end gap-1">
-                            <span className="text-2xl font-black text-slate-900">{result.scores?.speaking || 0}</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white">{result.scores?.speaking || 0}</span>
                             <span className="text-sm text-slate-400 font-bold mb-1">/15</span>
                         </div>
                     </div>
@@ -573,7 +573,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                         <button
                             key={tab.id}
                             onClick={() => { setActiveTab(tab.id as any); setMobileView('content'); }}
-                            className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                            className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-300'}`}
                         >
                             <tab.i className="h-4 w-4" /> {tab.l}
                         </button>
@@ -595,9 +595,9 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                                 <div className={`${mobileView === 'content' ? 'block' : 'hidden'} lg:block`}>
                                     {examSnapshot.reading?.data && (
-                                        <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm lg:sticky lg:top-24">
-                                            <h3 className="font-black text-lg sm:text-xl mb-6 text-slate-900 flex gap-2 items-center border-b pb-4"><BookOpen /> Κείμενο</h3>
-                                            <div className="prose prose-slate max-w-none text-slate-700 whitespace-pre-wrap font-medium leading-relaxed">
+                                        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm lg:sticky lg:top-24">
+                                            <h3 className="font-black text-lg sm:text-xl mb-6 text-slate-900 dark:text-white flex gap-2 items-center border-b pb-4"><BookOpen /> Κείμενο</h3>
+                                            <div className="prose prose-slate max-w-none text-slate-700 dark:text-slate-300 break-words font-medium leading-relaxed">
                                                 {examSnapshot.reading.data.textContent}
                                             </div>
                                         </div>
@@ -607,21 +607,21 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                                     {examSnapshot.reading?.partA?.map((q: any, i: number) => renderQuestionResult(q, answers.readingA?.[i], i, 'readingA'))}
                                     {examSnapshot.reading?.partB?.map((q: any, i: number) => renderQuestionResult(q, answers.readingB?.[i], i + 50, 'readingB'))}
 
-                                    <div className="bg-orange-50 p-6 sm:p-8 rounded-[2.5rem] border border-orange-100 mt-8">
-                                        <h3 className="font-black text-orange-900 mb-6 flex items-center gap-2 text-xl"><PenTool /> Έκθεση</h3>
-                                        <div className="bg-white p-6 rounded-2xl border border-orange-100 text-slate-700 whitespace-pre-wrap mb-6 shadow-sm min-h-[100px]">
+                                    <div className="bg-orange-50 dark:bg-orange-900/10 p-6 sm:p-8 rounded-[2.5rem] border border-orange-100 dark:border-orange-900/30 mt-8">
+                                        <h3 className="font-black text-orange-900 dark:text-orange-400 mb-6 flex items-center gap-2 text-xl"><PenTool /> Έκθεση</h3>
+                                        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-orange-100 dark:border-orange-900/30 text-slate-700 dark:text-slate-300 break-words mb-6 shadow-sm min-h-[100px]">
                                             {answers.essay || "Δεν δόθηκε απάντηση."}
                                         </div>
                                         {aiFeedback?.writing ? (
-                                            <div className="bg-white p-6 rounded-2xl border border-orange-200 shadow-sm">
-                                                <div className="flex justify-between items-center mb-4 border-b border-orange-50 pb-3">
-                                                    <h4 className="font-bold text-orange-800 flex gap-2"><Sparkles className="text-purple-500 fill-purple-500" /> AI Αξιολόγηση</h4>
-                                                    <span className="bg-orange-100 text-orange-800 px-4 py-1.5 rounded-xl font-black border border-orange-200">{aiFeedback.writing.score}/12</span>
+                                            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-orange-200 dark:border-orange-900/50 shadow-sm">
+                                                <div className="flex justify-between items-center mb-4 border-b border-orange-50 dark:border-orange-900/30 pb-3">
+                                                    <h4 className="font-bold text-orange-800 dark:text-orange-400 flex gap-2"><Sparkles className="text-purple-500 fill-purple-500" /> AI Αξιολόγηση</h4>
+                                                    <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 px-4 py-1.5 rounded-xl font-black border border-orange-200 dark:border-orange-900/50">{aiFeedback.writing.score}/12</span>
                                                 </div>
-                                                <p className="text-slate-600 italic leading-relaxed text-sm">{aiFeedback.writing.feedback}</p>
+                                                <p className="text-slate-600 dark:text-slate-400 italic leading-relaxed text-sm">{aiFeedback.writing.feedback}</p>
                                             </div>
                                         ) : (
-                                            <div className="text-center text-slate-400 text-sm font-bold bg-white/50 p-4 rounded-xl border border-dashed border-orange-200">
+                                            <div className="text-center text-slate-400 text-sm font-bold bg-white dark:bg-slate-900/50 p-4 rounded-xl border border-dashed border-orange-200 dark:border-orange-900/50">
                                                 Δεν ζητήθηκε αξιολόγηση AI
                                             </div>
                                         )}
@@ -638,14 +638,14 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                                 <div className={`${mobileView === 'content' ? 'block' : 'hidden'} lg:block lg:col-span-1`}>
                                     {examSnapshot.listening?.data && (
-                                        <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm lg:sticky lg:top-24">
-                                            <h3 className="font-black text-lg sm:text-xl mb-6 text-purple-900 flex gap-2 items-center"><PlayCircle /> Ακουστικό</h3>
+                                        <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm lg:sticky lg:top-24">
+                                            <h3 className="font-black text-lg sm:text-xl mb-6 text-purple-900 dark:text-purple-400 flex gap-2 items-center"><PlayCircle /> Ακουστικό</h3>
                                             {examSnapshot.listening.data.audioUrl && (
-                                                <audio controls src={examSnapshot.listening.data.audioUrl} className="w-full mb-6 accent-purple-600" />
+                                                <audio controls src={examSnapshot.listening.data.audioUrl} className="w-full mb-6 accent-purple-600 dark:accent-purple-500" />
                                             )}
                                             {examSnapshot.listening.data.transcript && (
-                                                <div className="p-6 bg-purple-50/50 rounded-2xl text-sm text-slate-700 border border-purple-100 leading-loose">
-                                                    <strong className="block mb-2 text-purple-900">Τρανσκριπτικό:</strong>
+                                                <div className="p-6 bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl text-sm text-slate-700 dark:text-slate-300 border border-purple-100 dark:border-purple-900/30 leading-loose break-words">
+                                                    <strong className="block mb-2 text-purple-900 dark:text-purple-400">Τρανσκριπτικό:</strong>
                                                     {examSnapshot.listening.data.transcript}
                                                 </div>
                                             )}
@@ -663,42 +663,42 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                     {/* 4. SPEAKING */}
                     {activeTab === 'speaking' && (
                         <div className="space-y-8">
-                            <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                                <h3 className="font-black text-lg sm:text-xl mb-4 text-emerald-900 flex gap-2 items-center"><Mic /> Task 1: General</h3>
-                                <p className="text-slate-700 font-medium mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">{examSnapshot.speaking?.lesson0?.prompt}</p>
-                                <div className="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100">
-                                    <div className="text-xs font-black uppercase text-emerald-700 mb-2 tracking-widest">Η ηχογράφησή σας</div>
+                            <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <h3 className="font-black text-lg sm:text-xl mb-4 text-emerald-900 dark:text-emerald-400 flex gap-2 items-center"><Mic /> Task 1: General</h3>
+                                <p className="text-slate-700 dark:text-slate-300 font-medium mb-6 bg-slate-50 dark:bg-slate-950/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 break-words">{examSnapshot.speaking?.lesson0?.prompt}</p>
+                                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-[2rem] border border-emerald-100 dark:border-emerald-900/30">
+                                    <div className="text-xs font-black uppercase text-emerald-700 dark:text-emerald-400 mb-2 tracking-widest">Η ηχογράφησή σας</div>
                                     {answers.speakingUrl0 ? (
-                                        <audio controls src={answers.speakingUrl0} className="w-full accent-emerald-600" />
+                                        <audio controls src={answers.speakingUrl0} className="w-full accent-emerald-600 dark:accent-emerald-500" />
                                     ) : <div className="text-slate-400 font-bold text-sm">Δεν ηχογραφήθηκε</div>}
                                 </div>
                             </div>
-                            <div className="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                                <h3 className="font-black text-lg sm:text-xl mb-4 text-emerald-900 flex gap-2 items-center"><Mic /> Task 2: Topic</h3>
-                                <p className="text-slate-700 font-medium mb-6 bg-slate-50 p-4 rounded-xl border border-slate-100">{examSnapshot.speaking?.lessonRandom?.prompt}</p>
+                            <div className="bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <h3 className="font-black text-lg sm:text-xl mb-4 text-emerald-900 dark:text-emerald-400 flex gap-2 items-center"><Mic /> Task 2: Topic</h3>
+                                <p className="text-slate-700 dark:text-slate-300 font-medium mb-6 bg-slate-50 dark:bg-slate-950/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 break-words">{examSnapshot.speaking?.lessonRandom?.prompt}</p>
                                 {examSnapshot.speaking?.lessonRandom?.imageUrls && (
                                     <div className="grid grid-cols-2 gap-4 mb-6">
                                         {examSnapshot.speaking.lessonRandom.imageUrls.map((url: string, i: number) => (
-                                            <img key={i} src={url} className="rounded-xl border h-40 object-cover w-full bg-slate-100" alt="" />
+                                            <img key={i} src={url} className="rounded-xl border border-slate-200 dark:border-slate-800 h-40 object-cover w-full bg-slate-100 dark:bg-slate-800" alt="" />
                                         ))}
                                     </div>
                                 )}
-                                <div className="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100 mb-6">
-                                    <div className="text-xs font-black uppercase text-emerald-700 mb-2 tracking-widest">Η ηχογράφησή σας</div>
+                                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-[2rem] border border-emerald-100 dark:border-emerald-900/30 mb-6">
+                                    <div className="text-xs font-black uppercase text-emerald-700 dark:text-emerald-400 mb-2 tracking-widest">Η ηχογράφησή σας</div>
                                     {answers.speakingUrlRandom ? (
-                                        <audio controls src={answers.speakingUrlRandom} className="w-full accent-emerald-600" />
+                                        <audio controls src={answers.speakingUrlRandom} className="w-full accent-emerald-600 dark:accent-emerald-500" />
                                     ) : <div className="text-slate-400 font-bold text-sm">Δεν ηχογραφήθηκε</div>}
                                 </div>
                                 {aiFeedback?.speaking ? (
-                                    <div className="bg-white p-6 rounded-2xl border-2 border-emerald-100">
-                                        <div className="flex justify-between items-center mb-4 border-b border-emerald-50 pb-3">
-                                            <h4 className="font-bold text-emerald-800 flex gap-2"><Sparkles className="text-purple-500 fill-purple-500" /> AI Αξιολόγηση</h4>
-                                            <span className="bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-xl font-black border border-emerald-200">{aiFeedback.speaking.score}/15</span>
+                                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border-2 border-emerald-100 dark:border-emerald-900/30">
+                                        <div className="flex justify-between items-center mb-4 border-b border-emerald-50 dark:border-emerald-900/10 pb-3">
+                                            <h4 className="font-bold text-emerald-800 dark:text-emerald-400 flex gap-2"><Sparkles className="text-purple-500 fill-purple-500" /> AI Αξιολόγηση</h4>
+                                            <span className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 px-4 py-1.5 rounded-xl font-black border border-emerald-200 dark:border-emerald-900/30">{aiFeedback.speaking.score}/15</span>
                                         </div>
-                                        <p className="text-slate-600 italic leading-relaxed text-sm">{aiFeedback.speaking.feedback}</p>
+                                        <p className="text-slate-600 dark:text-slate-400 italic leading-relaxed text-sm">{aiFeedback.speaking.feedback}</p>
                                     </div>
                                 ) : (
-                                    <div className="text-center text-slate-400 text-sm font-bold bg-slate-50 p-4 rounded-xl border border-dashed border-slate-200">
+                                    <div className="text-center text-slate-400 text-sm font-bold bg-slate-50 dark:bg-slate-950/50 p-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">
                                         Δεν ζητήθηκε αξιολόγηση AI
                                     </div>
                                 )}

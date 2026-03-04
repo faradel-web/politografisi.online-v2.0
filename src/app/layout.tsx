@@ -53,6 +53,7 @@ export const metadata: Metadata = {
 
 import CookieConsent from "@/components/shared/CookieConsent";
 import Analytics from "@/components/shared/Analytics";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -60,14 +61,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="el">
+    <html lang="el" suppressHydrationWarning>
       {/* Додаємо змінні шрифтів та базові стилі */}
-      <body className={`${geologica.variable} ${vollkorn.variable} font-sans antialiased bg-slate-50 text-slate-900`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        <CookieConsent />
-        <Analytics />
+      <body className={`${geologica.variable} ${vollkorn.variable} font-sans antialiased bg-slate-50 text-slate-900`} suppressHydrationWarning>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+          <CookieConsent />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

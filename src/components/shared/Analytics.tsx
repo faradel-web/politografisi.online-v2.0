@@ -1,13 +1,21 @@
 "use client";
 
 import Script from 'next/script';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX';
 export const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || 'XXXXXXXXXXXXXXXX';
 
 export default function Analytics() {
+    return (
+        <Suspense fallback={null}>
+            <AnalyticsContent />
+        </Suspense>
+    );
+}
+
+function AnalyticsContent() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [consentGranted, setConsentGranted] = useState(true);

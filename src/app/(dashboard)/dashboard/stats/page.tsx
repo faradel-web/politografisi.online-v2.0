@@ -174,19 +174,19 @@ export default function StatsPage() {
     }, [user]);
 
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center bg-slate-50"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>;
+        return <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50"><Loader2 className="animate-spin h-8 w-8 text-blue-600" /></div>;
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 font-sans">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950/50 pb-20 font-sans">
 
             {/* HEADER */}
-            <div className="bg-white border-b border-slate-200 px-4 py-4 sticky top-0 z-20 shadow-sm/50 backdrop-blur-md bg-white/90">
+            <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-4 sticky top-0 z-20 shadow-sm/50 backdrop-blur-md bg-white dark:bg-slate-900/90">
                 <div className="max-w-6xl mx-auto flex items-center gap-3 sm:gap-4">
-                    <Link href="/dashboard" className="p-2 -ml-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500 hover:text-slate-900">
+                    <Link href="/dashboard" className="p-2 -ml-2 hover:bg-slate-100 dark:bg-slate-800 rounded-xl transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white">
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
-                    <h1 className="text-lg sm:text-xl font-black text-slate-900 line-clamp-1">
+                    <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white line-clamp-1">
                         Αναλυτική Στατιστική
                     </h1>
                 </div>
@@ -196,27 +196,27 @@ export default function StatsPage() {
 
                 {/* 1. SUMMARY CARDS */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
                         <div className="p-3 sm:p-4 bg-blue-50 text-blue-600 rounded-2xl"><Trophy className="h-6 w-6 sm:h-8 sm:w-8" /></div>
                         <div>
                             <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wide">Μέσος Όρος</p>
-                            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.averageScore}/100</p>
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{stats.averageScore}/100</p>
                         </div>
                     </div>
-                    <div className="bg-white p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
                         <div className="p-3 sm:p-4 bg-purple-50 text-purple-600 rounded-2xl"><Clock className="h-6 w-6 sm:h-8 sm:w-8" /></div>
                         <div>
                             <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wide">Σύνολο Τεστ</p>
-                            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.totalExams}</p>
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{stats.totalExams}</p>
                         </div>
                     </div>
-                    <div className="bg-white p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center gap-4">
                         <div className={`p-3 sm:p-4 rounded-2xl ${stats.successRate >= 60 ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
                             <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8" />
                         </div>
                         <div>
                             <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wide">Επιτυχία</p>
-                            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.successRate}%</p>
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">{stats.successRate}%</p>
                         </div>
                     </div>
                 </div>
@@ -224,7 +224,7 @@ export default function StatsPage() {
                 {/* 2. CHARTS */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {/* Progress Chart */}
-                    <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200">
+                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800">
                         <h2 className="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wide mb-6 flex items-center gap-2">
                             <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" /> Πορεία Επίδοσης (Τελευταία 10)
                         </h2>
@@ -234,7 +234,7 @@ export default function StatsPage() {
                     </div>
 
                     {/* Radar Chart */}
-                    <div className="bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200">
+                    <div className="bg-white dark:bg-slate-900 p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800">
                         <h2 className="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-wide mb-6 flex items-center gap-2">
                             <Radar className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" /> Ανάλυση Δεξιοτήτων
                         </h2>
@@ -245,9 +245,9 @@ export default function StatsPage() {
                 </div>
 
                 {/* 3. HISTORY LIST */}
-                <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="p-6 sm:p-8 border-b border-slate-100">
-                        <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+                <div className="bg-white dark:bg-slate-900 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div className="p-6 sm:p-8 border-b border-slate-100 dark:border-slate-800">
+                        <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
                             <Calendar className="h-5 w-5 text-slate-400" /> Ιστορικό Εξετάσεων
                         </h2>
                     </div>
@@ -266,36 +266,36 @@ export default function StatsPage() {
                                         key={res.id}
                                         // 🔥 ЦЕ ВАЖЛИВО: Перевірте, чи цей шлях веде до правильного файлу Results
                                         href={`/dashboard/results/${res.id}`}
-                                        className="flex flex-col sm:flex-row sm:items-center justify-between p-5 sm:p-6 hover:bg-slate-50 transition-colors group gap-4"
+                                        className="flex flex-col sm:flex-row sm:items-center justify-between p-5 sm:p-6 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors group gap-4 border-b border-slate-100 dark:border-slate-800 last:border-b-0"
                                     >
                                         <div className="flex items-start sm:items-center gap-4 w-full sm:w-auto">
                                             <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 
-                                        ${res.isPassed ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-red-50 border-red-100 text-red-600'}`}>
+                                        ${res.isPassed ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400'}`}>
                                                 {res.isPassed ? <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7" /> : <XCircle className="h-6 w-6 sm:h-7 sm:w-7" />}
                                             </div>
 
                                             <div className="flex-1">
-                                                <p className="font-black text-slate-900 text-base sm:text-lg flex flex-wrap items-center gap-2">
+                                                <p className="font-black text-slate-900 dark:text-white text-base sm:text-lg flex flex-wrap items-center gap-2">
                                                     Εξέταση
-                                                    <span className="text-[10px] sm:text-xs font-normal text-slate-400 border border-slate-200 px-2 py-0.5 rounded-lg font-mono">
+                                                    <span className="text-[10px] sm:text-xs font-normal text-slate-400 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-lg font-mono">
                                                         {res.date?.toDate ? new Date(res.date.toDate()).toLocaleDateString('el-GR') : '---'}
                                                     </span>
                                                 </p>
                                                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold mt-3">
                                                     {/* Θεωρία */}
-                                                    <span className={`px-2 py-1 flex items-center gap-1 rounded-md border ${theoryPassed ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                                                    <span className={`px-2 py-1 flex items-center gap-1 rounded-md border ${theoryPassed ? 'bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30' : 'bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 border-red-200 dark:border-red-900/30'}`}>
                                                         <BookOpen size={12} /> Θεωρία: {res.scores?.theory || 0}/40
                                                     </span>
                                                     {/* Ανάγνωση & Έκθεση */}
-                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-orange-50 text-orange-700 border-orange-200 w-fit">
+                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-orange-50 dark:bg-orange-900/10 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-900/30 w-fit">
                                                         <PenTool size={12} /> Ανάγνωση & Έκθεση: {(res.scores?.reading || 0) + (res.scores?.writing || 0)}/30
                                                     </span>
                                                     {/* Ακουστική */}
-                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-purple-50 text-purple-700 border-purple-200 w-fit">
+                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-purple-50 dark:bg-purple-900/10 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-900/30 w-fit">
                                                         <PlayCircle size={12} /> Ακουστική: {res.scores?.listening || 0}/15
                                                     </span>
                                                     {/* Ομιλία */}
-                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-emerald-50 text-emerald-700 border-emerald-200 w-fit">
+                                                    <span className="px-2 py-1 flex items-center gap-1 rounded-md border bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30 w-fit">
                                                         <Mic size={12} /> Ομιλία: {res.scores?.speaking || 0}/15
                                                     </span>
                                                 </div>
@@ -305,11 +305,11 @@ export default function StatsPage() {
                                         <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-50 sm:gap-4">
                                             <div className="text-left sm:text-right">
                                                 <p className="text-[10px] uppercase font-black text-slate-400">Σύνολο</p>
-                                                <p className={`text-xl sm:text-2xl font-black ${res.isPassed ? 'text-emerald-600' : 'text-slate-900'}`}>
+                                                <p className={`text-xl sm:text-2xl font-black ${res.isPassed ? 'text-emerald-600' : 'text-slate-900 dark:text-white'}`}>
                                                     {res.score}/100
                                                 </p>
                                             </div>
-                                            <div className={`p-2 rounded-full ${res.isPassed ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-300'}`}>
+                                            <div className={`p-2 rounded-full ${res.isPassed ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-300'}`}>
                                                 <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 rotate-180" />
                                             </div>
                                         </div>
@@ -318,8 +318,8 @@ export default function StatsPage() {
                             })
                         ) : (
                             <div className="p-8 sm:p-12 text-center flex flex-col items-center gap-4">
-                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300"><AlertTriangle size={32} /></div>
-                                <p className="text-slate-500 font-medium text-sm sm:text-base">Δεν βρέθηκαν αποτελέσματα.</p>
+                                <div className="w-16 h-16 bg-slate-50 dark:bg-slate-950/50 rounded-full flex items-center justify-center text-slate-300"><AlertTriangle size={32} /></div>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-base">Δεν βρέθηκαν αποτελέσματα.</p>
                                 <Link href="/exam" className="text-blue-600 font-bold hover:underline">Έναρξη Εξέτασης</Link>
                             </div>
                         )}

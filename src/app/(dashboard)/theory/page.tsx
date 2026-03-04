@@ -48,7 +48,7 @@ export default function StudyHubPage() {
   }, []);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50">
       <Loader2 className="animate-spin h-10 w-10 text-slate-300" />
     </div>
   );
@@ -60,19 +60,19 @@ export default function StudyHubPage() {
     const practiceHref = `/practice/${cat.id}`; // unused but keeping variables safe
 
     return (
-      <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
         <div>
           <div className="flex justify-between items-start mb-4">
-            <div className={`p-4 rounded-2xl ${cat.bg} ${cat.color}`}>
+            <div className={`p-4 rounded-2xl ${cat.bg} dark:bg-opacity-10 dark:bg-slate-800 ${cat.color} dark:text-opacity-90`}>
               <cat.icon className="h-7 w-7" />
             </div>
             {practiceCount > 0 && (
-              <span className="bg-slate-50 px-2 py-1 rounded-lg text-[10px] font-black text-slate-400 border border-slate-100 flex items-center gap-1">
+              <span className="bg-slate-50 dark:bg-slate-950/50 px-2 py-1 rounded-lg text-[10px] font-black text-slate-400 border border-slate-100 dark:border-slate-800 flex items-center gap-1">
                 <GraduationCap size={12} /> {practiceCount}
               </span>
             )}
           </div>
-          <h3 className="text-xl font-black text-slate-900 mb-1 leading-tight">{cat.title}</h3>
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-1 leading-tight">{cat.title}</h3>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">{cat.sub}</p>
         </div>
 
@@ -91,18 +91,18 @@ export default function StudyHubPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950/50 p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-12">
         <header className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2 tracking-tight">Θεωρία</h1>
-          <p className="text-slate-500 font-medium text-base md:text-lg">Επιλέξτε κατηγορία για μελέτη</p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Θεωρία</h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-base md:text-lg">Επιλέξτε κατηγορία για μελέτη</p>
         </header>
 
         {/* БЛОК 1: Γνώσεις (Ιστορία/Πολιτισμός/) - ТЕПЕР ЗВЕРХУ */}
         <section>
           <div className="flex items-center gap-3 mb-6 px-2">
             <Layers className="h-6 w-6 text-blue-600" />
-            <h2 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-widest">Γνώσεις (Ιστορία/Πολιτικοί Θεσμοί/Γεωγραφία/Πολιτισμός)</h2>
+            <h2 className="text-lg md:text-xl font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest break-words">Γνώσεις (Ιστορία/Πολιτικοί Θεσμοί/Γεωγραφία/Πολιτισμός)</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {CATEGORIES.filter(c => c.group === 'knowledge').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}
@@ -113,7 +113,7 @@ export default function StudyHubPage() {
         <section>
           <div className="flex items-center gap-3 mb-6 px-2">
             <GraduationCap className="h-6 w-6 text-purple-600" />
-            <h2 className="text-lg md:text-xl font-black text-slate-800 uppercase tracking-widest">Ελληνομάθεια (Γλώσσα)</h2>
+            <h2 className="text-lg md:text-xl font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest break-words">Ελληνομάθεια (Γλώσσα)</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {CATEGORIES.filter(c => c.group === 'language').map(cat => (<CategoryCard key={cat.id} cat={cat} />))}

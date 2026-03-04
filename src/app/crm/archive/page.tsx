@@ -183,26 +183,26 @@ export default function CrmArchivePage() {
   const spam = filtered.filter(c => c.archiveCategory === 'spam');
 
   const renderArchiveSection = (title: string, icon: any, data: UnifiedContact[], color: string) => (
-    <div className={`mb-10 rounded-2xl border ${color} bg-white overflow-hidden shadow-sm`}>
-      <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
-        <div className="flex items-center gap-2 font-bold text-slate-700">{icon} {title}</div>
-        <span className="text-xs font-bold bg-white px-2 py-1 rounded-full border">{data.length}</span>
+    <div className={`mb-10 rounded-2xl border ${color} bg-white dark:bg-slate-900 overflow-hidden shadow-sm dark:border-opacity-30`}>
+      <div className="p-4 border-b dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800">
+        <div className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-200">{icon} {title}</div>
+        <span className="text-xs font-bold bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-1 rounded-full border dark:border-slate-600">{data.length}</span>
       </div>
       <table className="w-full text-left text-sm">
-        <tbody className="divide-y">
+        <tbody className="divide-y dark:divide-slate-800">
           {data.length === 0 ? <tr><td className="p-4 text-slate-400 italic text-center">Κενό αρχείο</td></tr> :
             data.map(c => (
-              <tr key={`${c.id}-${c.email}`} className="hover:bg-slate-50 transition-colors">
+              <tr key={`${c.id}-${c.email}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                 <td className="p-4">
-                  <div className="font-bold text-slate-800">{c.lastName.toUpperCase()} {c.firstName}</div>
+                  <div className="font-bold text-slate-800 dark:text-slate-200">{c.lastName.toUpperCase()} {c.firstName}</div>
                   <div className="text-[10px] text-slate-400 font-medium">{c.email}</div>
                 </td>
-                <td className="p-4 text-xs text-slate-500 italic max-w-[200px] truncate">
+                <td className="p-4 text-xs text-slate-500 dark:text-slate-400 italic max-w-[200px] truncate">
                   {c.requests.length > 0 ? `"${c.requests[0].message}"` : "Χωρίς ιστορικό"}
                 </td>
                 <td className="p-4 text-right flex justify-end gap-1">
-                  <button onClick={() => restoreContact(c)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-all" title="Restore"><ArchiveRestore size={18} /></button>
-                  <button onClick={() => hardDelete(c)} className="p-2 text-slate-300 hover:text-red-600 rounded-xl transition-all"><Trash2 size={18} /></button>
+                  <button onClick={() => restoreContact(c)} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-all" title="Restore"><ArchiveRestore size={18} /></button>
+                  <button onClick={() => hardDelete(c)} className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-600 dark:hover:text-red-400 rounded-xl transition-all"><Trash2 size={18} /></button>
                 </td>
               </tr>
             ))
@@ -216,21 +216,21 @@ export default function CrmArchivePage() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 pb-20">
-      <button onClick={() => router.push('/crm/leads')} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-slate-800 font-bold transition-colors text-sm uppercase tracking-wider">
+      <button onClick={() => router.push('/crm/leads')} className="mb-6 flex items-center gap-2 text-slate-400 dark:text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold transition-colors text-sm uppercase tracking-wider">
         <ArrowLeft size={16} /> Επιστροφή στις Επαφές
       </button>
 
-      <div className="mb-8 flex flex-col md:flex-row justify-between items-end gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-end gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Αρχειοθήκη</h1>
-          <p className="text-slate-500 text-sm font-medium">Διαχείριση παλαιών επαφών και αιτημάτων</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Αρχειοθήκη</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Διαχείριση παλαιών επαφών και αιτημάτων</p>
         </div>
         <div className="relative w-full md:w-80">
           <Search className="absolute left-3 top-3 text-slate-400" size={18} />
           <input
             type="text" placeholder="Αναζήτηση στο αρχείο..."
             value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 shadow-sm font-medium"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 shadow-sm font-medium dark:text-slate-100"
           />
         </div>
       </div>

@@ -152,6 +152,23 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     }
   };
 
+  // Helper: видаляємо символи, що викликають неправильний перенос слів (wbr, м'які дефіси, нульові пробіли)
+  const sanitizeContent = (html: string): string => {
+    return html
+      // ГОЛОВНА ПРИЧИНА: редактор вставив &nbsp; замість звичайних пробілів між словами.
+      // Нерозривний пробіл не є точкою переносу, тому браузер ламає слова посередині.
+      .replace(/&nbsp;/gi, ' ')             // HTML-об'єкт нерозривного пробілу → звичайний пробіл
+      .replace(/\u00A0/g, ' ')             // Unicode нерозривний пробіл → звичайний пробіл
+      // Додаткові символи переносу
+      .replace(/&shy;/gi, '')              // HTML-об'єкт м'якого дефіса
+      .replace(/\u00AD/g, '')              // Unicode м'який дефіс (soft hyphen)
+      .replace(/\u200B/g, '')              // Zero-width space
+      .replace(/\u200C/g, '')              // Zero-width non-joiner
+      .replace(/\u200D/g, '')              // Zero-width joiner
+      .replace(/\uFEFF/g, '')              // BOM / Zero-width no-break space
+      .replace(/<wbr\s*\/?>/gi, '');       // <wbr> теги
+  };
+
   // Helper для YouTube
   const getEmbedUrl = (url: string) => {
     if (!url) return null;
@@ -160,23 +177,23 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
   };
 
-  if (isLoading || authLoading) return <div className="h-screen flex items-center justify-center bg-slate-50"><Loader2 className="animate-spin h-10 w-10 text-blue-600" /></div>;
+  if (isLoading || authLoading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50"><Loader2 className="animate-spin h-10 w-10 text-blue-600" /></div>;
 
   return (
-    <div className="h-screen flex flex-col bg-white overflow-hidden font-sans text-slate-900">
+    <div className="h-screen flex flex-col bg-white dark:bg-slate-900 overflow-hidden font-sans text-slate-900 dark:text-white">
 
       {/* --- HEADER --- */}
-      <header className="h-16 border-b border-slate-100 flex items-center justify-between px-4 bg-white shrink-0 z-20 shadow-sm relative">
+      <header className="h-16 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 bg-white dark:bg-slate-900 shrink-0 z-20 shadow-sm relative">
         <div className="flex items-center gap-2 md:gap-4">
-          <Link href={`/theory`} className="hidden md:flex p-2 hover:bg-slate-50 rounded-xl text-slate-500 transition-colors">
+          <Link href={`/theory`} className="hidden md:flex p-2 hover:bg-slate-50 dark:bg-slate-950/50 rounded-xl text-slate-500 dark:text-slate-400 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden p-2 hover:bg-slate-50 rounded-xl text-slate-500 transition-colors">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="lg:hidden p-2 hover:bg-slate-50 dark:bg-slate-950/50 rounded-xl text-slate-500 dark:text-slate-400 transition-colors">
             <Menu className="h-5 w-5" />
           </button>
-          <div className="flex flex-col md:flex-row md:items-center md:gap-2 md:border-l md:border-slate-200 md:pl-4 pl-2">
+          <div className="flex flex-col md:flex-row md:items-center md:gap-2 md:border-l md:border-slate-200 dark:border-slate-800 md:pl-4 pl-2">
             <span className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest">ΘΕΩΡΙΑ</span>
-            <h1 className="font-black text-slate-900 text-sm md:text-lg leading-tight">
+            <h1 className="font-black text-slate-900 dark:text-white text-sm md:text-lg leading-tight">
               {CATEGORY_NAMES[categoryId] || categoryId}
             </h1>
           </div>
@@ -184,7 +201,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
-          className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 rounded-xl font-bold transition-all text-xs md:text-sm ${isChatOpen ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+          className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 rounded-xl font-bold transition-all text-xs md:text-sm ${isChatOpen ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'}`}
         >
           <Bot size={18} />
           <span className="hidden sm:inline">{isChatOpen ? "Κλείσιμο AI" : "AI Βοηθός"}</span>
@@ -198,10 +215,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
         {/* LEFT SIDEBAR (DRAWER) */}
         {isSidebarOpen && <div className="fixed inset-0 bg-black/20 z-30 lg:hidden backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)}></div>}
 
-        <div className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-slate-50 border-r border-slate-200 flex flex-col transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} shrink-0`}>
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
-            <span className="font-bold text-slate-800 text-sm tracking-wide uppercase">Μαθήματα ({lessons.length})</span>
-            <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-1.5 text-slate-400 hover:bg-slate-100 rounded-md"><X size={18} /></button>
+        <div className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-slate-50 dark:bg-slate-950/50 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} shrink-0`}>
+          <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
+            <span className="font-bold text-slate-800 dark:text-slate-200 text-sm tracking-wide uppercase">Μαθήματα ({lessons.length})</span>
+            <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-1.5 text-slate-400 hover:bg-slate-100 dark:bg-slate-800 rounded-md"><X size={18} /></button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
             {lessons.length > 0 ? (
@@ -218,10 +235,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                       }
                     }}
                     className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${isLocked
-                      ? 'bg-slate-50 text-slate-400 cursor-not-allowed opacity-75'
+                      ? 'bg-slate-50 dark:bg-slate-950/50 text-slate-400 cursor-not-allowed opacity-75'
                       : activeLesson?.id === l.id
                         ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                        : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-100'
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 border border-slate-100 dark:border-slate-800'
                       }`}
                   >
                     {isLocked && <Lock size={14} className="shrink-0 text-slate-400" />}
@@ -239,12 +256,12 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
         <div className={`flex-1 flex flex-col transition-all duration-300 min-w-0 ${isChatOpen ? 'lg:mr-[400px]' : ''}`}>
 
           {/* PROGRESS BAR */}
-          <div className="h-1 w-full bg-slate-100 shrink-0">
+          <div className="h-1 w-full bg-slate-100 dark:bg-slate-800 shrink-0">
             <div className="h-full bg-blue-500 transition-all duration-150 ease-out" style={{ width: `${scrollProgress}%` }}></div>
           </div>
 
           {/* ACTIVE LESSON VIEW */}
-          <div onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 custom-scrollbar bg-white scroll-smooth relative">
+          <div onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 custom-scrollbar bg-white dark:bg-slate-900 scroll-smooth relative">
             {activeLesson ? (
               <div className="max-w-3xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -254,7 +271,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                   <ChevronRight size={12} />
                   <span>Περιεχόμενο</span>
                 </div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 mb-6 md:mb-8 font-serif leading-tight">{activeLesson.title}</h2>
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-6 md:mb-8 font-serif leading-tight">{activeLesson.title}</h2>
 
                 {/* 2. VIDEO PLAYER */}
                 {activeLesson.videoUrl && getEmbedUrl(activeLesson.videoUrl) && (
@@ -265,12 +282,12 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
                 {/* 3. AUDIO PLAYER */}
                 {activeLesson.audioUrl && (
-                  <div className="mb-6 md:mb-8 p-3 md:p-4 bg-purple-50 border border-purple-100 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 shadow-sm">
+                  <div className="mb-6 md:mb-8 p-3 md:p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-100 dark:border-purple-900/30 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 md:p-3 bg-white rounded-full text-purple-600 shadow-sm"><Music size={20} /></div>
+                      <div className="p-2 md:p-3 bg-white dark:bg-slate-800 rounded-full text-purple-600 dark:text-purple-400 shadow-sm"><Music size={20} /></div>
                       <div>
-                        <div className="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Podcast</div>
-                        <div className="font-bold text-purple-900 text-sm">Ακουστικό Μάθημα</div>
+                        <div className="text-[10px] font-bold text-purple-400 dark:text-purple-400 uppercase tracking-wider">Podcast</div>
+                        <div className="font-bold text-purple-900 dark:text-purple-300 text-sm">Ακουστικό Μάθημα</div>
                       </div>
                     </div>
                     <audio controls src={activeLesson.audioUrl} className="w-full sm:w-auto sm:flex-1 h-8 md:h-10" />
@@ -282,10 +299,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                   <div className="mb-8 md:mb-10">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="p-1.5 md:p-2 bg-orange-100 text-orange-600 rounded-lg"><Presentation size={16} /></div>
-                      <h3 className="font-bold text-slate-800 text-xs md:text-sm uppercase tracking-wide">Παρουσίαση</h3>
+                      <h3 className="font-bold text-slate-800 dark:text-slate-200 text-xs md:text-sm uppercase tracking-wide">Παρουσίαση</h3>
                     </div>
                     {/* Aspect Ratio 16/9, Responsive Width */}
-                    <div className="w-full aspect-[16/9] border border-slate-200 rounded-xl md:rounded-2xl overflow-hidden shadow-sm bg-slate-100">
+                    <div className="w-full aspect-[16/9] border border-slate-200 dark:border-slate-800 rounded-xl md:rounded-2xl overflow-hidden shadow-sm bg-slate-100 dark:bg-slate-800">
                       <iframe
                         src={`https://docs.google.com/gview?url=${encodeURIComponent(activeLesson.presentationUrl)}&embedded=true`}
                         className="w-full h-full"
@@ -299,14 +316,15 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
                 {/* 5. HTML CONTENT (Responsive Typography) */}
                 <div
-                  className="prose prose-slate prose-base md:prose-lg max-w-none font-serif leading-loose text-slate-700 prose-headings:font-black prose-a:text-blue-600 prose-img:rounded-2xl mb-8 md:mb-12 break-words"
-                  dangerouslySetInnerHTML={{ __html: activeLesson.content }}
+                  className="lesson-content prose prose-slate prose-base md:prose-lg max-w-none font-serif leading-loose text-slate-700 dark:text-slate-300 dark:prose-invert prose-headings:font-black prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-img:rounded-2xl mb-8 md:mb-12"
+                  style={{ hyphens: 'none', WebkitHyphens: 'none', MozHyphens: 'none', msHyphens: 'none' } as React.CSSProperties}
+                  dangerouslySetInnerHTML={{ __html: sanitizeContent(activeLesson.content) }}
                 />
 
                 {/* 6. ATTACHMENTS */}
                 {activeLesson.attachments && activeLesson.attachments.length > 0 && (
                   <div className="mb-12">
-                    <h3 className="text-xs md:text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2"><FileText size={16} /> Αρχεία για Λήψη</h3>
+                    <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest mb-4 flex items-center gap-2"><FileText size={16} /> Αρχεία για Λήψη</h3>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {activeLesson.attachments.map((file, idx) => (
                         <a
@@ -314,11 +332,11 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                           href={file.url}
                           target="_blank"
                           download
-                          className="flex items-center gap-3 p-3 md:p-4 bg-slate-50 border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all rounded-xl group"
+                          className="flex items-center gap-3 p-3 md:p-4 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 hover:border-blue-300 hover:bg-blue-50 transition-all rounded-xl group"
                         >
-                          <div className="p-2 bg-white rounded-lg text-slate-400 group-hover:text-blue-500 transition-colors"><File size={20} /></div>
+                          <div className="p-2 bg-white dark:bg-slate-900 rounded-lg text-slate-400 group-hover:text-blue-500 transition-colors"><File size={20} /></div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-bold text-slate-700 text-sm truncate group-hover:text-blue-700">{file.name}</div>
+                            <div className="font-bold text-slate-700 dark:text-slate-300 text-sm truncate group-hover:text-blue-700">{file.name}</div>
                             <div className="text-[10px] text-slate-400 uppercase">Λήψη</div>
                           </div>
                           <Download size={16} className="text-slate-300 group-hover:text-blue-400" />
@@ -329,12 +347,12 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                 )}
 
                 {/* AI Call to Action */}
-                <div className="mt-8 md:mt-12 p-4 md:p-6 bg-indigo-50 rounded-2xl border border-indigo-100 flex items-start gap-4">
-                  <div className="p-2 md:p-3 bg-white rounded-full text-indigo-600 shadow-sm"><Bot size={24} /></div>
+                <div className="mt-8 md:mt-12 p-4 md:p-6 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/30 flex items-start gap-4">
+                  <div className="p-2 md:p-3 bg-white dark:bg-slate-800 rounded-full text-indigo-600 dark:text-indigo-400 shadow-sm"><Bot size={24} /></div>
                   <div>
-                    <h4 className="font-bold text-indigo-900 mb-1 text-sm md:text-base">Έχεις απορίες;</h4>
-                    <p className="text-xs md:text-sm text-indigo-700/80 mb-3">Ο καθηγητής AI είναι εδώ για να σου εξηγήσει οτιδήποτε.</p>
-                    <button onClick={() => setIsChatOpen(true)} className="text-xs font-black uppercase tracking-wider text-indigo-600 hover:text-indigo-800 underline">Άνοιγμα Chat</button>
+                    <h4 className="font-bold text-indigo-900 dark:text-indigo-300 mb-1 text-sm md:text-base">Έχεις απορίες;</h4>
+                    <p className="text-xs md:text-sm text-indigo-700/80 dark:text-indigo-400/80 mb-3">Ο καθηγητής AI είναι εδώ για να σου εξηγήσει οτιδήποτε.</p>
+                    <button onClick={() => setIsChatOpen(true)} className="text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline">Άνοιγμα Chat</button>
                   </div>
                 </div>
 
@@ -346,10 +364,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
                   if (isNextLocked) {
                     return (
-                      <div className="mt-12 flex flex-col items-center justify-center p-6 bg-slate-50 border border-slate-200 rounded-2xl text-center">
-                        <div className="p-3 bg-white rounded-full text-slate-400 mb-3 shadow-sm"><Lock size={24} /></div>
-                        <h4 className="font-bold text-slate-800 mb-1">Το επόμενο μάθημα απαιτεί συνδρομή</h4>
-                        <p className="text-sm text-slate-500 mb-4 max-w-sm">Αναβαθμίστε τον λογαριασμό σας για πλήρη πρόσβαση σε όλη τη θεωρία, τα τεστ και τον AI καθηγητή.</p>
+                      <div className="mt-12 flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-center">
+                        <div className="p-3 bg-white dark:bg-slate-900 rounded-full text-slate-400 mb-3 shadow-sm"><Lock size={24} /></div>
+                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">Το επόμενο μάθημα απαιτεί συνδρομή</h4>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-4 max-w-sm">Αναβαθμίστε τον λογαριασμό σας για πλήρη πρόσβαση σε όλη τη θεωρία, τα τεστ και τον AI καθηγητή.</p>
                         <Link href="/profile" className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition shadow-md hover:-translate-y-0.5">
                           Αναβάθμιση Τώρα
                         </Link>
@@ -359,7 +377,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
 
                   if (nextLesson) {
                     return (
-                      <div className="mt-12 flex justify-end border-t border-slate-100 pt-8">
+                      <div className="mt-12 flex justify-end border-t border-slate-100 dark:border-slate-800 pt-8">
                         <button
                           onClick={() => {
                             setActiveLesson(nextLesson);
@@ -368,8 +386,8 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                           className="group flex flex-col items-end text-right hover:-translate-y-1 transition-transform"
                         >
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Επόμενο Μάθημα</span>
-                          <span className="flex items-center gap-3 text-lg font-black text-blue-600 group-hover:text-blue-700">
-                            {nextLesson.title} <ArrowRight className="w-5 h-5 bg-blue-100 rounded-full p-0.5" />
+                          <span className="flex items-center gap-3 text-lg font-black text-blue-600 group-hover:text-blue-700 break-words">
+                            {nextLesson.title} <ArrowRight className="w-5 h-5 shrink-0 bg-blue-100 rounded-full p-0.5" />
                           </span>
                         </button>
                       </div>
@@ -389,18 +407,18 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
         </div>
 
         {/* RIGHT PANEL: AI CHAT (MOBILE OVERLAY / DESKTOP SIDEBAR) */}
-        <div className={`fixed inset-y-0 right-0 w-full md:w-[450px] border-l border-white/40 shadow-2xl transform transition-transform duration-300 z-50 flex flex-col bg-white/80 backdrop-blur-xl ${isChatOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`fixed inset-y-0 right-0 w-full md:w-[450px] border-l border-white/40 dark:border-slate-800 shadow-2xl transform transition-transform duration-300 z-50 flex flex-col bg-white dark:bg-slate-900/95 backdrop-blur-xl ${isChatOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
           {/* Chat Header */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-indigo-100/50 bg-gradient-to-r from-indigo-50/50 to-white/50 shrink-0">
-            <div className="flex items-center gap-2 text-indigo-900">
-              <div className="p-1.5 bg-indigo-100 rounded-lg"><Bot size={18} /></div>
+          <div className="h-16 flex items-center justify-between px-4 border-b border-indigo-100/50 dark:border-indigo-900/50 bg-gradient-to-r from-indigo-50/50 to-white/50 dark:from-indigo-950/20 dark:to-slate-900/50 shrink-0">
+            <div className="flex items-center gap-2 text-indigo-900 dark:text-indigo-100">
+              <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg"><Bot size={18} /></div>
               <div>
                 <span className="font-bold text-sm block leading-none">Βοηθός AI</span>
-                <span className="text-[10px] text-indigo-400 font-medium">Powered by Gemini</span>
+                <span className="text-[10px] text-indigo-400 dark:text-indigo-500 font-medium">Powered by Gemini</span>
               </div>
             </div>
-            <button onClick={() => setIsChatOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+            <button onClick={() => setIsChatOpen(false)} className="p-2 text-slate-400 hover:text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:bg-slate-800 rounded-lg transition-colors">
               <X size={20} />
             </button>
           </div>
@@ -410,8 +428,8 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${m.role === 'user'
-                  ? 'bg-slate-900 text-white rounded-br-none'
-                  : 'bg-white text-slate-700 border border-slate-100 rounded-bl-none'
+                  ? 'bg-slate-900 dark:bg-indigo-600 text-white rounded-br-none'
+                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-100 dark:border-slate-700 rounded-bl-none'
                   }`}>
                   {m.role === 'ai' ? (
                     <ReactMarkdown
@@ -420,7 +438,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                         p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
                         ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2" {...props} />,
                         li: ({ node, ...props }) => <li className="mb-1" {...props} />,
-                        strong: ({ node, ...props }) => <span className="font-black text-indigo-900" {...props} />
+                        strong: ({ node, ...props }) => <span className="font-black text-indigo-900 dark:text-indigo-300" {...props} />
                       }}
                     >
                       {m.text}
@@ -431,10 +449,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
             ))}
             {isAiThinking && (
               <div className="flex justify-start">
-                <div className="bg-white border border-slate-100 px-4 py-3 rounded-2xl rounded-bl-none flex gap-1">
-                  <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
-                  <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce delay-75"></div>
-                  <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce delay-150"></div>
+                <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-4 py-3 rounded-2xl rounded-bl-none flex gap-1 shadow-sm">
+                  <div className="w-1.5 h-1.5 bg-indigo-400 dark:bg-indigo-500 rounded-full animate-bounce"></div>
+                  <div className="w-1.5 h-1.5 bg-indigo-400 dark:bg-indigo-500 rounded-full animate-bounce delay-75"></div>
+                  <div className="w-1.5 h-1.5 bg-indigo-400 dark:bg-indigo-500 rounded-full animate-bounce delay-150"></div>
                 </div>
               </div>
             )}
@@ -442,19 +460,19 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
           </div>
 
           {/* Input Area */}
-          <div className="p-4 bg-white/50 border-t border-indigo-100/50 shrink-0 pb-safe z-10">
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-indigo-100/50 dark:border-slate-800 shrink-0 pb-safe z-10">
             <form onSubmit={handleSendMessage} className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ρώτησε κάτι..."
-                className="w-full pl-4 pr-12 py-3 bg-white/80 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 outline-none text-sm font-medium transition-all shadow-inner placeholder:text-slate-400"
+                className="w-full pl-4 pr-12 py-3 bg-white dark:bg-slate-950 border border-indigo-100 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 outline-none text-sm font-medium transition-all shadow-inner placeholder:text-slate-400"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isAiThinking}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-600 transition-colors shadow-md shadow-indigo-200"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-800 transition-colors shadow-md shadow-indigo-200 dark:shadow-none"
               >
                 <Send size={16} />
               </button>

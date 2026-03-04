@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white font-sans text-blue-950 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-white dark:bg-slate-950 font-sans text-blue-950 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900">
 
       <Navbar />
 
@@ -153,24 +153,24 @@ export default function Home() {
         />
 
         {/* === 1. HERO SECTION === */}
-        <section className="relative pt-24 pb-32 overflow-hidden bg-gradient-to-b from-blue-50/50 to-white">
+        <section className="relative pt-24 pb-32 overflow-hidden bg-gradient-to-b from-blue-50/50 to-white dark:from-slate-900 dark:to-slate-950">
           <div className="relative max-w-5xl mx-auto px-4 text-center">
 
 
 
-            <h1 className="text-4xl md:text-6xl font-black text-blue-950 mb-6 leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+            <h1 className="text-4xl md:text-6xl font-black text-blue-950 dark:text-white mb-6 leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
               Έξυπνη προετοιμασία, <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                 σίγουρη επιτυχία
               </span> στην εξέταση για απόκτηση του ΠΕΓΠ 2026
             </h1>
 
-            <p className="text-xl text-blue-800/70 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+            <p className="text-xl text-blue-800/70 dark:text-slate-300 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
               Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για την απόκτηση του Πιστοποιητικού Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-              <Link href="/login" className="w-full sm:w-auto px-10 py-4 bg-white border-2 border-blue-100 text-blue-700 rounded-xl font-bold text-lg hover:border-blue-600 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+              <Link href="/login" className="w-full sm:w-auto px-10 py-4 bg-white dark:bg-slate-800 border-2 border-blue-100 dark:border-slate-700 text-blue-700 dark:text-blue-400 rounded-xl font-bold text-lg hover:border-blue-600 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
                 Είσοδος <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href="/register" className="w-full sm:w-auto px-10 py-4 bg-blue-700 text-white border-2 border-transparent rounded-xl font-bold text-lg hover:bg-blue-800 hover:shadow-xl hover:-translate-y-1 transition-all">
@@ -178,7 +178,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="mt-16 pt-8 border-t border-blue-50 flex flex-wrap justify-center gap-8 md:gap-16 text-blue-900/40 font-bold text-sm uppercase tracking-wider animate-in fade-in duration-1000 delay-500">
+            <div className="mt-16 pt-8 border-t border-blue-50 dark:border-slate-800 flex flex-wrap justify-center gap-8 md:gap-16 text-blue-900/40 dark:text-slate-400 font-bold text-sm uppercase tracking-wider animate-in fade-in duration-1000 delay-500">
               <div className="flex items-center gap-2"><Users className="h-5 w-5" /> 100% Αυτοπεποίθηση</div>
               <div className="flex items-center gap-2"><ShieldCheck className="h-5 w-5" /> Υλικό Υπουργείου</div>
               <div className="flex items-center gap-2"><Laptop className="h-5 w-5" /> Online 24/7</div>
@@ -187,25 +187,25 @@ export default function Home() {
         </section>
 
         {/* === 2. ΠΛΕΟΝΕΚΤΗΜΑΤΑ (PLATFORM) === */}
-        <section id="platform" className="py-24 bg-white">
+        <section id="platform" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-600 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950">Το Κλειδί της Επιτυχίας για το 2026</h3>
-              <p className="mt-4 text-blue-800/60 max-w-2xl mx-auto">Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).</p>
+              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Το Κλειδί της Επιτυχίας για το 2026</h3>
+              <p className="mt-4 text-blue-800/60 dark:text-slate-400 max-w-2xl mx-auto">Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
 
               {/* 1. Πλήρες Υλικό */}
-              <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
+              <div className="group bg-blue-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-blue-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 dark:hover:border-slate-700 transition-all duration-300">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 dark:text-blue-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <MonitorPlay className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Πλήρες Υλικό 360°</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πλήρες Υλικό 360°</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Όλη η θεωρία (Ιστορία, Γεωγραφία, Πολιτική, Πολιτισμός) και τα αρχεία για την εξάσκηση στην ακουστική κατανόηση, χωρίς ατελείωτο ψάξιμο.
                     </p>
                   </div>
@@ -213,15 +213,15 @@ export default function Home() {
               </div>
 
               {/* 2. Επίσημη Τράπεζα Θεμάτων */}
-              <div className="group bg-indigo-50/50 rounded-3xl p-8 border border-indigo-100 hover:bg-white hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200 transition-all duration-300 relative overflow-hidden">
+              <div className="group bg-indigo-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-indigo-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200 dark:hover:border-slate-700 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">OFFICIAL</div>
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-indigo-600 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <Bot className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Επίσημη Τράπεζα Θεμάτων</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Επίσημη Τράπεζα Θεμάτων</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Πλήρης πρόσβαση στην ανανεωμένη τράπεζα (300 θέματα). Επίκαιρες Ερωτήσεις & Απαντήσεις και υλικό του Υπουργείου Εσωτερικών με την υποστήριξη AI.
                     </p>
                   </div>
@@ -229,14 +229,14 @@ export default function Home() {
               </div>
 
               {/* 3. AI Ομιλία */}
-              <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
+              <div className="group bg-blue-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-blue-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 dark:hover:border-slate-700 transition-all duration-300">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 dark:text-blue-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <Mic className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Παραγωγή Προφορικού Λόγου</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Προφορικού Λόγου</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Στοχευμένη προετοιμασία για την Προφορική Εξέταση (25 θέματα). Το AI αξιολογεί την απάντησή σας για μέγιστη βελτίωση.
                     </p>
                   </div>
@@ -244,14 +244,14 @@ export default function Home() {
               </div>
 
               {/* 4. AI Έκθεση */}
-              <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
+              <div className="group bg-blue-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-blue-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 dark:hover:border-slate-700 transition-all duration-300">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 dark:text-blue-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <PenTool className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Παραγωγή Γραπτού Λόγου</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Γραπτού Λόγου</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Πλήρης ανάλυση και παραδείγματα για την έκθεση (100 θέματα). Γράψτε και λάβετε άμεση διόρθωση από το σύστημα.
                     </p>
                   </div>
@@ -259,29 +259,29 @@ export default function Home() {
               </div>
 
               {/* 5. Ακουστικό Μέρος */}
-              <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
+              <div className="group bg-blue-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-blue-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 dark:hover:border-slate-700 transition-all duration-300">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 dark:text-blue-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <Headphones className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Ακουστικό Μέρος</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Ακουστικό Μέρος</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Κατανόηση Προφορικού Λόγου (50 θέματα). Όλα τα θέματα με κείμενα και τεστ, καθώς και Audio Podcasts.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* 6. ΑΠΕΡΙΟΡΙΣТΗ ΠΡΑΚТΙΚΗ */}
-              <div className="group bg-blue-50/50 rounded-3xl p-8 border border-blue-100 hover:bg-white hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 transition-all duration-300">
+              {/* 6. ΑΠΕΡΙΟΡΙΣТΗ ΠΡΑΚTΙΚΗ */}
+              <div className="group bg-blue-50/50 dark:bg-slate-900 rounded-3xl p-8 border border-blue-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl hover:shadow-blue-100/50 hover:border-blue-200 dark:hover:border-slate-700 transition-all duration-300">
                 <div className="flex items-start gap-6">
-                  <div className="w-16 h-16 bg-white rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 shadow-sm mb-6 group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-700 dark:text-blue-400 shadow-sm mb-6 group-hover:scale-110 transition-transform">
                     <Repeat className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 mb-2">Πρακτική για 100% Αυτοπεποίθηση</h4>
-                    <p className="text-blue-800/70 leading-relaxed text-sm">
+                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πρακτική για 100% Αυτοπεποίθηση</h4>
+                    <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Στην πλατφόρμα μας μπορείτε να κάνετε <strong>ρεαλιστικές προσομοιώσεις εξετάσεων απεριόριστες φορές</strong>. Εξασκηθείτε σε συνθήκες πραγματικού χρόνου μέχρι να νιώθετε απόλυτα σίγουροι για την επιτυχία.
                     </p>
                   </div>
@@ -353,28 +353,28 @@ export default function Home() {
         </section>
 
         {/* === 4. ΣΥΝΔΡΟΜΕΣ (PRICING - UPDATED PSYCHOLOGY) === */}
-        <section id="pricing" className="py-24 bg-white border-b border-blue-50">
+        <section id="pricing" className="py-24 bg-white dark:bg-slate-950 border-b border-blue-50 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-600 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950">Επιλέξτε το πακέτο που σας ταιριάζει</h3>
+              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Επιλέξτε το πακέτο που σας ταιριάζει</h3>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
 
               {/* 1. FREE - Залишається посилання на /register */}
-              <div className="bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-blue-200 transition-colors relative h-fit">
-                <h4 className="text-xl font-bold text-blue-900 mb-4">Δοκιμαστικό</h4>
-                <div className="mb-6"><span className="text-4xl font-black text-blue-950">ΔΩΡΕΑΝ</span></div>
-                <p className="text-sm text-blue-800/60 mb-8 pb-8 border-b border-slate-100">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-slate-600 transition-colors relative h-fit">
+                <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-4">Δοκιμαστικό</h4>
+                <div className="mb-6"><span className="text-4xl font-black text-blue-950 dark:text-white">ΔΩΡΕΑΝ</span></div>
+                <p className="text-sm text-blue-800/60 dark:text-slate-400 mb-8 pb-8 border-b border-slate-100 dark:border-slate-700">
                   Δοκιμάστε τις λειτουργίες της πλατφόρμας χωρίς καμία δέσμευση.
                 </p>
                 <ul className="space-y-4 mb-8 text-sm">
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-300" /> Πρόσβαση γνωριμίας</li>
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-300" /> 1 Τεστ ανά κατηγορία</li>
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-300" /> Χωρίς πιστωτική κάρτα</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-300" /> Πρόσβαση γνωριμίας</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-300" /> 1 Τεστ ανά κατηγορία</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-300" /> Χωρίς πιστωτική κάρτα</li>
                 </ul>
-                <Link href="/register" className="block w-full py-3 border-2 border-blue-100 text-blue-600 text-center rounded-xl font-bold hover:bg-blue-50 transition-colors">Δωρεάν Εγγραφή</Link>
+                <Link href="/register" className="block w-full py-3 border-2 border-blue-100 dark:border-blue-900 text-blue-600 dark:text-blue-400 text-center rounded-xl font-bold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">Δωρεάν Εγγραφή</Link>
               </div>
 
               {/* 2. 3 MONTHS - ✅ UPDATE: Scroll to form with params */}
@@ -396,19 +396,19 @@ export default function Home() {
               </div>
 
               {/* 3. 1 MONTH - ✅ UPDATE: Scroll to form with params */}
-              <div className="bg-white rounded-3xl p-8 border-2 border-slate-100 hover:border-blue-200 transition-colors relative h-fit">
-                <h4 className="text-xl font-bold text-blue-900 mb-4">1 Μήνας</h4>
-                <div className="mb-6 flex items-baseline gap-1"><span className="text-4xl font-black text-blue-950">€100</span><span className="text-slate-500">/ εφάπαξ</span></div>
-                <p className="text-sm text-blue-800/60 mb-8 pb-8 border-b border-slate-100">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-slate-600 transition-colors relative h-fit">
+                <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-4">1 Μήνας</h4>
+                <div className="mb-6 flex items-baseline gap-1"><span className="text-4xl font-black text-blue-950 dark:text-white">€100</span><span className="text-slate-500 dark:text-slate-400">/ εφάπαξ</span></div>
+                <p className="text-sm text-blue-800/60 dark:text-slate-400 mb-8 pb-8 border-b border-slate-100 dark:border-slate-700">
                   Ιδανικό для γρήγορη επανάληψη λίγο πριν τις εξετάσεις.
                 </p>
                 <ul className="space-y-4 mb-8 text-sm">
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600" /> Πλήρης Πρόσβαση</li>
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600" /> AI Καθηγητής</li>
-                  <li className="flex items-center gap-3 text-blue-900"><Check className="h-5 w-5 text-blue-600" /> Απεριόριστα Τεστ</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-600" /> Πλήρης Πρόσβαση</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-600" /> AI Καθηγητής</li>
+                  <li className="flex items-center gap-3 text-blue-900 dark:text-slate-300"><Check className="h-5 w-5 text-blue-600" /> Απεριόριστα Τεστ</li>
                 </ul>
                 {/* Link to Contact Form with Topic */}
-                <Link href="/?topic=pack_1_month#contact" className="block w-full py-3 bg-blue-50 text-blue-700 text-center rounded-xl font-bold hover:bg-blue-100 transition-colors">Επιλογή Πακέτου</Link>
+                <Link href="/?topic=pack_1_month#contact" className="block w-full py-3 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-center rounded-xl font-bold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">Επιλογή Πακέτου</Link>
               </div>
 
             </div>
@@ -416,98 +416,98 @@ export default function Home() {
         </section>
 
         {/* === NEW: FAQ SECTION (ΣΥΧΝΕΣ ΕΡΩТΗΣΕΙΣ) === */}
-        <section id="faq" className="py-24 bg-white">
+        <section id="faq" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-600 font-bold tracking-wide uppercase text-sm mb-3">FAQ</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950">Συχνές Ερωτήσεις</h3>
+              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">FAQ</h2>
+              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Συχνές Ερωτήσεις</h3>
             </div>
 
             <div className="space-y-4">
               {/* Q1 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Τι ακριβώς προσφέρει η πλατφόρμα;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Τι ακριβώς προσφέρει η πλατφόρμα;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Η πλατφόρμα προσφέρει ολοκληρωμένη προετοιμασία για τις εξετάσεις ΠΕΓΠ. Περιλαμβάνει όλη τη θεωρία, τεστ πολλαπλής επιλογής, ακουστικά μαθήματα και εργαλεία τεχνητής νοημοσύνης (AI) που διορθώνουν τις εκθέσεις και την προφορική σας εξέταση.
                 </div>
               </details>
 
               {/* Q2 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Είναι το υλικό ενημερωμένο;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Είναι το υλικό ενημερωμένο;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Ναι, η τράπεζα θεμάτων μας ανανεώνεται συνεχώς και βασίζεται 100% στην επίσημη ύλη και τα θέματα του Υπουργείου Εσωτερικών.
                 </div>
               </details>
 
               {/* Q3 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Μπορώ να χρησιμοποιήσω την πλατφόρμα από το κινητό;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Φυσικά! Η πλατφόρμα είναι σχεδιασμένη (responsive design) για να λειτουργεί άψογα σε κινητά τηλέφωνα, tablets και ηλεκτρονικούς υπολογιστές.
                 </div>
               </details>
 
               {/* Q4 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Πώς λειτουργεί η συνδρομή;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Πώς λειτουργεί η συνδρομή;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Η πληρωμή είναι εφάπαξ (μία φορά) για το χρονικό διάστημα που θα επιλέξετε (1 ή 3 μήνες). Δεν υπάρχουν κρυφές χρεώσεις και η συνδρομή ΔΕΝ ανανεώνεται αυτόματα.
                 </div>
               </details>
 
               {/* Q5 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Υπάρχει διορθωτής για την Έκθεση και την Ομιλία;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Υπάρχει διορθωτής για την Έκθεση και την Ομιλία;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Ναι! Η πλατφόρμα μας ενσωματώνει προηγμένη Τεχνητή Νοημοσύνη (AI) που βαθμολογεί και διορθώνει αυτόματα τα κείμενά σας (έκθεση) αλλά και τα ηχητικά σας μηνύματα (ομιλία), δίνοντας εξατομικευμένες συμβουλές βελτίωσης.
                 </div>
               </details>
 
               {/* Q6 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Μπορώ να δοκιμάσω πριν πληρώσω;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Μπορώ να δοκιμάσω πριν πληρώσω;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Βεβαίως. Με τη <strong>Δωρεάν Εγγραφή</strong> σας παρέχουμε πρόσβαση γνωριμίας στην πλατφόρμα, η οποία περιλαμβάνει 1 δοκιμαστικό τεστ ανά κατηγορία, χωρίς να απαιτείται πιστωτική κάρτα.
                 </div>
               </details>
 
               {/* Q7 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Το υλικό απευθύνεται σε αρχάριους ή προχωρημένους;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Το υλικό απευθύνεται σε αρχάριους ή προχωρημένους;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Το υλικό είναι δομημένο βάσει των Εξετάσεων (ΠΕΓΠ) και απευθύνεται σε άτομα που κατέχουν έστω ένα βασικό επίπεδο της Ελληνικής Γλώσσας, και θέλουν στοχευμένη προετοιμασία πάνω στα θέματα της Τράπεζας.
                 </div>
               </details>
 
               {/* Q8 */}
-              <details className="group bg-slate-50 rounded-2xl border border-slate-200 open:border-blue-200 transition-all">
+              <details className="group bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 open:border-blue-200 dark:open:border-blue-700 transition-all">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                  <span className="font-bold text-blue-900 text-lg">Πότε ενεργοποιείται ο λογαριασμός μου μετά την πληρωμή;</span>
+                  <span className="font-bold text-blue-900 dark:text-white text-lg">Πότε ενεργοποιείται ο λογαριασμός μου μετά την πληρωμή;</span>
                   <ChevronDown className="h-5 w-5 text-blue-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <div className="px-6 pb-6 text-blue-800/70 leading-relaxed">
+                <div className="px-6 pb-6 text-blue-800/70 dark:text-slate-400 leading-relaxed">
                   Μόλις επιλέξετε το πακέτο που επιθυμείτε και ολοκληρωθεί η επικοινωνία με τους διαχειριστές μας, η Premium πρόσβαση ενεργοποιείται σχεδόν άμεσα, και μπορείτε να ξεκινήσετε τη μελέτη.
                 </div>
               </details>
@@ -516,9 +516,9 @@ export default function Home() {
         </section>
 
         {/* === 5. ΕΠΙΚΟΙΝΩΝΙΑ (CONTACT) === */}
-        <section id="contact" className="py-24 bg-blue-50">
+        <section id="contact" className="py-24 bg-blue-50 dark:bg-slate-900">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-blue-100 flex flex-col md:flex-row">
+            <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-xl overflow-hidden border border-blue-100 dark:border-slate-700 flex flex-col md:flex-row">
 
               {/* Аριστερή Στήλη */}
               <div className="bg-blue-900 text-white p-10 md:p-16 md:w-2/5 flex flex-col justify-center relative overflow-hidden">

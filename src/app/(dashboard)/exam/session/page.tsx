@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -37,7 +37,15 @@ export interface UserAnswers {
     speakingUrlRandom: string | null;
 }
 
-export default function ExamSessionPage() {
+export default function ExamSessionPageWrapper() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50"><Loader2 className="animate-spin text-blue-600 h-10 w-10" /></div>}>
+            <ExamSessionPage />
+        </Suspense>
+    );
+}
+
+function ExamSessionPage() {
     const { user } = useAuth();
     const router = useRouter();
     const { generateExam, loading: generating, examData } = useExamGenerator();
@@ -327,23 +335,23 @@ export default function ExamSessionPage() {
 
     if (generating || !examData) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950/50 gap-4">
                 <Loader2 className="animate-spin text-blue-600 h-12 w-12" />
-                <p className="text-slate-500 font-bold animate-pulse">Δημιουργία εξέτασης...</p>
+                <p className="text-slate-500 dark:text-slate-400 font-bold animate-pulse">Δημιουργία εξέτασης...</p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col min-h-screen font-sans bg-slate-50">
-            <header className="bg-white border-b border-slate-200 h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 shadow-sm shrink-0 sticky top-0 z-50">
+        <div className="flex flex-col min-h-screen font-sans bg-slate-50 dark:bg-slate-950/50">
+            <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 sm:h-20 flex items-center justify-between px-4 sm:px-6 shadow-sm shrink-0 sticky top-0 z-50">
                 <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-                    <div className={`font-mono text-sm sm:text-lg font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 border ${timeLeft < 600 ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                    <div className={`font-mono text-sm sm:text-lg font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 border ${timeLeft < 600 ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800'}`}>
                         <Clock size={16} className="sm:w-5 sm:h-5" /> {formatTime(timeLeft)}
                     </div>
                 </div>
                 <div className="flex-1 mx-2 sm:mx-4 overflow-x-auto no-scrollbar">
-                    <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 min-w-max">
+                    <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-800 min-w-max">
                         {[
                             { id: 'theory', label: 'Θεωρία', icon: LayoutGrid },
                             { id: 'reading', label: 'Ανάγνωση', icon: BookOpen },
@@ -353,7 +361,7 @@ export default function ExamSessionPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveSection(tab.id as ExamSection)}
-                                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold flex gap-2 transition-all items-center whitespace-nowrap ${activeSection === tab.id ? 'bg-white shadow-sm text-slate-900 ring-1 ring-black/5' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold flex gap-2 transition-all items-center whitespace-nowrap ${activeSection === tab.id ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white ring-1 ring-black/5 dark:ring-white/10' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50'}`}
                             >
                                 <tab.icon size={16} className="sm:w-4 sm:h-4" /> <span className="inline">{tab.label}</span>
                             </button>
@@ -372,13 +380,13 @@ export default function ExamSessionPage() {
 
             <main className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8">
                 {isSubmitting && (
-                    <div className="fixed inset-0 z-50 bg-white/80 backdrop-blur-md flex flex-col items-center justify-center">
-                        <div className="bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center border border-slate-100 max-w-sm text-center">
-                            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-6 animate-bounce">
-                                <Bot size={32} className="text-blue-600" />
+                    <div className="fixed inset-0 z-50 bg-white dark:bg-slate-900/80 backdrop-blur-md flex flex-col items-center justify-center">
+                        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-2xl flex flex-col items-center border border-slate-100 dark:border-slate-800 max-w-sm text-center">
+                            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                                <Bot size={32} className="text-blue-600 dark:text-blue-400" />
                             </div>
-                            <h2 className="text-2xl font-black text-slate-900 mb-2">Αξιολόγηση AI...</h2>
-                            <p className="text-slate-500 font-medium">Παρακαλώ περιμένετε, το σύστημα βαθμολογεί την Έκθεση, την Ομιλία και τις ανοιχτές ερωτήσεις.</p>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Αξιολόγηση AI...</h2>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">Παρακαλώ περιμένετε, το σύστημα βαθμολογεί την Έκθεση, την Ομιλία και τις ανοιχτές ερωτήσεις.</p>
                         </div>
                     </div>
                 )}

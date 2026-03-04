@@ -250,8 +250,8 @@ export default function Quiz({
           if (isMulti) isSelected = Array.isArray(currentAnswer) && currentAnswer.includes(optIdx);
           else isSelected = currentAnswer === optIdx;
 
-          let style = "bg-white border-slate-200 hover:border-blue-300";
-          let icon = <div className="w-6 h-6 rounded-full border-2 border-slate-200" />;
+          let style = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-slate-800 dark:text-slate-200";
+          let icon = <div className="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-600" />;
 
           if (isQChecked) {
             let isCorrectIndex = false;
@@ -263,17 +263,17 @@ export default function Quiz({
             }
 
             if (isCorrectIndex) {
-              style = "bg-emerald-50 border-emerald-500 text-emerald-900";
-              icon = <CheckCircle2 className="w-6 h-6 text-emerald-600" />;
+              style = "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500 text-emerald-900 dark:text-emerald-300";
+              icon = <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />;
             } else if (isSelected) {
-              style = "bg-red-50 border-red-500 text-red-900";
-              icon = <X className="w-6 h-6 text-red-500" />;
+              style = "bg-red-50 dark:bg-red-900/20 border-red-500 text-red-900 dark:text-red-300";
+              icon = <X className="w-6 h-6 text-red-500 dark:text-red-400" />;
             } else {
-              style = "opacity-50 grayscale";
+              style = "opacity-40 grayscale";
             }
           } else if (isSelected) {
-            style = "bg-slate-900 border-slate-900 text-white shadow-md transform scale-[1.01]";
-            icon = <div className="w-6 h-6 rounded-full bg-white border-4 border-slate-900" />;
+            style = "bg-blue-600 dark:bg-blue-700 border-blue-600 dark:border-blue-700 text-white shadow-md transform scale-[1.01]";
+            icon = <div className="w-6 h-6 rounded-full bg-white border-4 border-blue-600" />;
           }
 
           const isImageOption = typeof opt === 'string' && (opt.startsWith('http') || opt.startsWith('/'));
@@ -295,10 +295,10 @@ export default function Quiz({
               <div className="shrink-0">{icon}</div>
               {isImageOption ? (
                 <div className="w-full">
-                  <img src={opt} alt={`Option ${optIdx + 1}`} className="w-full max-w-[300px] h-48 object-cover rounded-lg border border-slate-200 bg-white" />
+                  <img src={opt} alt={`Option ${optIdx + 1}`} className="w-full max-w-[300px] h-48 object-cover rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700" />
                 </div>
               ) : (
-                <span className="leading-snug">{opt}</span>
+                <span className="leading-snug break-words">{opt}</span>
               )}
             </button>
           )
@@ -322,26 +322,26 @@ export default function Quiz({
           const isCorrectAnswer = item.isTrue;
           const userIsCorrect = userVal === isCorrectAnswer;
 
-          let containerClass = "bg-white border-slate-200";
+          let containerClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200";
           if (isQChecked && userVal !== undefined) {
-            containerClass = userIsCorrect ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200";
+            containerClass = userIsCorrect ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700 text-emerald-900 dark:text-emerald-300" : "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700 text-red-900 dark:text-red-300";
           }
 
           return (
             <div key={itemIdx} className={`p-4 rounded-xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${containerClass}`}>
-              <div className="flex items-center gap-3">
-                {item.imageUrl && <img src={item.imageUrl} className="w-16 h-16 object-cover rounded-lg bg-slate-100 border" alt="" />}
-                <span className="font-bold text-slate-800 text-lg leading-snug">{item.text}</span>
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                {item.imageUrl && <img src={item.imageUrl} className="w-16 h-16 object-cover rounded-lg bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shrink-0" alt="" />}
+                <span className="font-bold text-slate-800 dark:text-slate-200 text-lg leading-snug break-words">{item.text}</span>
               </div>
               <div className="flex gap-2 shrink-0">
                 {['ΣΩΣΤΟ', 'ΛΑΘΟΣ'].map(opt => {
                   const boolVal = opt === 'ΣΩΣΤΟ';
                   const isSel = userVal === boolVal;
 
-                  let btnClass = "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100";
+                  let btnClass = "bg-slate-50 dark:bg-slate-700 text-slate-400 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600";
 
                   if (isSel && !isQChecked) {
-                    btnClass = "bg-slate-900 text-white border-slate-900 shadow-md transform scale-[1.02]";
+                    btnClass = "bg-blue-600 dark:bg-blue-700 text-white border-blue-600 shadow-md transform scale-[1.02]";
                   }
 
                   if (isQChecked) {
@@ -387,26 +387,26 @@ export default function Quiz({
           const userVal = userMap[originalIdx];
           const isCorrect = userVal === p.right;
 
-          let style = "bg-white border-slate-200";
-          if (isQChecked && userVal) style = isCorrect ? "bg-emerald-50 border-emerald-300" : "bg-red-50 border-red-300";
+          let style = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200";
+          if (isQChecked && userVal) style = isCorrect ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-300" : "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-900 dark:text-red-300";
           const isLeftImage = typeof p.left === 'string' && (p.left.startsWith('http') || p.left.startsWith('/'));
 
           return (
             <div key={originalIdx} className={`p-4 rounded-xl border-2 flex flex-col md:flex-row md:items-center justify-between gap-4 ${style}`}>
-              <div className="flex items-center gap-4 flex-1 overflow-hidden">
-                <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-black border border-slate-200">
+              <div className="flex items-center gap-4 flex-1 overflow-hidden min-w-0">
+                <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center text-sm font-black border border-slate-200 dark:border-slate-600">
                   •
                 </span>
-                {p.leftImg ? <img src={p.leftImg} className="w-24 h-24 rounded-lg object-cover border bg-white" alt="" /> :
-                  isLeftImage ? <img src={p.left} className="w-32 h-24 rounded-lg object-cover border bg-white" alt="" /> :
-                    <span className="font-bold text-slate-800 leading-snug">{p.left}</span>}
+                {p.leftImg ? <img src={p.leftImg} className="w-24 h-24 shrink-0 rounded-lg object-cover border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700" alt="" /> :
+                  isLeftImage ? <img src={p.left} className="w-32 h-24 shrink-0 rounded-lg object-cover border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700" alt="" /> :
+                    <span className="font-bold text-slate-800 dark:text-slate-200 leading-snug break-words min-w-0">{p.left}</span>}
               </div>
               <div className="w-full md:w-1/2">
                 <select
                   value={userVal || ""}
                   onChange={(e) => handleSelect(idx, { ...userMap, [originalIdx]: e.target.value })}
                   disabled={isQChecked}
-                  className="w-full p-3 rounded-xl bg-slate-50 border-2 border-slate-200 font-bold text-sm outline-none cursor-pointer focus:border-blue-400 text-slate-700 truncate"
+                  className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 font-bold text-sm outline-none cursor-pointer focus:border-blue-400 dark:focus:border-blue-500 text-slate-700 dark:text-slate-200 truncate"
                 >
                   <option value="">-- Επιλογή --</option>
                   {rightOptions.map((opt, i) => (
@@ -433,9 +433,9 @@ export default function Quiz({
     return (
       <div className="space-y-8">
         {!isInline && q.wordBank && q.wordBank.length > 0 && (
-          <div className="p-6 bg-slate-100 rounded-2xl border-2 border-slate-200 flex flex-wrap gap-3">
+          <div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-2xl border-2 border-slate-200 dark:border-slate-700 flex flex-wrap gap-3">
             {q.wordBank.map((w, i) => (
-              <span key={i} className="bg-white px-4 py-2 rounded-xl border border-slate-200 font-bold text-sm text-slate-700 shadow-sm select-all">{w}</span>
+              <span key={i} className="bg-white dark:bg-slate-700 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-sm text-slate-700 dark:text-slate-200 shadow-sm select-all">{w}</span>
             ))}
           </div>
         )}
@@ -445,9 +445,9 @@ export default function Quiz({
             const gapsCount = Math.max(1, (text.match(/_{2,}/g) || []).length);
 
             return (
-              <div key={partIdx} className="p-5 bg-white border-2 border-slate-100 rounded-2xl flex flex-col md:flex-row gap-4 items-start md:items-center shadow-sm">
-                <p className="font-serif text-lg leading-relaxed text-slate-800 flex-1">
-                  {text.includes('(') ? text : <><span className="font-sans font-bold text-slate-400 mr-2">{partIdx + 1}.</span>{text}</>}
+              <div key={partIdx} className="p-5 bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 rounded-2xl flex flex-col md:flex-row gap-4 items-start md:items-center shadow-sm">
+                <p className="font-serif text-lg leading-relaxed text-slate-800 dark:text-slate-200 flex-1 break-words">
+                  {text.includes('(') ? text : <><span className="font-sans font-bold text-slate-400 dark:text-slate-500 mr-2">{partIdx + 1}.</span>{text}</>}
                 </p>
 
                 <div className="w-full md:w-auto min-w-[200px] flex flex-col gap-4 md:gap-2">
@@ -471,11 +471,11 @@ export default function Quiz({
                       }
                     }
 
-                    let style = "border-slate-200 focus:border-blue-500 focus:bg-white bg-slate-50";
+                    let style = "border-slate-200 dark:border-slate-700 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200";
                     if (isQChecked) {
                       style = isCorrect
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-900"
-                        : "border-red-500 bg-red-50 text-red-900";
+                        ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-900 dark:text-emerald-300"
+                        : "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-300";
                     }
 
                     return (
@@ -590,8 +590,8 @@ export default function Quiz({
 
     return (
       <div className="w-full flex flex-col gap-6">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">Σημεία προς εύρεση:</h4>
+        <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+          <h4 className="font-black text-slate-800 dark:text-slate-200 uppercase text-xs tracking-widest">Σημεία προς εύρεση:</h4>
           <div className="flex flex-wrap gap-2">
             {requiredPoints.map((pt, i) => {
               const isPlaced = i < userPlacedPoints.length;
@@ -648,7 +648,7 @@ export default function Quiz({
     return (
       <div className="space-y-4">
         <BufferedTextarea
-          className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 outline-none focus:border-purple-400 font-medium disabled:bg-slate-50"
+          className="w-full h-40 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 outline-none focus:border-purple-400 dark:focus:border-purple-500 font-medium disabled:bg-slate-50 dark:disabled:bg-slate-900"
           value={textAnswer}
           onUpdate={(val: string) => handleSelect(idx, val)}
           disabled={isChecked(idx) || loading}
@@ -731,17 +731,17 @@ export default function Quiz({
             }
 
             return (
-              <div key={q.id || i} className={`bg-white p-6 md:p-8 rounded-[2rem] border shadow-sm relative overflow-hidden ${borderClass}`}>
-                <div className="absolute top-0 left-0 bg-slate-100 px-4 py-2 rounded-br-2xl text-xs font-black text-slate-500 uppercase tracking-widest">
+              <div key={q.id || i} className={`bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[2rem] border shadow-sm relative overflow-hidden ${borderClass}`}>
+                <div className="absolute top-0 left-0 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-br-2xl text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
                   Ερώτηση {i + 1}
                 </div>
                 {badge}
-                <h3 className="text-lg md:text-xl font-black text-slate-900 mb-6 mt-6 leading-snug">
+                <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-slate-100 mb-6 mt-6 leading-snug break-words">
                   {q.question}
                 </h3>
                 {q.imageUrl && !q.type?.includes('TRUE') && !q.type?.includes('MAP') && (
-                  <div className="mb-6 rounded-xl overflow-hidden border border-slate-100">
-                    <img src={q.imageUrl} className="w-full max-h-64 object-contain bg-slate-50" alt="" />
+                  <div className="mb-6 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                    <img src={q.imageUrl} className="w-full max-h-64 object-contain bg-slate-50 dark:bg-slate-800" alt="" />
                   </div>
                 )}
                 {renderQuestionContent(q, i)}
@@ -819,20 +819,20 @@ export default function Quiz({
   return (
     <div className="max-w-3xl mx-auto w-full">
       <div className="mb-6 flex justify-between items-center">
-        <span className="bg-slate-100 text-slate-500 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+        <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
           Ερώτηση {currentIndex + 1} / {questions.length}
         </span>
       </div>
-      <h3 className="text-xl font-black text-slate-900 mb-6 leading-snug">{currentQ.question}</h3>
+      <h3 className="text-xl font-black text-slate-900 dark:text-slate-100 mb-6 leading-snug break-words">{currentQ.question}</h3>
       {currentQ.imageUrl && !currentQ.type?.includes('MAP') && !currentQ.type?.includes('TRUE') && (
-        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
+        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm bg-slate-50 dark:bg-slate-800">
           <img src={currentQ.imageUrl} className="w-full max-h-80 object-contain mx-auto" alt="Question" />
         </div>
       )}
       <div className="mb-10">{renderQuestionContent(currentQ, currentIndex)}</div>
-      <div className="flex justify-between items-center pt-6 border-t border-slate-100">
+      <div className="flex justify-between items-center pt-6 border-t border-slate-100 dark:border-slate-800">
         {currentIndex > 0 ? (
-          <button onClick={handlePrev} className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-all">
+          <button onClick={handlePrev} className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
             <ChevronLeft size={20} /> Πίσω
           </button>
         ) : <div />}

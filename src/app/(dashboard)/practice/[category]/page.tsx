@@ -61,7 +61,7 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
     if (!currentConfig) return <div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Category not found</div>;
 
     if (loading || authLoading) return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950/50">
             <Loader2 className="animate-spin h-10 w-10 text-slate-300" />
         </div>
     );
@@ -72,20 +72,20 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
     const LIMIT = GUEST_LIMITS.CONTENT_ITEMS || 5;
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950/50 p-4 md:p-8 font-sans">
             <div className="max-w-6xl mx-auto">
 
                 {/* HEADER */}
                 <div className="flex items-center gap-4 mb-8">
-                    <Link href="/practice" className="p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-100 transition-all text-slate-400 hover:text-slate-900 shadow-sm">
+                    <Link href="/practice" className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-100 dark:bg-slate-800 transition-all text-slate-400 hover:text-slate-900 dark:text-white shadow-sm">
                         <ArrowLeft className="h-5 w-5" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
                             <currentConfig.icon className="h-6 w-6 text-slate-400" />
                             {currentConfig.title}
                         </h1>
-                        <p className="text-slate-500 font-medium text-sm">
+                        <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">
                             {currentConfig.type === 'grid'
                                 ? 'Επιλέξτε αριθμό ερώτησης'
                                 : 'Επιλέξτε θέμα για εξάσκηση'
@@ -106,18 +106,18 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                 )}
 
                 {items.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm">
-                        <div className="inline-flex p-4 bg-slate-50 rounded-full mb-4 text-slate-300">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm">
+                        <div className="inline-flex p-4 bg-slate-50 dark:bg-slate-950/50 rounded-full mb-4 text-slate-300">
                             <Lock size={32} />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-900">Δεν βρέθηκαν δεδομένα</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Δεν βρέθηκαν δεδομένα</h3>
                         <p className="text-slate-400 text-sm mt-1">Η ενότητα είναι υπό κατασκευή.</p>
                     </div>
                 ) : (
                     <>
                         {/* --- ВАРІАНТ А: СІТКА (GRID) --- */}
                         {currentConfig.type === 'grid' && (
-                            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+                            <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-2 mb-6 text-slate-400 text-xs font-black uppercase tracking-widest">
                                     <LayoutGrid size={16} /> Λίστα Ερωτήσεων
                                 </div>
@@ -130,10 +130,10 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                             return (
                                                 <div
                                                     key={item.id}
-                                                    className="aspect-square flex items-center justify-center bg-slate-50 text-slate-300 rounded-xl font-bold text-lg border border-slate-100 cursor-not-allowed relative group"
+                                                    className="aspect-square flex items-center justify-center bg-slate-50 dark:bg-slate-950/50 text-slate-300 dark:text-slate-600 rounded-xl font-bold text-lg border border-slate-100 dark:border-slate-800 cursor-not-allowed relative group"
                                                 >
                                                     <Lock size={16} className="absolute" />
-                                                    <span className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-slate-900 text-white text-[10px] py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none transition-opacity">
+                                                    <span className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] py-1 px-2 rounded whitespace-nowrap z-10 pointer-events-none transition-opacity">
                                                         Locked
                                                     </span>
                                                 </div>
@@ -144,7 +144,7 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                             <Link
                                                 key={item.id}
                                                 href={`/practice/${category}/${item.id}`}
-                                                className="aspect-square flex items-center justify-center bg-white hover:bg-slate-900 text-slate-600 hover:text-white rounded-xl font-black text-lg transition-all border border-slate-200 hover:border-slate-900 hover:shadow-lg hover:-translate-y-1"
+                                                className="aspect-square flex items-center justify-center bg-white dark:bg-slate-900 hover:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-white rounded-xl font-black text-lg transition-all border border-slate-200 dark:border-slate-800 hover:border-slate-900 hover:shadow-lg hover:-translate-y-1"
                                             >
                                                 {item.order || index + 1}
                                             </Link>
@@ -169,13 +169,13 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                             return (
                                                 <div
                                                     key={item.id}
-                                                    className="group bg-slate-50 border border-slate-100 p-6 rounded-3xl flex items-start gap-5 cursor-not-allowed opacity-70 grayscale relative overflow-hidden"
+                                                    className="group bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800 p-6 rounded-3xl flex items-start gap-5 cursor-not-allowed opacity-70 grayscale relative overflow-hidden"
                                                 >
                                                     <div className="w-12 h-12 shrink-0 bg-slate-200 text-slate-400 rounded-2xl flex items-center justify-center">
                                                         <Lock size={20} />
                                                     </div>
                                                     <div className="flex-1 min-w-0 pt-1">
-                                                        <h3 className="font-bold text-slate-400 text-lg leading-tight mb-2 truncate">
+                                                        <h3 className="font-bold text-slate-400 text-lg leading-tight mb-2 break-words">
                                                             {item.title || `Θέμα ${item.order}`}
                                                         </h3>
                                                         <div className="flex items-center gap-2 text-xs font-bold text-slate-300 uppercase tracking-wider">
@@ -183,7 +183,7 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                                         </div>
                                                     </div>
                                                     {/* Watermark overlay */}
-                                                    <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity backdrop-blur-[1px]">
+                                                    <div className="absolute inset-0 bg-white dark:bg-slate-900/50 z-10 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity backdrop-blur-[1px]">
                                                         <span className="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-full">Απαιτείται συνδρομή</span>
                                                     </div>
                                                 </div>
@@ -194,13 +194,13 @@ export default function CategoryIndexPage({ params }: { params: Promise<{ catego
                                             <Link
                                                 key={item.id}
                                                 href={`/practice/${category}/${item.id}`}
-                                                className="group bg-white border border-slate-100 hover:border-blue-200 p-6 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-start gap-5"
+                                                className="group bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-blue-200 p-6 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-start gap-5"
                                             >
                                                 <div className="w-12 h-12 shrink-0 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center font-black text-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                                     {item.order || index + 1}
                                                 </div>
                                                 <div className="flex-1 min-w-0 pt-1">
-                                                    <h3 className="font-bold text-slate-800 text-lg leading-tight mb-2 truncate group-hover:text-blue-600 transition-colors">
+                                                    <h3 className="font-bold text-slate-800 dark:text-slate-200 text-lg leading-tight mb-2 break-words group-hover:text-blue-600 transition-colors">
                                                         {item.title || `Θέμα ${item.order}`}
                                                     </h3>
                                                     <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">

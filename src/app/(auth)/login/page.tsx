@@ -92,7 +92,7 @@ export default function LoginPage() {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white font-sans text-slate-900 pt-[88px]">
+            <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 pt-[88px]">
 
                 {/* === MOBILE HEADER === */}
                 <div className="lg:hidden bg-blue-900 p-6 pb-12 rounded-b-[2.5rem] relative overflow-hidden">
@@ -131,21 +131,21 @@ export default function LoginPage() {
                     <div className="hidden lg:flex justify-end w-full max-w-sm mx-auto mb-6">
                         <Link
                             href="/"
-                            className="group flex items-center gap-2 text-slate-500 hover:text-blue-700 transition-colors font-bold text-sm bg-slate-50 px-4 py-2 rounded-lg"
+                            className="group flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-400 transition-colors font-bold text-sm bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-lg"
                         >
                             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
                             Επιστροφή
                         </Link>
                     </div>
 
-                    <div className="w-full max-w-sm mx-auto bg-white rounded-3xl p-8 lg:p-0 shadow-xl shadow-slate-200/50 lg:shadow-none border border-slate-100 lg:border-none">
+                    <div className="w-full max-w-sm mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 lg:p-0 shadow-xl shadow-slate-200/50 lg:shadow-none border border-slate-100 dark:border-slate-800 lg:border-none">
 
                         {/* --- VIEW: LOGIN FORM --- */}
                         {view === 'login' && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div className="mb-8">
-                                    <h1 className="font-montserrat text-2xl lg:text-3xl font-bold text-slate-900 mb-2">Σύνδεση</h1>
-                                    <p className="text-slate-500 text-sm lg:text-base">
+                                    <h1 className="font-montserrat text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2">Σύνδεση</h1>
+                                    <p className="text-slate-500 dark:text-slate-400 text-sm lg:text-base">
                                         Εισάγετε τα στοιχεία σας για να συνεχίσετε.
                                     </p>
                                 </div>
@@ -153,7 +153,7 @@ export default function LoginPage() {
                                 <button
                                     onClick={loginWithGoogle}
                                     disabled={loading}
-                                    className="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 hover:bg-blue-50 hover:border-blue-300 text-slate-700 font-bold py-3 px-6 rounded-xl transition-all duration-200 mb-6"
+                                    className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 text-slate-700 dark:text-slate-200 font-bold py-3 px-6 rounded-xl transition-all duration-200 mb-6"
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -166,10 +166,10 @@ export default function LoginPage() {
 
                                 <div className="relative mb-6">
                                     <div className="absolute inset-0 flex items-center">
-                                        <span className="w-full border-t border-slate-200" />
+                                        <span className="w-full border-t border-slate-200 dark:border-slate-700" />
                                     </div>
                                     <div className="relative flex justify-center text-xs uppercase">
-                                        <span className="bg-white px-2 text-slate-400 font-bold">ή με Email / Τηλέφωνο</span>
+                                        <span className="bg-white dark:bg-slate-900 px-2 text-slate-400 font-bold">ή με Email / Τηλέφωνο</span>
                                     </div>
                                 </div>
 
@@ -182,11 +182,11 @@ export default function LoginPage() {
                                     )}
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-900 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
+                                        <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
                                         <input
                                             type="text"
                                             required
-                                            className="block w-full rounded-xl border-2 border-slate-100 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
+                                            className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
                                             placeholder="email@example.com ή 69XXXXXXXX"
                                             value={identifier}
                                             onChange={(e) => setIdentifier(e.target.value)}
@@ -196,7 +196,7 @@ export default function LoginPage() {
 
                                     <div className="space-y-1">
                                         <div className="flex justify-between items-center ml-1">
-                                            <label className="text-xs font-bold text-slate-900 uppercase tracking-wide">Κωδικός</label>
+                                            <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide">Κωδικός</label>
                                             <button
                                                 type="button"
                                                 onClick={() => setView('reset')}
@@ -208,7 +208,7 @@ export default function LoginPage() {
                                         <input
                                             type="password"
                                             required
-                                            className="block w-full rounded-xl border-2 border-slate-100 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
+                                            className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
                                             placeholder="••••••••"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
@@ -226,7 +226,7 @@ export default function LoginPage() {
                                 </form>
 
                                 <div className="mt-8 text-center">
-                                    <p className="text-sm text-slate-500 mb-3">Δεν έχετε λογαριασμό;</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Δεν έχετε λογαριασμό;</p>
                                     <Link href="/register" className="text-blue-600 font-bold hover:underline font-montserrat">
                                         Δημιουργία Λογαριασμού
                                     </Link>
@@ -248,8 +248,8 @@ export default function LoginPage() {
                                     <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-4">
                                         <KeyRound className="h-6 w-6" />
                                     </div>
-                                    <h1 className="font-montserrat text-2xl font-bold text-slate-900 mb-2">Ανάκτηση Κωδικού</h1>
-                                    <p className="text-slate-500 text-sm">
+                                    <h1 className="font-montserrat text-2xl font-bold text-slate-900 dark:text-white mb-2">Ανάκτηση Κωδικού</h1>
+                                    <p className="text-slate-500 dark:text-slate-400 text-sm">
                                         Εισάγετε το <strong>Email</strong> ή το <strong>Τηλέφωνό</strong> σας. Θα σας στείλουμε έναν σύνδεσμο για να ορίσετε νέο κωδικό.
                                     </p>
                                 </div>
@@ -270,11 +270,11 @@ export default function LoginPage() {
                                     )}
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-900 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
+                                        <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
                                         <input
                                             type="text"
                                             required
-                                            className="block w-full rounded-xl border-2 border-slate-100 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
+                                            className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
                                             placeholder="π.χ. 69XXXXXXXX ή mail@example.com"
                                             value={resetIdentifier}
                                             onChange={(e) => setResetIdentifier(e.target.value)}

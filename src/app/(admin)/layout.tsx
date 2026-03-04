@@ -13,9 +13,10 @@ import {
   Library,
   FileText,
   Loader2,
-  Database, // ✅ Додано іконку
+  Database,
   BookOpen
 } from "lucide-react";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -42,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // --- 7. Лоадер ---
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
         <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
@@ -83,9 +84,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* HEADER TOP NAVIGATION */}
-      <header className="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50">
+      <header className="bg-slate-900 dark:bg-slate-950 text-white p-4 shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
 
           <div className="flex items-center gap-2">
@@ -137,10 +138,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Site
             </Link>
 
+            {/* ΈΞΟΔΟΣ */}
             <Link href="/" className="flex items-center gap-1.5 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap">
               <LogOut className="h-4 w-4" />
               Έξοδος
             </Link>
+
+            {/* THEME TOGGLE */}
+            <div className="hidden xl:block ml-2">
+              <ThemeToggle />
+            </div>
           </nav>
 
         </div>

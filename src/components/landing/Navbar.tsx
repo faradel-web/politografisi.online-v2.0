@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,8 +56,8 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${scrolled
-        ? "bg-white/95 backdrop-blur-md border-slate-200 shadow-sm py-3"
-        : "bg-white border-transparent py-5"
+        ? "bg-white/95 backdrop-blur-md border-slate-200 shadow-sm py-3 dark:bg-slate-900/95 dark:border-slate-800"
+        : "bg-white border-transparent py-5 dark:bg-slate-900 dark:border-transparent"
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,17 +65,17 @@ export default function Navbar() {
 
           {/* === LOGO === */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-12 h-12 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="relative w-12 h-12 flex items-center justify-center group-hover:scale-105 transition-transform bg-white rounded-full">
               <Image
                 src="/logo-circle.jpg"
                 alt="Politografisi Logo"
                 fill
                 sizes="48px"
-                className="object-contain mix-blend-multiply contrast-[1.2] brightness-[1.05]"
+                className="object-contain mix-blend-multiply border border-slate-100 dark:border-slate-800 rounded-full dark:mix-blend-normal"
               />
             </div>
             {/* Використовуємо Montserrat для логотипу */}
-            <span className="font-montserrat font-black text-xl md:text-2xl text-blue-950 tracking-tight leading-none">
+            <span className="font-montserrat font-black text-xl md:text-2xl text-blue-950 dark:text-white tracking-tight leading-none">
               POLITOGRAFISI<span className="text-blue-600">.ONLINE</span>
             </span>
           </Link>
@@ -87,7 +88,7 @@ export default function Navbar() {
                 href={`/#${item.id}`}
                 onClick={(e) => scrollToSection(e as any, item.id)}
                 // Використовуємо Inter (за замовчуванням), розмір 15px, вага Medium
-                className="text-[15px] font-medium text-slate-600 hover:text-blue-700 transition-colors relative group"
+                className="text-[15px] font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors relative group"
               >
                 {item.label}
                 {/* Анімована лінія підкреслення */}
@@ -96,12 +97,13 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* === AUTH BUTTONS === */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* === AUTH BUTTONS + THEME TOGGLE (Desktop) === */}
+          <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <Link
               href="/login"
               // Montserrat для кнопок
-              className="font-montserrat font-bold text-sm text-slate-700 hover:text-blue-700 transition-colors px-4 py-2"
+              className="font-montserrat font-bold text-sm text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors px-4 py-2"
             >
               Σύνδεση
             </Link>
@@ -113,29 +115,32 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* === MOBILE TOGGLE === */}
-          <button className="md:hidden text-slate-700 p-2" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-          </button>
+          {/* === MOBILE: THEME TOGGLE + HAMBURGER === */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button className="text-slate-700 dark:text-slate-300 p-2" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* === MOBILE MENU === */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 absolute w-full shadow-2xl h-screen animate-in slide-in-from-top-5 duration-200">
+        <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 absolute w-full shadow-2xl h-screen animate-in slide-in-from-top-5 duration-200">
           <div className="px-6 py-8 space-y-4 flex flex-col">
             {navItems.map((item, idx) => (
               <Link
                 key={idx}
                 href={`/#${item.id}`}
                 onClick={(e) => scrollToSection(e as any, item.id)}
-                className="block text-lg font-bold text-slate-800 hover:text-blue-700 py-3 border-b border-slate-50 font-montserrat"
+                className="block text-lg font-bold text-slate-800 dark:text-slate-100 hover:text-blue-700 dark:hover:text-blue-400 py-3 border-b border-slate-50 dark:border-slate-800 font-montserrat"
               >
                 {item.label}
               </Link>
             ))}
             <div className="pt-6 grid grid-cols-2 gap-4">
-              <Link href="/login" className="font-montserrat text-center px-4 py-3 border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-colors">Σύνδεση</Link>
+              <Link href="/login" className="font-montserrat text-center px-4 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Σύνδεση</Link>
               <Link href="/register" className="font-montserrat text-center px-4 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-md transition-colors">Εγγραφή</Link>
             </div>
           </div>

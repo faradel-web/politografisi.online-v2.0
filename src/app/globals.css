@@ -14,13 +14,134 @@
   /* Налаштування основного тексту (Geologica) */
   body {
     color: rgb(var(--foreground-rgb));
-    background: white;
     font-family: var(--font-geologica), sans-serif;
+    /* Fix: prevent mid-word line breaks on all screen sizes */
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
   }
 
   /* Налаштування заголовків (Vollkorn) - для красивого контрасту */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-vollkorn), serif;
-    letter-spacing: -0.02em; /* Робить заголовки трохи зібранішими та сучаснішими */
+    letter-spacing: -0.02em;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
   }
+
+  /* Fix: all text elements should not cut words in the middle */
+  p, span, li, td, th, div, label, button, a {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+  }
+}
+
+/* =============================================================
+   LESSON CONTENT: Proper word-wrapping for Firebase-stored HTML
+   Prevents text from breaking MID-WORD on small screens.
+   ============================================================= */
+.lesson-content,
+.lesson-content *,
+.lesson-content p,
+.lesson-content span,
+.lesson-content strong,
+.lesson-content b,
+.lesson-content em,
+.lesson-content li,
+.lesson-content ul,
+.lesson-content ol,
+.lesson-content td,
+.lesson-content th,
+.lesson-content h1,
+.lesson-content h2,
+.lesson-content h3,
+.lesson-content h4,
+.lesson-content h5,
+.lesson-content h6 {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  -moz-hyphens: none !important;
+  -ms-hyphens: none !important;
+}
+
+/* Забороняємо <wbr> теги розривати слова (word break opportunity tags) */
+.lesson-content wbr {
+  display: none;
+}
+
+/* =============================================================
+   DARK MODE: Override inline color styles in lesson HTML content
+   Firebase-stored HTML often has color: #333 / color: black etc.
+   We force everything to inherit the parent dark text color.
+   ============================================================= */
+.dark .lesson-content,
+.dark .lesson-content p,
+.dark .lesson-content span,
+.dark .lesson-content li,
+.dark .lesson-content ul,
+.dark .lesson-content ol,
+.dark .lesson-content td,
+.dark .lesson-content th,
+.dark .lesson-content blockquote,
+.dark .lesson-content div {
+  color: rgb(203 213 225) !important; /* slate-300 */
+}
+
+.dark .lesson-content h1,
+.dark .lesson-content h2,
+.dark .lesson-content h3,
+.dark .lesson-content h4,
+.dark .lesson-content h5,
+.dark .lesson-content h6,
+.dark .lesson-content strong,
+.dark .lesson-content b {
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+
+.dark .lesson-content a {
+  color: rgb(96 165 250) !important; /* blue-400 */
+}
+
+.dark .lesson-content hr {
+  border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .lesson-content table {
+  border-color: rgb(51 65 85) !important;
+}
+
+.dark .lesson-content th {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+  color: rgb(241 245 249) !important;
+}
+
+.dark .lesson-content tr:nth-child(even) td {
+  background-color: rgba(15, 23, 42, 0.3) !important;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 4px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgb(15 23 42);
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(51 65 85);
+  border-radius: 4px;
 }
