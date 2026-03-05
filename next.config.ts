@@ -35,7 +35,11 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups', // Дозволяє Google Auth popup працювати коректно
           },
         ],
       },

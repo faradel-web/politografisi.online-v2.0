@@ -1,0 +1,319 @@
+/* ===== Tiptap Editor Styles ===== */
+
+/* Base editor area */
+.tiptap-editor-content {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  line-height: 1.8;
+  color: #1e293b;
+}
+
+:is(.dark) .tiptap-editor-content {
+  color: #e2e8f0;
+}
+
+/* Force text color in dark mode — overrides inline styles from old Quill content */
+:is(.dark) .tiptap-editor-content p,
+:is(.dark) .tiptap-editor-content span,
+:is(.dark) .tiptap-editor-content li,
+:is(.dark) .tiptap-editor-content div {
+  color: #e2e8f0 !important;
+}
+
+:is(.dark) .tiptap-editor-content h1,
+:is(.dark) .tiptap-editor-content h2,
+:is(.dark) .tiptap-editor-content h3 {
+  color: #f8fafc !important;
+}
+
+:is(.dark) .tiptap-editor-content strong,
+:is(.dark) .tiptap-editor-content b {
+  color: #f1f5f9 !important;
+}
+
+/* Placeholder */
+.tiptap .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #94a3b8;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+:is(.dark) .tiptap .is-editor-empty:first-child::before {
+  color: #475569;
+}
+
+/* Headings */
+.tiptap-editor-content h1 {
+  font-size: 1.875rem;
+  font-weight: 900;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.tiptap-editor-content h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 1.25rem;
+  margin-bottom: 0.625rem;
+  line-height: 1.3;
+  color: #0f172a;
+}
+
+.tiptap-editor-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+/* Paragraphs */
+.tiptap-editor-content p {
+  margin-bottom: 0.75rem;
+}
+
+/* Blockquote */
+.tiptap-editor-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #64748b;
+}
+
+:is(.dark) .tiptap-editor-content blockquote {
+  border-left-color: #60a5fa;
+  color: #94a3b8 !important;
+}
+
+:is(.dark) .tiptap-editor-content blockquote p,
+:is(.dark) .tiptap-editor-content blockquote span {
+  color: #94a3b8 !important;
+}
+
+/* Code Block */
+.tiptap-editor-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+.tiptap-editor-content pre code {
+  color: #e2e8f0 !important;
+  background: transparent !important;
+}
+
+/* Inline Code */
+.tiptap-editor-content code:not(pre code) {
+  background: #f1f5f9;
+  color: #e11d48;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+:is(.dark) .tiptap-editor-content code:not(pre code) {
+  background: #1e293b;
+  color: #fb7185 !important;
+}
+
+/* Lists */
+.tiptap-editor-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor-content li {
+  margin-bottom: 0.25rem;
+}
+
+/* Horizontal Rule */
+.tiptap-editor-content hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #cbd5e1, transparent);
+  margin: 1.5rem 0;
+}
+
+:is(.dark) .tiptap-editor-content hr {
+  background: linear-gradient(to right, transparent, #475569, transparent);
+}
+
+/* Images */
+.tiptap-editor-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Links inside editor */
+.tiptap-editor-content a {
+  color: #2563eb;
+}
+
+:is(.dark) .tiptap-editor-content a {
+  color: #60a5fa !important;
+}
+
+/* ===== TABLE STYLES ===== */
+.tiptap-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+:is(.dark) .tiptap-table {
+  border-color: #334155;
+}
+
+.tiptap-table th {
+  background: #f8fafc;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #475569;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+:is(.dark) .tiptap-table th {
+  background: #1e293b;
+  color: #94a3b8 !important;
+  border-color: #334155;
+}
+
+.tiptap-table td {
+  padding: 0.625rem 1rem;
+  border: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+:is(.dark) .tiptap-table td {
+  border-color: #334155;
+  color: #cbd5e1 !important;
+}
+
+.tiptap-table tr:nth-child(even) td {
+  background: #f8fafc;
+}
+
+:is(.dark) .tiptap-table tr:nth-child(even) td {
+  background: #0f172a30;
+}
+
+/* Table cell selection */
+.tiptap-table .selectedCell {
+  background: #dbeafe !important;
+}
+
+:is(.dark) .tiptap-table .selectedCell {
+  background: #1e3a5f !important;
+}
+
+/* Column resize handle */
+.tiptap-table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #3b82f6;
+  cursor: col-resize;
+}
+
+/* ===== CALLOUT STYLES ===== */
+.callout-content p {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+:is(.dark) .callout-content p {
+  color: #cbd5e1 !important;
+}
+
+/* ===== Focus styles ===== */
+.tiptap-editor-content:focus {
+  outline: none;
+}
+
+/* Selection highlight */
+.tiptap-editor-content *::selection {
+  background: #bfdbfe;
+}
+
+:is(.dark) .tiptap-editor-content *::selection {
+  background: #1e3a5f;
+}
+
+/* ===== Gapcursor ===== */
+.ProseMirror-gapcursor::after {
+  border-top: 1px solid #3b82f6;
+}
+
+/* ===== ProseMirror base dark mode ===== */
+:is(.dark) .ProseMirror {
+  color: #e2e8f0;
+  caret-color: #60a5fa;
+}
+
+/* ===== RENDERED CONTENT (Preview + Student View) dark mode ===== */
+/* Overrides inline color styles from old Quill-generated HTML */
+:is(.dark) .tiptap-rendered-content {
+  color: #e2e8f0;
+}
+
+:is(.dark) .tiptap-rendered-content p,
+:is(.dark) .tiptap-rendered-content span,
+:is(.dark) .tiptap-rendered-content li,
+:is(.dark) .tiptap-rendered-content div,
+:is(.dark) .tiptap-rendered-content td {
+  color: #e2e8f0 !important;
+}
+
+:is(.dark) .tiptap-rendered-content h1,
+:is(.dark) .tiptap-rendered-content h2,
+:is(.dark) .tiptap-rendered-content h3,
+:is(.dark) .tiptap-rendered-content h4 {
+  color: #f8fafc !important;
+}
+
+:is(.dark) .tiptap-rendered-content strong,
+:is(.dark) .tiptap-rendered-content b {
+  color: #f1f5f9 !important;
+}
+
+:is(.dark) .tiptap-rendered-content a {
+  color: #60a5fa !important;
+}
+
+:is(.dark) .tiptap-rendered-content blockquote,
+:is(.dark) .tiptap-rendered-content blockquote p {
+  color: #94a3b8 !important;
+}

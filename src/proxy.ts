@@ -7,12 +7,19 @@ export function proxy(request: NextRequest) {
 
     let response = NextResponse.next();
 
-    // --- ЗАХИСТ ПРЯМОГО ДОСТУПУ ДО /crm/* ---
+    // --- ЗАХИСТ ДОСТУПУ ДО /crm/* ---
     const isCrmSubdomain = hostname.startsWith('crm.');
     const isDirectCrmAccess = pathname.startsWith('/crm') && !isCrmSubdomain;
+    const isDevelopment = hostname.includes('localhost') || hostname.includes('127.0.0.1');
 
     if (isDirectCrmAccess) {
-        response = NextResponse.redirect(new URL('/', request.url));
+        // У development (localhost) дозволяємо прямий доступ до /crm/*
+        // Перевірка ролі відбувається на клієнті в CrmLayout
+        if (!isDevelopment) {
+            // У production блокуємо прямий доступ — CRM тільки через субдомен
+            response = NextResponse.redirect(new URL('/', request.url));
+        }
+        // У development — пропускаємо далі (NextResponse.next())
     } else if (isCrmSubdomain) {
         const hasAdminToken = request.cookies.has('politografisi_admin_access');
 

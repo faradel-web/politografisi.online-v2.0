@@ -95,14 +95,7 @@ export default function CrmDashboard() {
     description: ""
   });
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) return router.push('/login');
-      const snap = await getDoc(doc(db, "users", user.uid));
-      if (!['admin', 'editor'].includes(snap.data()?.role)) router.push('/login');
-    });
-    return () => unsubscribe();
-  }, [router]);
+  // Auth check is now handled upstream in layout.tsx
 
   useEffect(() => {
     setLoading(true);

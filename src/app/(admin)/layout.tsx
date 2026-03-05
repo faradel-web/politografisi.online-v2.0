@@ -85,72 +85,75 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
-      {/* HEADER TOP NAVIGATION */}
-      <header className="bg-slate-900 dark:bg-slate-950 text-white p-4 shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+      {/* ADMIN HEADER — двохрядкова структура на мобільних */}
+      <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
 
-          <div className="flex items-center gap-2">
-            <div className="bg-blue-600 p-1.5 rounded-lg flex-shrink-0">
+        {/* Рядок 1: Лого + утиліти (ніколи не переповнюється) */}
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="bg-blue-600 p-1.5 rounded-lg shrink-0">
               <LayoutDashboard className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-lg font-black tracking-wider text-white whitespace-nowrap">ADMIN PANEL</h1>
+            <h1 className="text-base font-black tracking-wider text-white whitespace-nowrap">ADMIN PANEL</h1>
           </div>
 
-          <nav className="flex items-center gap-4 overflow-x-auto w-full xl:w-auto pb-2 xl:pb-0 no-scrollbar text-sm font-bold">
-            {menuItems.map((item) => {
-              const isActive = item.href === "/admin"
-                ? pathname === "/admin"
-                : pathname.startsWith(item.href);
-
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all font-medium duration-200 whitespace-nowrap ${isActive
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                    }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.title}
-                </Link>
-              );
-            })}
-
-            {/* ВЕРТИКАЛЬНА ЛІНІЯ РОЗДІЛЬНИК */}
-            <div className="h-6 w-px bg-slate-700 mx-1 hidden sm:block"></div>
-
-            {/* ✅ КНОПКА CRM (ТІЛЬКИ ДЛЯ АДМІНА) */}
+          {/* Утиліти праворуч: CRM, Site, Exit, ThemeToggle */}
+          <div className="flex items-center gap-0.5 shrink-0">
             {role === USER_ROLES.ADMIN && (
               <Link
                 href="/crm"
-                className="flex items-center gap-1.5 px-3 py-2 text-indigo-400 hover:text-indigo-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap"
+                className="flex items-center gap-1 px-2 py-1.5 text-indigo-400 hover:text-indigo-300 hover:bg-slate-800 rounded-lg transition-all text-xs font-bold whitespace-nowrap"
               >
-                <Database className="h-4 w-4" />
-                CRM
+                <Database className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">CRM</span>
               </Link>
             )}
 
-            <Link href="/dashboard" className="flex items-center gap-1.5 px-3 py-2 text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap">
-              <FileText className="h-4 w-4" />
-              Site
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-1 px-2 py-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 rounded-lg transition-all text-xs font-bold whitespace-nowrap"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Site</span>
             </Link>
 
-            {/* ΈΞΟΔΟΣ */}
-            <Link href="/" className="flex items-center gap-1.5 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-xl transition-all whitespace-nowrap">
-              <LogOut className="h-4 w-4" />
-              Έξοδος
+            <Link
+              href="/"
+              className="flex items-center gap-1 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-lg transition-all text-xs font-bold whitespace-nowrap"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Έξοδος</span>
             </Link>
 
-            {/* THEME TOGGLE — Доступний на всіх розмірах */}
-            <div className="ml-2 flex-shrink-0">
+            <div className="ml-1 shrink-0">
               <ThemeToggle />
             </div>
-          </nav>
-
+          </div>
         </div>
+
+        {/* Рядок 2: Навігація — горизонтальний скрол, ізольований від рядка 1 */}
+        <nav className="flex items-center gap-1 overflow-x-auto px-3 pb-2 no-scrollbar border-t border-slate-800">
+          {menuItems.map((item) => {
+            const isActive = item.href === "/admin"
+              ? pathname === "/admin"
+              : pathname.startsWith(item.href);
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all text-sm font-medium duration-200 whitespace-nowrap shrink-0 ${isActive
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  }`}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                {item.title}
+              </Link>
+            );
+          })}
+        </nav>
+
       </header>
 
       {/* MAIN CONTENT */}

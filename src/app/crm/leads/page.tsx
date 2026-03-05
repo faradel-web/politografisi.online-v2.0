@@ -86,23 +86,9 @@ export default function CrmUnifiedPage() {
 
     const [archivingContact, setArchivingContact] = useState<UnifiedContact | null>(null);
 
-    // 1. ПЕРЕВІРКА ПРАВ
+    // 1. ПЕРЕВІРКА ПРАВ (Тепер керується в CrmLayout)
     useEffect(() => {
-        const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userSnapshot = await getDoc(userDocRef);
-                    if (userSnapshot.exists() && ['admin', 'editor'].includes(userSnapshot.data().role || 'student')) {
-                        setAuthStatus('authorized');
-                    } else {
-                        setAuthStatus('forbidden');
-                        setLoading(false);
-                    }
-                } catch (error) { setAuthStatus('guest'); setLoading(false); }
-            } else { setAuthStatus('guest'); setLoading(false); }
-        });
-        return () => unsubscribeAuth();
+        setAuthStatus('authorized');
     }, []);
 
     // 2. ЗАВАНТАЖЕННЯ ДАНИХ

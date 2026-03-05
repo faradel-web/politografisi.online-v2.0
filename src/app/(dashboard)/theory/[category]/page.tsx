@@ -6,10 +6,14 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from "firebase/firestore";
 import { ArrowLeft, Bot, Send, Loader2, Video, FileText, ChevronRight, Music, Download, File, X, Presentation, Menu, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useAuth } from "@/contexts/auth-context";
 import { GUEST_LIMITS } from "@/lib/constants";
+import type { JSONContent } from '@tiptap/core';
+
+const TiptapRenderer = dynamic(() => import('@/components/editor/TiptapRenderer'), { ssr: false });
 
 // --- ТИПИ ---
 interface Attachment {
@@ -22,7 +26,8 @@ interface Lesson {
   id: string;
   order: number;
   title: string;
-  content: string;
+  content: string | JSONContent;
+  contentVersion?: number;
   videoUrl: string;
   audioUrl?: string;
   presentationUrl?: string;
@@ -152,22 +157,7 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     }
   };
 
-  // Helper: видаляємо символи, що викликають неправильний перенос слів (wbr, м'які дефіси, нульові пробіли)
-  const sanitizeContent = (html: string): string => {
-    return html
-      // ГОЛОВНА ПРИЧИНА: редактор вставив &nbsp; замість звичайних пробілів між словами.
-      // Нерозривний пробіл не є точкою переносу, тому браузер ламає слова посередині.
-      .replace(/&nbsp;/gi, ' ')             // HTML-об'єкт нерозривного пробілу → звичайний пробіл
-      .replace(/\u00A0/g, ' ')             // Unicode нерозривний пробіл → звичайний пробіл
-      // Додаткові символи переносу
-      .replace(/&shy;/gi, '')              // HTML-об'єкт м'якого дефіса
-      .replace(/\u00AD/g, '')              // Unicode м'який дефіс (soft hyphen)
-      .replace(/\u200B/g, '')              // Zero-width space
-      .replace(/\u200C/g, '')              // Zero-width non-joiner
-      .replace(/\u200D/g, '')              // Zero-width joiner
-      .replace(/\uFEFF/g, '')              // BOM / Zero-width no-break space
-      .replace(/<wbr\s*\/?>/gi, '');       // <wbr> теги
-  };
+
 
   // Helper для YouTube
   const getEmbedUrl = (url: string) => {
@@ -314,12 +304,10 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                   </div>
                 )}
 
-                {/* 5. HTML CONTENT (Responsive Typography) */}
-                <div
-                  className="lesson-content prose prose-slate prose-base md:prose-lg max-w-none font-serif leading-loose text-slate-700 dark:text-slate-300 dark:prose-invert prose-headings:font-black prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-img:rounded-2xl mb-8 md:mb-12"
-                  style={{ hyphens: 'none', WebkitHyphens: 'none', MozHyphens: 'none', msHyphens: 'none' } as React.CSSProperties}
-                  dangerouslySetInnerHTML={{ __html: sanitizeContent(activeLesson.content) }}
-                />
+                {/* 5. LESSON CONTENT */}
+                <div className="mb-8 md:mb-12">
+                  <TiptapRenderer content={activeLesson.content} />
+                </div>
 
                 {/* 6. ATTACHMENTS */}
                 {activeLesson.attachments && activeLesson.attachments.length > 0 && (

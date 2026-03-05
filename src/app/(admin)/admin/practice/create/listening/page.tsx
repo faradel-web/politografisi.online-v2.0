@@ -237,27 +237,27 @@ function EditorContent() {
   if (!isLoaded) return <div className="min-h-screen flex items-center justify-center font-black animate-pulse text-slate-400">ΦΟΡΤΩΣΗ...</div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 pb-32 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 pb-32 font-sans transition-colors">
       <div className="max-w-4xl mx-auto">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
           <div className="flex items-center gap-4">
-            <Link href="/admin/manage" className="p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all text-slate-400">
+            <Link href="/admin/manage" className="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-slate-400 dark:text-slate-500">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
-              <h1 className="text-3xl font-black text-slate-900 font-serif tracking-tight">Listening Editor (Final)</h1>
+              <h1 className="text-3xl font-black text-slate-900 dark:text-white font-serif tracking-tight">Listening Editor (Final)</h1>
               <div className="flex items-center gap-2 mt-2">
-                <label className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition-colors">
+                <label className="flex items-center gap-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-lg border border-emerald-100 dark:border-emerald-800 cursor-pointer hover:bg-emerald-100 dark:hover:bg-emerald-800 transition-colors">
                   <FileJson size={14} /> Εισαγωγή JSON
                   <input type="file" accept=".json" onChange={handleJsonImport} className="hidden" />
                 </label>
-                <p className="text-slate-400 text-xs font-medium">Standardized Types</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs font-medium">Standardized Types</p>
               </div>
             </div>
           </div>
-          <button onClick={handleSubmit} disabled={isSaving || isUploading} className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-purple-600 transition-all shadow-xl disabled:opacity-50">
+          <button onClick={handleSubmit} disabled={isSaving || isUploading} className="bg-slate-900 dark:bg-blue-600 text-white px-10 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-purple-600 dark:hover:bg-blue-700 transition-all shadow-xl disabled:opacity-50">
             {isSaving ? <Loader2 className="animate-spin h-5 w-5" /> : <Save className="h-5 w-5" />} Αποθήκευση
           </button>
         </div>
@@ -265,57 +265,57 @@ function EditorContent() {
         <div className="space-y-12">
 
           {/* 1. AUDIO SECTION */}
-          <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 space-y-8">
-            <div className="flex items-center gap-3 text-slate-400 border-b border-slate-50 pb-6"><Music className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">1. Ήχος και Πληροφορίες</h2></div>
+          <section className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 space-y-8">
+            <div className="flex items-center gap-3 text-slate-400 dark:text-slate-500 border-b border-slate-50 dark:border-slate-800 pb-6"><Music className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">1. Ήχος και Πληροφορίες</h2></div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="md:col-span-3 space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Τίτλος μαθήματος</label>
-                <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-purple-100" placeholder="Παράδειγμα: Θέμα 5 - Στο κατάστημα" />
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-2 tracking-widest">Τίτλος μαθήματος</label>
+                <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full p-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30" placeholder="Παράδειγμα: Θέμα 5 - Στο κατάστημα" />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-2 tracking-widest">Αριθμός</label>
-                <input type="number" value={order} onChange={e => setOrder(Number(e.target.value))} className="w-full p-4 bg-slate-50 border-none rounded-xl font-bold text-slate-800 outline-none focus:ring-2 focus:ring-purple-100 text-center" />
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase ml-2 tracking-widest">Αριθμός</label>
+                <input type="number" value={order} onChange={e => setOrder(Number(e.target.value))} className="w-full p-4 bg-slate-50 dark:bg-slate-800 border-none rounded-xl font-bold text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-purple-100 dark:focus:ring-purple-900/30 text-center" />
               </div>
             </div>
 
-            <div className="bg-purple-50 p-6 rounded-3xl border border-purple-100">
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-3xl border border-purple-100 dark:border-purple-800">
               {audioUrl ? (
-                <div className="flex flex-col sm:flex-row items-center gap-6 bg-white p-4 rounded-2xl border border-purple-200 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-center gap-6 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-purple-200 dark:border-purple-700 shadow-sm">
                   <div className="bg-purple-600 p-3 rounded-xl text-white shadow-lg"><FileAudio className="h-6 w-6" /></div>
                   <audio src={audioUrl} controls className="flex-1 h-10" />
-                  <button type="button" onClick={() => setAudioUrl("")} className="p-2 text-slate-300 hover:text-red-500 transition-colors"><X className="h-6 w-6" /></button>
+                  <button type="button" onClick={() => setAudioUrl("")} className="p-2 text-slate-300 dark:text-slate-500 hover:text-red-500 transition-colors"><X className="h-6 w-6" /></button>
                 </div>
               ) : (
-                <label className="cursor-pointer bg-white w-full h-24 rounded-2xl border-2 border-dashed border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all flex items-center justify-center gap-4 group">
-                  {isUploading ? <Loader2 className="animate-spin h-6 w-6 text-purple-400" /> : <Upload className="h-6 w-6 text-purple-300 group-hover:scale-110 transition-transform" />}
-                  <span className="text-sm font-bold text-purple-600">{isUploading ? "Φόρτωση..." : "Μεταφόρτωση αρχείου MP3"}</span>
+                <label className="cursor-pointer bg-white dark:bg-slate-800 w-full h-24 rounded-2xl border-2 border-dashed border-purple-200 dark:border-purple-700 hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-all flex items-center justify-center gap-4 group">
+                  {isUploading ? <Loader2 className="animate-spin h-6 w-6 text-purple-400" /> : <Upload className="h-6 w-6 text-purple-300 dark:text-purple-500 group-hover:scale-110 transition-transform" />}
+                  <span className="text-sm font-bold text-purple-600 dark:text-purple-400">{isUploading ? "Φόρτωση..." : "Μεταφόρτωση αρχείου MP3"}</span>
                   <input type="file" accept="audio/*" className="hidden" onChange={handleAudioUpload} />
                 </label>
               )}
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-              <label className="text-xs font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-4"><AlignLeft className="h-4 w-4" /> Απομαγνητοφώνηση</label>
-              <textarea value={transcript} onChange={e => setTranscript(e.target.value)} className="w-full p-5 bg-white border border-slate-200 rounded-2xl h-40 text-sm font-medium outline-none" placeholder="Κείμενο ήχου..." />
+            <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
+              <label className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4"><AlignLeft className="h-4 w-4" /> Απομαγνητοφώνηση</label>
+              <textarea value={transcript} onChange={e => setTranscript(e.target.value)} className="w-full p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl h-40 text-sm font-medium outline-none dark:text-white dark:placeholder-slate-500" placeholder="Κείμενο ήχου..." />
             </div>
           </section>
 
           {/* 2. PART A */}
-          <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 space-y-8">
-            <div className="flex items-center gap-3 text-slate-400 border-b border-slate-50 pb-6"><Headphones className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">2. Μέρος Α: 5 Ερωτήσεις Τεστ</h2></div>
+          <section className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 space-y-8">
+            <div className="flex items-center gap-3 text-slate-400 dark:text-slate-500 border-b border-slate-50 dark:border-slate-800 pb-6"><Headphones className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">2. Μέρος Α: 5 Ερωτήσεις Τεστ</h2></div>
             <div className="space-y-12">
               {partA.map((q, idx) => (
                 <div key={idx} className="relative">
                   <div className="mb-4 flex items-center gap-3">
-                    <span className="w-8 h-8 flex items-center justify-center bg-purple-100 text-purple-600 rounded-lg font-black text-sm">{idx + 1}</span>
-                    <input type="text" value={q.question} onChange={(e) => updatePartA(idx, 'question', e.target.value)} className="flex-1 bg-transparent text-lg font-bold border-b-2 border-slate-100 outline-none py-2" placeholder="Κείμενο ερώτησης..." />
+                    <span className="w-8 h-8 flex items-center justify-center bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 rounded-lg font-black text-sm">{idx + 1}</span>
+                    <input type="text" value={q.question} onChange={(e) => updatePartA(idx, 'question', e.target.value)} className="flex-1 bg-transparent text-lg font-bold border-b-2 border-slate-100 dark:border-slate-700 outline-none py-2 dark:text-white dark:placeholder-slate-500" placeholder="Κείμενο ερώτησης..." />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pl-11">
                     {['α', 'β', 'γ'].map((label, optIdx) => (
-                      <div key={optIdx} className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all ${q.correctAnswerIndex === optIdx ? 'border-emerald-400 bg-emerald-50' : 'border-slate-100 bg-white'}`}>
-                        <button type="button" onClick={() => updatePartA(idx, 'correctAnswerIndex', optIdx)} className={`w-8 h-8 rounded-lg flex items-center justify-center font-black uppercase text-xs ${q.correctAnswerIndex === optIdx ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>{label}</button>
-                        <input type="text" value={q.options[optIdx]} onChange={(e) => updatePartA(idx, 'options', e.target.value, optIdx)} className="flex-1 bg-transparent text-sm font-bold outline-none" placeholder={`Επιλογή ${label}`} />
+                      <div key={optIdx} className={`flex items-center gap-3 p-3 rounded-2xl border-2 transition-all ${q.correctAnswerIndex === optIdx ? 'border-emerald-400 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30' : 'border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
+                        <button type="button" onClick={() => updatePartA(idx, 'correctAnswerIndex', optIdx)} className={`w-8 h-8 rounded-lg flex items-center justify-center font-black uppercase text-xs ${q.correctAnswerIndex === optIdx ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'}`}>{label}</button>
+                        <input type="text" value={q.options[optIdx]} onChange={(e) => updatePartA(idx, 'options', e.target.value, optIdx)} className="flex-1 bg-transparent text-sm font-bold outline-none dark:text-white dark:placeholder-slate-500" placeholder={`Επιλογή ${label}`} />
                       </div>
                     ))}
                   </div>
@@ -325,16 +325,16 @@ function EditorContent() {
           </section>
 
           {/* 3. PART B */}
-          <section className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 space-y-8">
-            <div className="flex items-center gap-3 text-slate-400 border-b border-slate-50 pb-6"><CheckCircle2 className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">3. Μέρος Β: 5 Ερωτήσεις Σωστό / Λάθος</h2></div>
+          <section className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-700 space-y-8">
+            <div className="flex items-center gap-3 text-slate-400 dark:text-slate-500 border-b border-slate-50 dark:border-slate-800 pb-6"><CheckCircle2 className="h-5 w-5" /><h2 className="text-xs font-black uppercase tracking-widest">3. Μέρος Β: 5 Ερωτήσεις Σωστό / Λάθος</h2></div>
             <div className="space-y-4">
               {partB.map((q, idx) => (
-                <div key={idx} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                  <span className="font-black text-slate-300 w-6 text-right">{idx + 1}.</span>
-                  <input type="text" value={q.statement} onChange={(e) => updatePartB(idx, 'statement', e.target.value)} className="flex-1 bg-transparent font-bold outline-none" placeholder="Εισαγάγετε τη δήλωση..." />
-                  <div className="flex bg-white rounded-xl p-1 border border-slate-200">
-                    <button type="button" onClick={() => updatePartB(idx, 'isTrue', true)} className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${q.isTrue ? 'bg-emerald-500 text-white' : 'text-slate-300'}`}>Σ</button>
-                    <button type="button" onClick={() => updatePartB(idx, 'isTrue', false)} className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${!q.isTrue ? 'bg-red-500 text-white' : 'text-slate-300'}`}>Λ</button>
+                <div key={idx} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
+                  <span className="font-black text-slate-300 dark:text-slate-600 w-6 text-right">{idx + 1}.</span>
+                  <input type="text" value={q.statement} onChange={(e) => updatePartB(idx, 'statement', e.target.value)} className="flex-1 bg-transparent font-bold outline-none dark:text-white dark:placeholder-slate-500" placeholder="Εισαγάγετε τη δήλωση..." />
+                  <div className="flex bg-white dark:bg-slate-900 rounded-xl p-1 border border-slate-200 dark:border-slate-700">
+                    <button type="button" onClick={() => updatePartB(idx, 'isTrue', true)} className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${q.isTrue ? 'bg-emerald-500 text-white' : 'text-slate-300 dark:text-slate-600'}`}>Σ</button>
+                    <button type="button" onClick={() => updatePartB(idx, 'isTrue', false)} className={`px-5 py-2 rounded-lg text-xs font-black transition-all ${!q.isTrue ? 'bg-red-500 text-white' : 'text-slate-300 dark:text-slate-600'}`}>Λ</button>
                   </div>
                 </div>
               ))}
@@ -344,8 +344,8 @@ function EditorContent() {
         </div>
 
         {/* DEBUG */}
-        <div className="mt-20 pt-10 border-t border-slate-200">
-          <button onClick={() => setShowDebug(!showDebug)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-900 mb-4"><Bug size={14} /> Debug JSON</button>
+        <div className="mt-20 pt-10 border-t border-slate-200 dark:border-slate-700">
+          <button onClick={() => setShowDebug(!showDebug)} className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-900 dark:hover:text-white mb-4"><Bug size={14} /> Debug JSON</button>
           {showDebug && <div className="bg-slate-900 text-slate-300 p-6 rounded-2xl font-mono text-xs overflow-x-auto"><pre>{JSON.stringify({ title, partA, partB }, null, 2)}</pre></div>}
         </div>
 

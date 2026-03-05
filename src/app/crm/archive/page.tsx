@@ -68,22 +68,9 @@ export default function CrmArchivePage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const role = userDoc.data()?.role;
-        if (role === 'admin' || role === 'editor') {
-          setAuthStatus('authorized');
-        } else {
-          setAuthStatus('forbidden');
-          setLoading(false);
-        }
-      } else {
-        router.push('/crm');
-      }
-    });
-    return () => unsubscribeAuth();
-  }, [router]);
+    // Auth is managed in the CRM layout above
+    setAuthStatus('authorized');
+  }, []);
 
   useEffect(() => {
     if (authStatus !== 'authorized') return;

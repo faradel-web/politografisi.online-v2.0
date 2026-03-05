@@ -128,25 +128,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribeAuth();
   }, []);
 
-  // --- ЛОГІКА GOOGLE ---
+  // --- ЛОГІКА GOOGLE (Popup — COOP warnings не блокують авторизацію) ---
   const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
+      const firebaseUser = result.user;
 
-      const userDocRef = doc(db, "users", user.uid);
+      const userDocRef = doc(db, "users", firebaseUser.uid);
       const userDocSnap = await getDoc(userDocRef);
 
       if (!userDocSnap.exists()) {
-        const fullName = user.displayName || "";
+        const fullName = firebaseUser.displayName || "";
         const nameParts = fullName.split(" ");
         const firstName = nameParts[0] || "";
         const lastName = nameParts.slice(1).join(" ") || "";
 
         await setDoc(userDocRef, {
-          uid: user.uid,
-          email: user.email,
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
           firstName: firstName,
           lastName: lastName,
           displayName: fullName,

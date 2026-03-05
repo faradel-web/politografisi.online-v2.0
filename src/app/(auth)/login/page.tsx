@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,8 +11,15 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import Navbar from "@/components/landing/Navbar";
 
 export default function LoginPage() {
-    const { loginWithGoogle, loginWithEmailOrPhone } = useAuth();
+    const { user, loading, loginWithGoogle, loginWithEmailOrPhone } = useAuth();
     const router = useRouter();
+
+    // Якщо вже авторизований — перенаправляємо на dashboard
+    useEffect(() => {
+        if (!loading && user) {
+            router.push("/dashboard");
+        }
+    }, [user, loading, router]);
 
     // --- STATES ---
     const [view, setView] = useState<'login' | 'reset'>('login'); // Перемикач режимів
@@ -27,13 +34,13 @@ export default function LoginPage() {
     const [resetMessage, setResetMessage] = useState("");
 
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     // --- LOGIN HANDLER ---
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        setLoading(true);
+        setSubmitting(true);
 
         try {
             await loginWithEmailOrPhone(identifier, password);
@@ -45,7 +52,7 @@ export default function LoginPage() {
             } else {
                 setError("Παρουσιάστηκε σφάλμα κατά τη σύνδεση.");
             }
-            setLoading(false);
+            setSubmitting(false);
         }
     };
 
@@ -152,7 +159,7 @@ export default function LoginPage() {
 
                                 <button
                                     onClick={loginWithGoogle}
-                                    disabled={loading}
+                                    disabled={submitting}
                                     className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 text-slate-700 dark:text-slate-200 font-bold py-3 px-6 rounded-xl transition-all duration-200 mb-6"
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -191,7 +198,7 @@ export default function LoginPage() {
                                             placeholder="email@example.com ή 69XXXXXXXX"
                                             value={identifier}
                                             onChange={(e) => setIdentifier(e.target.value)}
-                                            disabled={loading}
+                                            disabled={submitting}
                                         />
                                     </div>
 
@@ -214,16 +221,16 @@ export default function LoginPage() {
                                             placeholder="••••••••"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            disabled={loading}
+                                            disabled={submitting}
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
-                                        disabled={loading}
+                                        disabled={submitting}
                                         className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-900 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-blue-200 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70"
                                     >
-                                        {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Σύνδεση"}
+                                        {submitting ? <Loader2 className="animate-spin h-5 w-5" /> : "Σύνδεση"}
                                     </button>
                                 </form>
 

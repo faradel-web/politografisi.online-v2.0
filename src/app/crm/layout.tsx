@@ -3,7 +3,10 @@
 import { ShieldAlert, LayoutDashboard, Wallet, Users, Archive, Settings } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
+import { USER_ROLES } from "@/lib/constants";
+import { useEffect } from "react";
 
 export default function CrmLayout({
   children,
@@ -11,6 +14,29 @@ export default function CrmLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.push("/");
+        return;
+      }
+      const role = user.role;
+      if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) {
+        router.push("/dashboard");
+      }
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user || (user.role !== USER_ROLES.ADMIN && user.role !== USER_ROLES.EDITOR)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const navLinks = [
     { href: "/crm", label: "Dashboard", icon: LayoutDashboard },
@@ -39,8 +65,8 @@ export default function CrmLayout({
                   key={link.href}
                   href={link.href}
                   className={`flex items-center gap-1.5 whitespace-nowrap transition-colors ${isActive
-                      ? "text-white border-b-2 border-red-500 pb-0.5"
-                      : "text-slate-300 hover:text-white"
+                    ? "text-white border-b-2 border-red-500 pb-0.5"
+                    : "text-slate-300 hover:text-white"
                     }`}
                 >
                   <Icon size={16} />

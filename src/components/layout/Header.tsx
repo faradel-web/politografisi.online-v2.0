@@ -42,21 +42,24 @@ export default function Header() {
 
     return (
         <>
-            <header className="sticky top-0 z-50 flex h-20 items-center justify-between bg-white dark:bg-slate-900 px-4 shadow-sm sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200">
+            {/* Зменшена висота хедера на мобільних (h-14), стандартна на md+ (h-16) */}
+            <header className="sticky top-0 z-50 flex h-14 md:h-16 items-center justify-between bg-white dark:bg-slate-900 px-3 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200 shadow-sm">
 
                 {/* Логотип */}
-                <div className="flex items-center gap-8 shrink-0">
-                    <Link href="/dashboard" className="flex items-center gap-2.5 group">
-                        <div className="relative h-12 w-12 flex items-center justify-center group-hover:scale-105 transition-transform bg-white rounded-full">
+                <div className="flex items-center shrink-0">
+                    <Link href="/dashboard" className="flex items-center gap-2 group">
+                        {/* Логотип-іконка: завжди видима */}
+                        <div className="relative h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center group-hover:scale-105 transition-transform bg-white rounded-full shrink-0">
                             <Image
                                 src="/logo-circle.jpg"
                                 alt="Politografisi Logo"
                                 fill
-                                sizes="48px"
+                                sizes="40px"
                                 className="object-contain mix-blend-multiply border border-slate-100 dark:border-slate-800 rounded-full dark:mix-blend-normal"
                             />
                         </div>
-                        <span className="font-montserrat font-black text-lg md:text-xl text-blue-950 dark:text-white tracking-tight leading-none">
+                        {/* Текст: прихований до sm, видимий від sm */}
+                        <span className="hidden sm:block font-montserrat font-black text-base md:text-xl text-blue-950 dark:text-white tracking-tight leading-none">
                             POLITOGRAFISI<span className="text-blue-600">.ONLINE</span>
                         </span>
                     </Link>
@@ -83,10 +86,10 @@ export default function Header() {
                     })}
                 </nav>
 
-                {/* Δεξί τμήμα */}
-                <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+                {/* Права частина — мінімальний gap на мобільних */}
+                <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
 
-                    {/* Desktop Admin Actions */}
+                    {/* Desktop Admin Actions (тільки md+) */}
                     {isAdmin && (
                         <Link
                             href="/admin/users"
@@ -110,13 +113,13 @@ export default function Header() {
                     {/* Theme Toggle */}
                     <ThemeToggle />
 
-                    {/* Προφίλ (Завжди видимий) */}
+                    {/* Профіль — аватар завжди видимий, текст тільки від sm */}
                     <Link
                         href="/profile"
-                        className="flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 sm:p-2 -mr-2 rounded-xl transition-all cursor-pointer group/profile"
+                        className="flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 p-1.5 rounded-xl transition-all cursor-pointer group/profile"
                     >
                         <div className="text-right hidden sm:block">
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover/profile:text-blue-700 dark:group-hover/profile:text-blue-400">
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover/profile:text-blue-700 dark:group-hover/profile:text-blue-400 truncate max-w-[100px]">
                                 {user?.displayName || "Χρήστης"}
                             </p>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">
@@ -124,21 +127,22 @@ export default function Header() {
                             </p>
                         </div>
 
-                        <div className="h-9 w-9 sm:h-10 sm:w-10 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm group-hover/profile:border-blue-200 dark:group-hover/profile:border-blue-700">
+                        <div className="h-8 w-8 sm:h-9 sm:w-9 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm group-hover/profile:border-blue-200 dark:group-hover/profile:border-blue-700 shrink-0">
                             {user?.photoURL ? (
                                 <img src={user.photoURL} alt="User" className="h-full w-full object-cover" />
                             ) : (
-                                <UserCircle className="h-6 w-6 text-slate-400 dark:text-slate-500 group-hover/profile:text-blue-500 dark:group-hover/profile:text-blue-400" />
+                                <UserCircle className="h-5 w-5 sm:h-6 sm:w-6 text-slate-400 dark:text-slate-500 group-hover/profile:text-blue-500 dark:group-hover/profile:text-blue-400" />
                             )}
                         </div>
                     </Link>
 
-                    {/* MOBILE MENU TOGGLE (Видимий тільки на мобільних) */}
+                    {/* MOBILE MENU TOGGLE — тільки md- */}
                     <button
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="md:hidden p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors ml-1"
+                        className="md:hidden flex items-center justify-center h-8 w-8 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors shrink-0"
+                        aria-label="Відкрити меню"
                     >
-                        <Menu className="h-6 w-6" />
+                        <Menu className="h-5 w-5" />
                     </button>
                 </div>
             </header>

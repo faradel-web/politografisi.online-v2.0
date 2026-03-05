@@ -304,29 +304,29 @@ function ImportPage() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6 font-sans pb-20">
+        <div className="max-w-6xl mx-auto p-6 font-sans pb-20 transition-colors">
             <div className="flex items-center gap-4 mb-8">
-                <Link href="/admin/manage" className="p-2 bg-white rounded-lg border hover:bg-slate-50"><ArrowLeft /></Link>
-                <h1 className="text-2xl font-black text-slate-900">Import (Universal Fix)</h1>
+                <Link href="/admin/manage" className="p-2 bg-white dark:bg-slate-800 rounded-lg border dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"><ArrowLeft /></Link>
+                <h1 className="text-2xl font-black text-slate-900 dark:text-white">Import (Universal Fix)</h1>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
                 {/* SIDEBAR */}
                 <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase">Κατηγορία</label>
+                    <label className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">Κατηγορία</label>
                     {CATEGORIES.map(c => (
                         <button
                             key={c.id}
                             onClick={() => setCategory(c.id)}
-                            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm transition-all ${category === c.id ? 'bg-slate-900 text-white shadow-lg' : 'bg-white text-slate-500 hover:bg-slate-50'}`}
+                            className={`w-full text-left px-4 py-3 rounded-xl font-bold text-sm transition-all ${category === c.id ? 'bg-slate-900 dark:bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 border border-transparent dark:border-slate-700'}`}
                         >
                             {c.label}
                         </button>
                     ))}
 
-                    <div className="pt-6 mt-6 border-t border-slate-200">
-                        <button onClick={handleClear} className="w-full flex items-center justify-center gap-2 text-red-500 text-xs font-black uppercase p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
+                    <div className="pt-6 mt-6 border-t border-slate-200 dark:border-slate-700">
+                        <button onClick={handleClear} className="w-full flex items-center justify-center gap-2 text-red-500 dark:text-red-400 text-xs font-black uppercase p-3 bg-red-50 dark:bg-red-900/30 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/50 border border-transparent dark:border-red-800 transition-colors">
                             <Trash2 size={14} /> Clear DB
                         </button>
                     </div>
@@ -334,9 +334,9 @@ function ImportPage() {
 
                 {/* MAIN AREA */}
                 <div className="lg:col-span-3 space-y-6">
-                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3 items-start">
-                        <Info className="text-blue-600 shrink-0 mt-1" />
-                        <div className="text-sm text-blue-800">
+                    <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-xl border border-blue-100 dark:border-blue-800 flex gap-3 items-start">
+                        <Info className="text-blue-600 dark:text-blue-400 shrink-0 mt-1" />
+                        <div className="text-sm text-blue-800 dark:text-blue-300">
                             <p className="font-bold mb-1">Target Collection: {currentCatConfig.collection}</p>
                             <p className="opacity-80">This importer handles both ARRAY and OBJECT structures for lessons.</p>
                         </div>
@@ -346,17 +346,17 @@ function ImportPage() {
                         <textarea
                             value={jsonInput}
                             onChange={e => setJsonInput(e.target.value)}
-                            className="w-full h-[500px] p-6 rounded-2xl border-2 border-slate-200 font-mono text-xs focus:ring-4 focus:ring-blue-50 focus:border-blue-300 outline-none"
+                            className="w-full h-[500px] p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-xs text-slate-800 dark:text-slate-300 focus:ring-4 focus:ring-blue-50 dark:focus:ring-blue-900/30 focus:border-blue-300 dark:focus:border-blue-600 outline-none placeholder-slate-400 dark:placeholder-slate-600 transition-colors"
                             placeholder={`Paste JSON for ${currentCatConfig.label}...`}
                         />
-                        <label className="absolute bottom-4 right-4 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-slate-800 flex items-center gap-2 shadow-lg">
+                        <label className="absolute bottom-4 right-4 bg-slate-900 dark:bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-slate-800 dark:hover:bg-blue-700 flex items-center gap-2 shadow-lg transition-colors">
                             <FileJson size={14} /> Upload JSON
                             <input type="file" hidden accept=".json" onChange={handleFileUpload} />
                         </label>
                     </div>
 
                     {status && (
-                        <div className={`p-4 rounded-xl font-bold flex items-center gap-2 ${status.type === 'success' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+                        <div className={`p-4 rounded-xl font-bold flex items-center gap-2 ${status.type === 'success' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 border border-transparent dark:border-emerald-800' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-transparent dark:border-red-800'}`}>
                             {status.type === 'success' ? <CheckCircle size={18} /> : <AlertTriangle size={18} />}
                             {status.msg}
                         </div>
@@ -365,7 +365,7 @@ function ImportPage() {
                     <button
                         onClick={handleImport}
                         disabled={isLoading || !jsonInput}
-                        className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all"
+                        className="w-full py-4 bg-blue-600 dark:bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 dark:hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center gap-3 transition-all"
                     >
                         {isLoading ? <Loader2 className="animate-spin" /> : <Upload />}
                         Import Data

@@ -118,8 +118,10 @@ export default function UserDashboardPage() {
                     <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight font-serif mb-2">
                         Γεια σου, <span className="text-blue-600">{user?.displayName?.split(' ')[0] || "Σπουδαστή"}</span>! 👋
                     </h1>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium text-lg flex items-center gap-2">
-                        Έτοιμοι για το επόμενο βήμα; <Sparkles size={18} className="text-yellow-500 fill-yellow-500" />
+                    <p className="font-bold text-lg flex items-center gap-2">
+                        <span className="relative flex h-2.5 w-2.5 shrink-0"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">Ο δρόμος προς την Επιτυχία ξεκινάει ΕΔΩ</span>
+                        <Sparkles size={18} className="text-yellow-500 fill-yellow-500 animate-pulse" />
                     </p>
                 </div>
                 <Link
@@ -130,43 +132,7 @@ export default function UserDashboardPage() {
                 </Link>
             </header>
 
-            {/* 2. HERO SECTION (ВІДЕО) */}
-            <section className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 dark:shadow-blue-900/10 border border-blue-50/50 dark:border-slate-800/50 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl -mr-20 -mt-20 opacity-70 dark:opacity-30 pointer-events-none"></div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
-
-                    {/* VIDEO PLACEHOLDER */}
-                    <div className="relative aspect-video bg-slate-900 rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/20 flex items-center justify-center group cursor-pointer border-4 border-white transition-transform hover:scale-[1.01]">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-blue-900 to-slate-800 opacity-80"></div>
-                        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
-
-                        {/* Play Button */}
-                        <div className="relative z-10 flex flex-col items-center gap-4 transition-transform duration-500 group-hover:scale-105">
-                            <div className="w-20 h-20 bg-white dark:bg-slate-900/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg group-hover:bg-white dark:bg-slate-900/20 transition-all">
-                                <PlayCircle size={40} className="text-white fill-white/20" />
-                            </div>
-                            <span className="text-white font-black uppercase tracking-widest text-sm bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
-                                Οδηγός Πλατφόρμας
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* MOTIVATIONAL TEXT */}
-                    <div className="space-y-6 relative z-10">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-700/30">
-                            <GraduationCap size={16} /> Πιστοποίηση Ελληνομάθειας
-                        </div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white leading-tight font-serif">
-                            Ο δρόμος προς την <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Επιτυχία</span>
-                        </h2>
-                        <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed text-lg">
-                            Η πλατφόρμα που σας προετοιμάζει ολοκληρωμένα για τις Εξετάσεις Πολιτογράφησης. Μελέτη, εξάσκηση και προσομοίωση σε ένα μέρος.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* 3. MAIN ACTIONS (ΤΡΙ ΚНОПКИ) */}
+            {/* 2. MAIN ACTIONS (ΤΡΙ ΚНОПКИ) — ПЕРШІ */}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* THEORY CARD */}
                 <Link href="/theory" className="group bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/40 dark:to-slate-900 p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-900/30 shadow-sm hover:shadow-xl hover:border-indigo-200 dark:hover:border-indigo-700/50 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
@@ -209,6 +175,45 @@ export default function UserDashboardPage() {
                         Ξεκινήστε <ArrowRight size={16} />
                     </div>
                 </Link>
+            </section>
+
+            {/* 3. HERO SECTION (ВІДЕО) — ТЕПЕР НИЖЧЕ */}
+            <section className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 dark:shadow-blue-900/10 border border-blue-50/50 dark:border-slate-800/50 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl -mr-20 -mt-20 opacity-70 dark:opacity-30 pointer-events-none"></div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
+
+                    {/* VIDEO PLACEHOLDER */}
+                    <div className="relative aspect-video bg-slate-900 rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/20 flex items-center justify-center group cursor-pointer border-4 border-white transition-transform hover:scale-[1.01]">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-blue-900 to-slate-800 opacity-80"></div>
+                        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+
+                        {/* Play Button */}
+                        <div className="relative z-10 flex flex-col items-center gap-4 transition-transform duration-500 group-hover:scale-105">
+                            <div className="w-20 h-20 bg-white dark:bg-slate-900/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-lg group-hover:bg-white dark:bg-slate-900/20 transition-all">
+                                <PlayCircle size={40} className="text-white fill-white/20" />
+                            </div>
+                            <span className="text-white font-black uppercase tracking-widest text-sm bg-black/30 px-4 py-2 rounded-full backdrop-blur-sm">
+                                Οδηγός Πλατφόρμας
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* MOTIVATIONAL TEXT */}
+                    <div className="space-y-6 relative z-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-200/50 dark:border-blue-700/30">
+                            <GraduationCap size={16} /> Πιστοποίηση Ελληνομάθειας
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white leading-tight font-serif">
+                            Ο δρόμος προς την <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-400">Επιτυχία</span>
+                        </h2>
+                        <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed text-lg">
+                            Η πλατφόρμα που σας προετοιμάζει ολοκληρωμένα για τις Εξετάσεις Πολιτογράφησης. Μελέτη, εξάσκηση και προσομοίωση σε ένα μέρος.
+                        </p>
+                        <Link href="/theory" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-black text-sm uppercase tracking-wider shadow-lg shadow-blue-200 dark:shadow-blue-900/30 hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 transition-all">
+                            Ξεκινήστε τώρα <ArrowRight size={16} />
+                        </Link>
+                    </div>
+                </div>
             </section>
 
             {/* 4. OVERVIEW & STATS (BENTO GRID) */}
