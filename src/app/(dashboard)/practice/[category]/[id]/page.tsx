@@ -315,8 +315,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     };
 
     const renderReading = () => {
-        const pA_Text = lesson.parts?.partA?.[0]?.text_content
-            || lesson.textContent
+        const pA_Text = lesson.textContent
+            || lesson.text_content
+            || lesson.parts?.partA?.[0]?.text_content
             || (Array.isArray(lesson.parts) ? lesson.parts.find((p: any) => p.id === 'A')?.text_content : "")
             || lesson.content;
 
@@ -332,6 +333,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
         const pC = lesson.parts?.partC || (Array.isArray(lesson.parts) ? lesson.parts.find((p: any) => p.id === 'C') : null);
         const writingPrompt = pC?.question || pC?.prompt || lesson.writing_prompt;
 
+        // Check if text contains HTML tags — if yes, render as HTML; otherwise render as plain text with whitespace preserved
+        const isHtml = pA_Text && /<[a-z][\s\S]*>/i.test(pA_Text);
+
         return (
             <>
                 <MobileTabs />
@@ -341,7 +345,13 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                             <BookOpen size={24} /><h2 className="font-black uppercase tracking-widest text-sm">Κείμενο</h2>
                         </div>
                         {lesson.imageUrls?.[0] && <img src={lesson.imageUrls[0]} className="w-full rounded-2xl mb-6 object-cover" />}
-                        <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: pA_Text || "" }} />
+                        {isHtml ? (
+                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: pA_Text || "" }} />
+                        ) : (
+                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                                {pA_Text || ""}
+                            </div>
+                        )}
                     </div>
 
                     <div className={`lg:overflow-y-auto custom-scrollbar pr-2 space-y-12 pb-20 ${mobileView === 'questions' ? 'block' : 'hidden'} lg:block`}>

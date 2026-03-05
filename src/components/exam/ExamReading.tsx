@@ -75,10 +75,16 @@ export default function ExamReading({ data, answers, setAnswers }: ExamReadingPr
                             <img src={lesson.data.imageUrls[0]} className="w-full rounded-2xl mb-6 object-cover h-48 sm:h-64 border border-slate-100 dark:border-slate-800" alt="Reading visual" />
                         )}
 
-                        <div
-                            className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words dark:text-slate-300"
-                            dangerouslySetInnerHTML={{ __html: lesson.data.textContent }}
-                        />
+                        {lesson.data.textContent && /<[a-z][\s\S]*>/i.test(lesson.data.textContent) ? (
+                            <div
+                                className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words dark:text-slate-300"
+                                dangerouslySetInnerHTML={{ __html: lesson.data.textContent }}
+                            />
+                        ) : (
+                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words dark:text-slate-300 whitespace-pre-wrap">
+                                {lesson.data.textContent || ""}
+                            </div>
+                        )}
                     </div>
                 </div>
 
