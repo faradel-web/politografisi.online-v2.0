@@ -1,12 +1,12 @@
-export type UserRole = 'admin' | 'redactor' | 'user' | 'demo_user';
+export type UserRole = 'admin' | 'editor' | 'student' | 'guest';
 
-export type ExamSection = 
-  | 'history' 
-  | 'geography' 
-  | 'culture' 
-  | 'institutions' 
-  | 'political_system' 
-  | 'reading_comprehension' 
+export type ExamSection =
+  | 'history'
+  | 'geography'
+  | 'culture'
+  | 'institutions'
+  | 'political_system'
+  | 'reading_comprehension'
   | 'speaking';
 
 export interface UserProgress {

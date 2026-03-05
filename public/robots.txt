@@ -1,0 +1,63 @@
+# Politografisi.online - Robots.txt
+# https://www.robotstxt.org/
+
+# === Default Rules (All Crawlers) ===
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /crm/
+Disallow: /api/
+Disallow: /dashboard/results/
+Disallow: /exam/session/
+
+# === AI Search Engine Crawlers ===
+# OpenAI (ChatGPT, SearchGPT)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /crm/
+Disallow: /api/
+Disallow: /dashboard/results/
+Disallow: /exam/session/
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /crm/
+Disallow: /api/
+Disallow: /dashboard/results/
+Disallow: /exam/session/
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /crm/
+Disallow: /api/
+
+# Amazon AI
+User-agent: Amazonbot
+Allow: /
+
+# Google AI (Gemini, AI Overviews)
+User-agent: Google-Extended
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Apple AI (Siri, Apple Intelligence)
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft AI (Copilot)
+User-agent: Bingbot
+Allow: /
+
+# Sitemap
+Sitemap: https://politografisi.online/sitemap.xml

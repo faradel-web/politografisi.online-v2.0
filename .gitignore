@@ -22,7 +22,15 @@
 
 # misc
 .DS_Store
+**/.DS_Store
 *.pem
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
 
 # debug
 npm-debug.log*
@@ -39,3 +47,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Capacitor (будущая кросс-платформа)
+/android/
+/ios/

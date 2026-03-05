@@ -110,7 +110,7 @@ export default function ProfilePage() {
 
     // --- РЕНДЕРИНГ ПЛАНУ ---
     const renderPlanInfo = () => {
-        const role = (user as any)?.role || "guest";
+        const role = user?.role || "guest";
         const isStudent = role === USER_ROLES.STUDENT || role === USER_ROLES.ADMIN || role === USER_ROLES.EDITOR;
 
         if (isStudent) {

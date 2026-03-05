@@ -22,7 +22,7 @@ export default function ExamWelcomePage() {
     useEffect(() => {
         async function checkEligibility() {
             if (!user) return;
-            if ((user as any).role !== USER_ROLES.GUEST) {
+            if (user?.role !== USER_ROLES.GUEST) {
                 setCheckingAccess(false);
                 return;
             }

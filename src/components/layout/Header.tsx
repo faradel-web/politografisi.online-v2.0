@@ -20,7 +20,7 @@ export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Безпечне отримання ролі
-    const role = (user as any)?.role || USER_ROLES.GUEST;
+    const role = user?.role || USER_ROLES.GUEST;
     const isAdmin = role === USER_ROLES.ADMIN;
     const isEditor = role === USER_ROLES.EDITOR;
 

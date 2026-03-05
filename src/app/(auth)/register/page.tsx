@@ -174,7 +174,7 @@ export default function RegisterPage() {
 
                         <form className="space-y-4" onSubmit={handleSubmit}>
                             {error && (
-                                <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
+                                <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
                                     <AlertCircle className="h-5 w-5 flex-shrink-0" />
                                     <span className="font-medium">{error}</span>
                                 </div>
@@ -183,8 +183,9 @@ export default function RegisterPage() {
                             {/* ІМ'Я та ПРІЗВИЩЕ в один рядок на великих екранах */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Όνομα</label>
+                                    <label htmlFor="reg-firstName" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Όνομα</label>
                                     <input
+                                        id="reg-firstName"
                                         type="text"
                                         required
                                         className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -195,8 +196,9 @@ export default function RegisterPage() {
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Επίθετο</label>
+                                    <label htmlFor="reg-lastName" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Επίθετο</label>
                                     <input
+                                        id="reg-lastName"
                                         type="text"
                                         required
                                         className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -210,8 +212,9 @@ export default function RegisterPage() {
 
                             {/* Телефон */}
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Τηλέφωνο</label>
+                                <label htmlFor="reg-phone" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Τηλέφωνο</label>
                                 <input
+                                    id="reg-phone"
                                     type="tel"
                                     required
                                     className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -224,8 +227,9 @@ export default function RegisterPage() {
 
                             {/* Email */}
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email</label>
+                                <label htmlFor="reg-email" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email</label>
                                 <input
+                                    id="reg-email"
                                     type="email"
                                     required
                                     className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -238,8 +242,9 @@ export default function RegisterPage() {
 
                             {/* Password */}
                             <div className="space-y-1">
-                                <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Κωδικός</label>
+                                <label htmlFor="reg-password" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Κωδικός</label>
                                 <input
+                                    id="reg-password"
                                     type="password"
                                     required
                                     className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"

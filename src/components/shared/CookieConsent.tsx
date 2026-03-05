@@ -11,10 +11,9 @@ export default function CookieConsent() {
     useEffect(() => {
         const consent = localStorage.getItem("cookie-consent");
         if (!consent) {
-            // Automatic opt-in default as per instructions
-            localStorage.setItem("cookie-consent", "accepted");
+            // GDPR: показуємо банер, але НЕ встановлюємо згоду автоматично.
+            // Cookies (Analytics, Meta Pixel) залишаються вимкненими до явної дії користувача.
             setIsVisible(true);
-            window.dispatchEvent(new Event('cookie-consent-changed'));
         }
     }, []);
 

@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return;
       }
 
-      const role = (user as any)?.role;
+      const role = user.role;
 
       if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) {
         router.push("/dashboard");
@@ -52,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // --- 8. Захист від рендерингу ---
   if (!user) return null;
 
-  const role = (user as any)?.role;
+  const role = user.role;
   if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) return null;
 
   const menuItems = [
@@ -144,8 +144,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Έξοδος
             </Link>
 
-            {/* THEME TOGGLE */}
-            <div className="hidden xl:block ml-2">
+            {/* THEME TOGGLE — Доступний на всіх розмірах */}
+            <div className="ml-2 flex-shrink-0">
               <ThemeToggle />
             </div>
           </nav>

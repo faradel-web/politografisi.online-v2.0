@@ -175,15 +175,16 @@ export default function LoginPage() {
 
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     {error && (
-                                        <div className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 animate-in shake">
+                                        <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 animate-in shake">
                                             <AlertCircle className="h-5 w-5 flex-shrink-0" />
                                             <span className="font-medium">{error}</span>
                                         </div>
                                     )}
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
+                                        <label htmlFor="login-identifier" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
                                         <input
+                                            id="login-identifier"
                                             type="text"
                                             required
                                             className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -196,7 +197,7 @@ export default function LoginPage() {
 
                                     <div className="space-y-1">
                                         <div className="flex justify-between items-center ml-1">
-                                            <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide">Κωδικός</label>
+                                            <label htmlFor="login-password" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide">Κωδικός</label>
                                             <button
                                                 type="button"
                                                 onClick={() => setView('reset')}
@@ -206,6 +207,7 @@ export default function LoginPage() {
                                             </button>
                                         </div>
                                         <input
+                                            id="login-password"
                                             type="password"
                                             required
                                             className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"
@@ -270,8 +272,9 @@ export default function LoginPage() {
                                     )}
 
                                     <div className="space-y-1">
-                                        <label className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
+                                        <label htmlFor="reset-identifier" className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide ml-1">Email ή Τηλέφωνο</label>
                                         <input
+                                            id="reset-identifier"
                                             type="text"
                                             required
                                             className="block w-full rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium"

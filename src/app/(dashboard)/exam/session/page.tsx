@@ -3,18 +3,19 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import {
     Loader2, Clock, Save, LayoutGrid, BookOpen, Headphones, Mic, CheckCircle2, Bot
 } from "lucide-react";
 import { gradeEssay, gradeSpeaking, gradeShortAnswer } from "@/lib/gemini";
 import { useExamGenerator } from "@/hooks/useExamGenerator";
+import { USER_ROLES, GUEST_LIMITS } from "@/lib/constants";
 
-import ExamTheory from "../components/ExamTheory";
-import ExamReading from "../components/ExamReading";
-import ExamListening from "../components/ExamListening";
-import ExamSpeaking from "../components/ExamSpeaking";
+import ExamTheory from "@/components/exam/ExamTheory";
+import ExamReading from "@/components/exam/ExamReading";
+import ExamListening from "@/components/exam/ExamListening";
+import ExamSpeaking from "@/components/exam/ExamSpeaking";
 
 const EXAM_DURATION = 180 * 60;
 const PASS_THRESHOLD_TOTAL = 70;
@@ -60,12 +61,43 @@ function ExamSessionPage() {
     const [activeSection, setActiveSection] = useState<ExamSection>('theory');
     const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isCheckingAccess, setIsCheckingAccess] = useState(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+    // 🔐 SECURITY: Перевірка доступу для гостей (ліміт спроб)
     useEffect(() => {
-        generateExam();
+        async function checkGuestAccess() {
+            if (!user) {
+                router.push('/login');
+                return;
+            }
+            // Адміни, редактори та студенти мають право
+            if (user.role !== USER_ROLES.GUEST) {
+                setIsCheckingAccess(false);
+                return;
+            }
+            try {
+                const q = query(collection(db, "exam_results"), where("userId", "==", user.uid));
+                const snap = await getDocs(q);
+                if (snap.size >= GUEST_LIMITS.EXAM_ATTEMPTS) {
+                    // Ліміт перевищено — відправляємо назад
+                    router.push('/exam');
+                    return;
+                }
+            } catch {
+                // Якщо не вдалося перевірити — дозволяємо (fail-open для UX)
+            }
+            setIsCheckingAccess(false);
+        }
+        checkGuestAccess();
+    }, [user, router]);
+
+    useEffect(() => {
+        if (!isCheckingAccess) {
+            generateExam();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isCheckingAccess]);
 
     useEffect(() => {
         if (examData && timeLeft > 0 && !isSubmitting) {
@@ -94,8 +126,6 @@ function ExamSessionPage() {
 
         setIsSubmitting(true);
         if (timerRef.current) clearInterval(timerRef.current);
-
-        console.log("🏁 ΕΝΑΡΞΗ ΤΕΛΙΚΗΣ ΚΑΤΑΜΕΤΡΗΣΗΣ");
 
         // 🔥 1. АСИНХРОННА ПЕРЕВІРКА AI ДЛЯ ВІДКРИТИХ ПИТАНЬ ТЕОРІЇ (ПОЛІТИКА/ІСТОРІЯ)
         const theoryAiFeedback: Record<number, any> = {};
@@ -201,8 +231,6 @@ function ExamSessionPage() {
 
             theoryScore += questionScore;
         });
-
-        console.log("🏆 TOTAL THEORY SCORE:", theoryScore);
 
         // --- 3. МОВА ---
         const gradeSection = async (questions: any[], userAnswers: any, pointsPerQ: number) => {
@@ -361,6 +389,8 @@ function ExamSessionPage() {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveSection(tab.id as ExamSection)}
+                                aria-label={`Μετάβαση σε ${tab.label}`}
+                                aria-pressed={activeSection === tab.id}
                                 className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold flex gap-2 transition-all items-center whitespace-nowrap ${activeSection === tab.id ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white ring-1 ring-black/5 dark:ring-white/10' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50'}`}
                             >
                                 <tab.icon size={16} className="sm:w-4 sm:h-4" /> <span className="inline">{tab.label}</span>

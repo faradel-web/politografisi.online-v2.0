@@ -1,8 +1,10 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- RATE LIMITER LOGIC (In-Memory) ---
+// ⚠️ NOTE: In-memory rate limiter не працює на serverless (Vercel) між інстансами.
+// TODO: Мігрувати на Upstash Redis / Vercel KV для production.
 type RateLimitRecord = {
   minuteCount: number;
   minuteStart: number;
@@ -13,7 +15,7 @@ type RateLimitRecord = {
 const rateLimitMap = new Map<string, RateLimitRecord>();
 
 const LIMITS = {
-  PER_MINUTE: 10, // Трішки підняв ліміт для тестів
+  PER_MINUTE: 10,
   PER_HOUR: 50,
 };
 
@@ -50,14 +52,38 @@ function checkRateLimit(ip: string): { allowed: boolean; message?: string } {
   return { allowed: true };
 }
 
+// Централізована ініціалізація Gemini — один раз на модуль
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+const model = genAI?.getGenerativeModel({ model: "gemini-2.0-flash" }) ?? null;
+
 export async function POST(req: Request) {
   const headersList = await headers();
   const ip = headersList.get("x-forwarded-for") || "unknown";
-  
+
+  // 🔐 CORS: Перевірка Origin
+  const origin = headersList.get("origin");
+  const allowedOrigins = [
+    "https://politografisi.online",
+    "https://www.politografisi.online",
+    process.env.NEXT_PUBLIC_APP_URL,
+  ].filter(Boolean);
+
+  // В dev-режимі дозволяємо localhost
+  const isDev = process.env.NODE_ENV === "development";
+  const isAllowedOrigin = isDev || !origin || allowedOrigins.includes(origin);
+
+  if (!isAllowedOrigin) {
+    return NextResponse.json(
+      { text: "Μη εξουσιοδοτημένο αίτημα." },
+      { status: 403 }
+    );
+  }
+
   const limitCheck = checkRateLimit(ip);
   if (!limitCheck.allowed) {
-    return NextResponse.json({ 
-      text: `${limitCheck.message} Για περισσότερες πληροφορίες: https://gemini.google.com/` 
+    return NextResponse.json({
+      text: `${limitCheck.message} Για περισσότερες πληροφορίες: https://gemini.google.com/`
     });
   }
 
@@ -65,19 +91,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { message, context } = body;
 
-    // --- DEBUG LOGGING ---
-    console.log(`--- ΑΙΤΗΣΗ ΑΠΟ IP: ${ip} ---`);
-    console.log(`--- ΜΗΚΟΣ ΠΛΑΙΣΙΟΥ: ${context ? context.length : 0} χαρακτήρες ---`);
-    
-    if (!context || context.length < 50) {
-        console.warn("⚠️ ΠΡΟΣΟΧΗ: Το πλαίσιο είναι άδειο ή πολύ μικρό!");
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("Το GEMINI_API_KEY δεν βρέθηκε");
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    if (!model) throw new Error("Το GEMINI_API_KEY δεν βρέθηκε");
 
     // Збільшено ліміт контексту до 100,000 символів (Flash підтримує до 1 млн)
     const systemPrompt = `
@@ -100,13 +114,13 @@ export async function POST(req: Request) {
     const result = await model.generateContent(systemPrompt);
     const response = await result.response;
     const text = response.text();
-    
+
     return NextResponse.json({ text });
 
-  } catch (error: any) {
-    console.error("--- ❌ ΣΦΑΛΜΑ ---", error);
-    return NextResponse.json({ 
-      text: "Παρουσιάστηκε τεχνικό σφάλμα. Δοκιμάστε ξανά." 
+  } catch (error: unknown) {
+    console.error("Chat API error:", error instanceof Error ? error.message : "Unknown error");
+    return NextResponse.json({
+      text: "Παρουσιάστηκε τεχνικό σφάλμα. Δοκιμάστε ξανά."
     }, { status: 500 });
   }
 }

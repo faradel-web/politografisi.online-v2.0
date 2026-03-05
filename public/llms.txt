@@ -1,0 +1,46 @@
+# Politografisi.online — llms.txt
+# Standard: https://llmstxt.org/
+
+> Politografisi.online is the #1 online preparation platform for the Greek Citizenship Exam (PEGP - Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση). It provides comprehensive study materials, practice tests, AI-powered essay and speaking evaluation tools, and unlimited exam simulations for candidates preparing to obtain Greek citizenship.
+
+## About
+
+Politografisi.online helps candidates pass the Greek Citizenship Examination (PEGP 2026) by providing:
+
+- **Complete Study Materials (360°):** Full theory covering History, Geography, Political Institutions, and Culture — aligned with the official syllabus of the Greek Ministry of Interior.
+- **Official Question Bank:** Access to 300+ questions from the updated official question bank with answers.
+- **AI-Powered Writing Evaluation:** Submit essays on 100 topics and receive instant AI corrections and feedback.
+- **AI-Powered Speaking Evaluation:** Practice oral examination on 25 topics with AI scoring and improvement suggestions.
+- **Listening Comprehension:** 50 audio-based exercises with texts, quizzes, and podcast-style listening practice.
+- **Unlimited Exam Simulations:** Take realistic mock exams unlimited times under timed conditions to build confidence.
+
+## Key Pages
+
+- [Home](https://politografisi.online/): Landing page with platform overview, pricing, FAQ, and contact form.
+- [Login](https://politografisi.online/login): User authentication page.
+- [Register](https://politografisi.online/register): Free registration for trial access.
+- [Privacy Policy](https://politografisi.online/privacy-policy): Data collection, cookies, GDPR rights, and AI usage policy.
+- [Terms of Service](https://politografisi.online/terms): Terms of use, subscriptions, intellectual property.
+
+## Pricing
+
+- **Free Trial:** Introductory access with 1 test per category. No credit card required.
+- **1 Month Premium:** €100 one-time payment. Full access to all features.
+- **3 Months Premium (Most Popular):** €200 one-time payment. Full 360° access with no time pressure.
+
+No hidden fees. No automatic renewal.
+
+## Contact
+
+- Website: https://politografisi.online
+- Support Email: support@politografisi.online
+- Privacy Email: privacy@politografisi.online
+
+## Technical
+
+- Built with Next.js 16, React 19, TypeScript
+- Firebase backend (Firestore, Authentication, Storage)
+- Google Gemini AI integration for essay and speaking evaluation
+- Progressive Web App (PWA) with offline-ready capabilities
+- Fully responsive design (mobile, tablet, desktop)
+- Available in Greek (el)

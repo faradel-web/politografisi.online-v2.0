@@ -4,26 +4,58 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================================
+   CSS Custom Properties (Design Tokens)
+   ============================================================= */
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  /* Safe area для пристроїв з notch (iPhone X+) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
+/* =============================================================
+   BASE LAYER: Typography & Global Resets
+   ============================================================= */
 @layer base {
-  /* Налаштування основного тексту (Geologica) */
+  /* Глобальний Reset для мобільної стабільності */
+  *,
+  *::before,
+  *::after {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* Запобігання горизонтальній прокрутці на мобільних */
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    /* Виправлення 100vh на мобільних (iOS Safari) */
+    height: -webkit-fill-available;
+  }
+
   body {
     color: rgb(var(--foreground-rgb));
     font-family: var(--font-geologica), sans-serif;
-    /* Fix: prevent mid-word line breaks on all screen sizes */
     overflow-wrap: break-word;
     word-break: normal;
     hyphens: none;
     -webkit-hyphens: none;
     -ms-hyphens: none;
+    /* Safe area padding для PWA/WebView */
+    padding-top: var(--safe-top);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    /* Плавне переключення теми */
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
-  /* Налаштування заголовків (Vollkorn) - для красивого контрасту */
+  /* Заголовки: Vollkorn (serif) */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-vollkorn), serif;
     letter-spacing: -0.02em;
@@ -34,7 +66,7 @@
     -ms-hyphens: none;
   }
 
-  /* Fix: all text elements should not cut words in the middle */
+  /* Текстові елементи: захист від переносу слів */
   p, span, li, td, th, div, label, button, a {
     overflow-wrap: break-word;
     word-break: normal;
@@ -42,11 +74,31 @@
     -webkit-hyphens: none;
     -ms-hyphens: none;
   }
+
+  /* Мінімальний розмір touch target (WCAG 2.5.5) */
+  button,
+  [role="button"],
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Виключення для inline-посилань в тексті */
+  p a, li a, span a, td a {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Focus styles для accessibility */
+  :focus-visible {
+    outline: 2px solid rgb(59 130 246); /* blue-500 */
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* =============================================================
-   LESSON CONTENT: Proper word-wrapping for Firebase-stored HTML
-   Prevents text from breaking MID-WORD on small screens.
+   LESSON CONTENT: Word-wrapping for Firebase-stored HTML
    ============================================================= */
 .lesson-content,
 .lesson-content *,
@@ -74,15 +126,12 @@
   -ms-hyphens: none !important;
 }
 
-/* Забороняємо <wbr> теги розривати слова (word break opportunity tags) */
 .lesson-content wbr {
   display: none;
 }
 
 /* =============================================================
    DARK MODE: Override inline color styles in lesson HTML content
-   Firebase-stored HTML often has color: #333 / color: black etc.
-   We force everything to inherit the parent dark text color.
    ============================================================= */
 .dark .lesson-content,
 .dark .lesson-content p,
@@ -129,7 +178,9 @@
   background-color: rgba(15, 23, 42, 0.3) !important;
 }
 
-/* Custom scrollbar */
+/* =============================================================
+   SCROLLBAR: Custom scrollbar for webkit browsers
+   ============================================================= */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -144,4 +195,63 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgb(51 65 85);
   border-radius: 4px;
+}
+
+/* =============================================================
+   UTILITY: No scrollbar (for horizontal nav on mobile)
+   ============================================================= */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* =============================================================
+   UTILITY: Safe area bottom padding (for fixed bottom bars in PWA)
+   ============================================================= */
+.pb-safe {
+  padding-bottom: max(1rem, var(--safe-bottom));
+}
+
+.pt-safe {
+  padding-top: max(0px, var(--safe-top));
+}
+
+/* =============================================================
+   ANIMATION: Smooth entry animations  
+   ============================================================= */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Stagger delays for lists */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* =============================================================
+   RESPONSIVE: Table wrapper for mobile horizontal scroll
+   ============================================================= */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive table {
+  min-width: 600px;
 }
