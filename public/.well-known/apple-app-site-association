@@ -1,0 +1,17 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appIDs": ["TEAM_ID.online.politografisi.app"],
+                "paths": ["*"]
+            }
+        ]
+    },
+    "webcredentials": {
+        "apps": ["TEAM_ID.online.politografisi.app"]
+    },
+    "activitycontinuation": {
+        "apps": ["TEAM_ID.online.politografisi.app"]
+    }
+}
