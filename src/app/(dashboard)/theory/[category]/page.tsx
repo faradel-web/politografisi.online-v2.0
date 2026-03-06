@@ -12,6 +12,8 @@ import remarkGfm from 'remark-gfm';
 import { useAuth } from "@/contexts/auth-context";
 import { GUEST_LIMITS } from "@/lib/constants";
 import type { JSONContent } from '@tiptap/core';
+import MarkAsReadButton from "@/components/theory/MarkAsReadButton";
+import { getTheoryProgress } from "@/lib/progress";
 
 const TiptapRenderer = dynamic(() => import('@/components/editor/TiptapRenderer'), { ssr: false });
 
@@ -66,13 +68,16 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     }
   };
 
-  const { isPremium, loading: authLoading } = useAuth();
+  const { user, isPremium, loading: authLoading } = useAuth();
 
   // STATE: ДАНІ
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [globalContext, setGlobalContext] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
+  // STATE: Прогрес теорії (які уроки вже прочитані)
+  const [readLessons, setReadLessons] = useState<Record<string, any>>({});
 
   // STATE: ЧАТ
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -119,6 +124,20 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
     }
     loadData();
   }, [categoryId]);
+
+  // 1.5 ЗАВАНТАЖЕННЯ ПРОГРЕСУ ТЕОРІЇ
+  useEffect(() => {
+    async function loadProgress() {
+      if (!user) return;
+      try {
+        const progress = await getTheoryProgress(user.uid);
+        setReadLessons(progress);
+      } catch (e) {
+        console.error("Error loading theory progress:", e);
+      }
+    }
+    loadProgress();
+  }, [user, activeLesson]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -227,11 +246,17 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                     className={`w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${isLocked
                       ? 'bg-slate-50 dark:bg-slate-950/50 text-slate-400 cursor-not-allowed opacity-75'
                       : activeLesson?.id === l.id
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 border border-slate-100 dark:border-slate-800'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-200 dark:shadow-blue-900/30'
+                        : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800'
                       }`}
                   >
                     {isLocked && <Lock size={14} className="shrink-0 text-slate-400" />}
+                    {!isLocked && readLessons[l.id] && (
+                      <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${activeLesson?.id === l.id
+                        ? 'bg-white/20 text-white'
+                        : 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                        }`}>✓</span>
+                    )}
                     <span className="truncate">{l.order}. {l.title}</span>
                   </button>
                 );
@@ -332,6 +357,11 @@ export default function TheoryPage({ params }: { params: Promise<{ category: str
                       ))}
                     </div>
                   </div>
+                )}
+
+                {/* 7. MARK AS READ BUTTON */}
+                {user && activeLesson && (
+                  <MarkAsReadButton userId={user.uid} lessonId={activeLesson.id} />
                 )}
 
                 {/* AI Call to Action */}

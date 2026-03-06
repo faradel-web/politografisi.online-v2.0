@@ -9,11 +9,28 @@ export type ExamSection =
   | 'reading_comprehension'
   | 'speaking';
 
+// Статистика правильних/неправильних відповідей для однієї категорії практики
+export interface PracticeCategoryStats {
+  correct: number;
+  incorrect: number;
+}
+
 export interface UserProgress {
   completedMaterials: string[]; // Array of material IDs
   quizScores: Record<string, number>; // quizId -> score (0-100)
   lastActive: Date;
   overallLevel: number; // 0-100 calculated progress
+
+  // --- NEW: Прогрес теорії ---
+  // Ключ: lessonId (напр. "history_lesson_3"), Значення: Timestamp прочитання
+  theoryProgress: Record<string, any>;
+
+  // --- NEW: Статистика практики ---
+  // Ключ: categoryId (напр. "history", "geography"), Значення: { correct, incorrect }
+  practiceStats: Record<string, PracticeCategoryStats>;
+
+  // --- NEW: Масив ID питань, де користувач помилявся (для "Роботи над помилками") ---
+  mistakes: string[];
 }
 
 export interface User {

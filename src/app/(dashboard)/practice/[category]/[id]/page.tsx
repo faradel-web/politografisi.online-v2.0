@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { GUEST_LIMITS } from "@/lib/constants";
 import AudioRecorder from "@/components/shared/AudioRecorder";
 import { gradeSpeaking, gradeEssay, gradeShortAnswer } from "@/lib/gemini";
+import { updatePracticeResult, updatePracticeStats } from "@/lib/progress";
 
 const COLLECTION_MAP: Record<string, string> = {
     'history': 'questions_history',
@@ -31,7 +32,7 @@ type MobileView = 'content' | 'questions';
 
 export default function StudyLessonPage({ params }: { params: Promise<{ category: string, id: string }> }) {
     const { category, id } = use(params);
-    const { loading: authLoading, isPremium } = useAuth();
+    const { loading: authLoading, isPremium, user } = useAuth();
 
     const isRestricted = !isPremium;
     const LIMIT = GUEST_LIMITS.CONTENT_ITEMS || 5;
@@ -296,7 +297,20 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Α
                                 </div>
-                                <Quiz key={`list-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" />
+                                <Quiz key={`list-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" onComplete={(answers) => {
+                                    if (user?.uid && answers) {
+                                        // Зберігаємо per-question результати з стабільними ID
+                                        const results = questionsA.map((q, i) => {
+                                            const ans = answers[i];
+                                            const isCorr = ans === undefined ? false
+                                                : q.type === 'SINGLE' ? ans === q.correctAnswerIndex
+                                                    : q.type === 'MULTI' ? Array.isArray(ans) && (q.correctIndices || []).length === ans.length && ans.every((v: number) => (q.correctIndices || []).includes(v))
+                                                        : true;
+                                            return { questionId: `${lesson.id}_A${i}`, isCorrect: isCorr };
+                                        });
+                                        updatePracticeStats(user.uid, category, results).catch(console.error);
+                                    }
+                                }} />
                             </div>
                         )}
 
@@ -466,14 +480,34 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     else if (category === 'listening') content = renderListening();
     else if (category === 'speaking') content = renderSpeaking();
     else {
-        // THEORY (History, Geo, etc.) - Stepper Mode
+        // THEORY (History, Geo, etc.) - Stepper Mode (насправді — практика MCQ)
         const q = normalizeQuestion(lesson);
 
-        const handleQuizComplete = () => {
+        // Локальна перевірка правильності відповіді (для підрахунку)
+        const checkSingleAnswer = (question: Question, ans: any): boolean => {
+            if (ans === undefined || ans === null) return false;
+            if (question.type === 'SINGLE') return ans === question.correctAnswerIndex;
+            if (question.type === 'MULTI') {
+                if (!Array.isArray(ans)) return false;
+                const correctIds = question.correctIndices || [];
+                return ans.length === correctIds.length && ans.every((v: number) => correctIds.includes(v));
+            }
+            if (question.type === 'TRUE_FALSE') return question.items ? ans['0'] === question.items[0].isTrue : false;
+            return true; // FILL_GAP, OPEN, MAP — вважаємо спробованим (не 0, але й не guaranteed correct)
+        };
+
+        const handleQuizComplete = (answers?: Record<number, any>) => {
+            // Зберігаємо per-question результат — lesson.id є стабільним ID питання
+            // При повторному проходженні перезаписує попередній результат
+            if (user?.uid && answers) {
+                const ans = answers[0];
+                const isCorrect = checkSingleAnswer(q, ans);
+                updatePracticeResult(user.uid, lesson.id, category, isCorrect)
+                    .catch(e => console.error("Practice stats save error:", e));
+            }
+            // Перехід до наступного питання
             if (!isNextLocked && currentIndex < allLessons.length - 1) {
                 goToLesson(currentIndex + 1);
-            } else if (currentIndex === allLessons.length - 1) {
-                // Finish
             }
         };
 
@@ -487,7 +521,6 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                             mode="practice"
                             showResultCard={false}
                             onComplete={handleQuizComplete}
-                            // 🔥 AI CHECK FIX: Pass empty string if modelAnswer is undefined
                             onAICheck={(q, a, m) => gradeShortAnswer(q, a, m || "")}
                         />
                     </div>

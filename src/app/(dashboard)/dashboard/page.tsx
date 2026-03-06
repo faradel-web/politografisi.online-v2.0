@@ -5,11 +5,14 @@ import Link from "next/link";
 import {
     Trophy, Loader2, PlayCircle,
     GraduationCap, Timer, BookOpen,
-    BarChart3, Layers, ArrowRight, FileText, Sparkles, PenTool, Home
+    BarChart3, ArrowRight, Sparkles, PenTool, Home
 } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, where, getCountFromServer } from "firebase/firestore";
 import { useAuth } from "@/contexts/auth-context";
+import { getTheoryProgress, getPracticeStats } from "@/lib/progress";
+import TheoryProgressChart from "@/components/dashboard/TheoryProgressChart";
+import PracticeRadarChart from "@/components/dashboard/PracticeRadarChart";
 
 // Категорії для підрахунку практичних питань
 const QUESTION_CATEGORIES = [
@@ -26,6 +29,8 @@ export default function UserDashboardPage() {
     const { user } = useAuth();
     const [stats, setStats] = useState({ totalExams: 0, averageScore: 0, successRate: 0 });
     const [contentStats, setContentStats] = useState({ totalQuestions: 0, totalTheoryFiles: 0 });
+    const [theoryReadCount, setTheoryReadCount] = useState(0);
+    const [practiceStatsData, setPracticeStatsData] = useState<Record<string, { correct: number; incorrect: number }>>({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -93,6 +98,22 @@ export default function UserDashboardPage() {
 
                 setContentStats({ totalQuestions: totalQ, totalTheoryFiles: totalT });
 
+                // --- 3. ПРОГРЕС ТЕОРІЇ (Скільки уроків прочитано) ---
+                try {
+                    const theoryProgress = await getTheoryProgress(user.uid);
+                    setTheoryReadCount(Object.keys(theoryProgress).length);
+                } catch (e) {
+                    console.warn("Failed to load theory progress:", e);
+                }
+
+                // --- 4. ПРОГРЕС ПРАКТИКИ (Статистика по категоріях) ---
+                try {
+                    const pStats = await getPracticeStats(user.uid);
+                    setPracticeStatsData(pStats);
+                } catch (e) {
+                    console.warn("Failed to load practice stats:", e);
+                }
+
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
             } finally {
@@ -132,12 +153,11 @@ export default function UserDashboardPage() {
                 </Link>
             </header>
 
-            {/* 2. MAIN ACTIONS (ΤΡΙ ΚНОПКИ) — ПЕРШІ */}
+            {/* 2. MAIN ACTIONS (ΤΡΙ ΚНОПКИ) */}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* THEORY CARD */}
                 <Link href="/theory" className="group bg-gradient-to-br from-indigo-50 to-white dark:from-indigo-950/40 dark:to-slate-900 p-8 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-900/30 shadow-sm hover:shadow-xl hover:border-indigo-200 dark:hover:border-indigo-700/50 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100 dark:bg-indigo-900/20 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
-
                     <div>
                         <div className="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30"><BookOpen size={28} /></div>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Θεωρία</h3>
@@ -151,7 +171,6 @@ export default function UserDashboardPage() {
                 {/* PRACTICE CARD */}
                 <Link href="/practice" className="group bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/40 dark:to-slate-900 p-8 rounded-[2.5rem] border border-emerald-100 dark:border-emerald-900/30 shadow-sm hover:shadow-xl hover:border-emerald-200 dark:hover:border-emerald-700/50 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 dark:bg-emerald-900/20 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
-
                     <div>
                         <div className="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30"><PenTool size={28} /></div>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Εξάσκηση</h3>
@@ -165,7 +184,6 @@ export default function UserDashboardPage() {
                 {/* EXAM CARD */}
                 <Link href="/exam" className="group bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-slate-900 p-8 rounded-[2.5rem] border border-amber-100 dark:border-amber-900/20 shadow-sm hover:shadow-xl hover:border-amber-200 dark:hover:border-amber-700/40 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden h-full flex flex-col justify-between min-h-[220px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-amber-100 dark:bg-amber-900/15 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:opacity-80 transition-opacity"></div>
-
                     <div>
                         <div className="w-14 h-14 bg-amber-500 text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-amber-200 dark:shadow-amber-900/30"><Timer size={28} /></div>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 font-serif">Προσομοίωση</h3>
@@ -177,7 +195,114 @@ export default function UserDashboardPage() {
                 </Link>
             </section>
 
-            {/* 3. HERO SECTION (ВІДЕО) — ТЕПЕР НИЖЧЕ */}
+            {/* 3. ANALYTICS OVERVIEW — ΤΡΙ ΚΑΡΤΕΣ (Θεωρία, Εξάσκηση, Εξετάσεις) */}
+            <section>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 px-2 gap-3">
+                    <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                        <BarChart3 size={20} className="text-slate-400" /> Η Πρόοδός σας
+                    </h2>
+                    {stats.totalExams > 0 && (
+                        <Link href="/dashboard/stats" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 transition-colors group bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-800/50 hover:border-blue-200 dark:hover:border-blue-700 shrink-0">
+                            Αναλυτικά <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+
+                    {/* CARD 1: THEORY DONUT */}
+                    <div className="min-h-[320px]">
+                        <TheoryProgressChart
+                            totalTopics={contentStats.totalTheoryFiles}
+                            completedTopics={theoryReadCount}
+                        />
+                    </div>
+
+                    {/* CARD 2: PRACTICE RADAR */}
+                    <div className="min-h-[320px]">
+                        <PracticeRadarChart stats={practiceStatsData} />
+                    </div>
+
+                    {/* CARD 3: EXAM PERFORMANCE */}
+                    <Link href="/dashboard/stats" className="group bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:border-purple-200 dark:hover:border-purple-900/50 hover:shadow-md transition-all cursor-pointer relative overflow-hidden min-h-[320px] flex flex-col sm:col-span-2 lg:col-span-1">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                        {/* Header */}
+                        <div className="flex items-center gap-3 mb-4 relative z-10">
+                            <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Trophy size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-black text-slate-900 dark:text-white text-sm uppercase tracking-wider">Εξετάσεις</h3>
+                                <p className="text-[10px] font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">
+                                    {stats.totalExams > 0 ? `${stats.totalExams} Ολοκληρωμένα` : "Ξεκινήστε!"}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="flex-1 flex flex-col justify-center relative z-10">
+                            {stats.totalExams > 0 ? (
+                                <div className="space-y-4">
+                                    {/* Μέσος Όρος */}
+                                    <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl group-hover:bg-purple-50/50 dark:group-hover:bg-purple-900/10 transition-colors border border-slate-100 dark:border-slate-800 group-hover:border-purple-100 dark:group-hover:border-purple-900/50">
+                                        <div className="flex items-end justify-between">
+                                            <div>
+                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Μέσος Όρος</div>
+                                                <div className="text-3xl font-black text-slate-900 dark:text-white">{stats.averageScore}%</div>
+                                            </div>
+                                            <div className={`text-xs font-black px-2 py-1 rounded-lg ${stats.averageScore >= 60
+                                                ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                                                : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+                                                }`}>
+                                                {stats.averageScore >= 60 ? '✓ Επιτυχία' : '⚡ Συνεχίστε'}
+                                            </div>
+                                        </div>
+                                        {/* Progress bar */}
+                                        <div className="mt-3 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-1000 ${stats.averageScore >= 60
+                                                    ? 'bg-gradient-to-r from-purple-500 to-indigo-500'
+                                                    : 'bg-gradient-to-r from-amber-400 to-orange-500'
+                                                    }`}
+                                                style={{ width: `${Math.min(stats.averageScore, 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Ποσοστό Επιτυχίας */}
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+                                            <div className="text-xl font-black text-slate-900 dark:text-white">{stats.successRate}%</div>
+                                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Επιτυχία</div>
+                                        </div>
+                                        <div className="bg-slate-50 dark:bg-slate-950/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800 text-center">
+                                            <div className="text-xl font-black text-slate-900 dark:text-white">{contentStats.totalQuestions}</div>
+                                            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ασκήσεις</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center text-center py-6">
+                                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-3">
+                                        <Trophy size={24} className="text-slate-300 dark:text-slate-600" />
+                                    </div>
+                                    <p className="text-sm font-bold text-slate-400 dark:text-slate-500">Δεν υπάρχουν δεδομένα</p>
+                                    <p className="text-xs text-slate-300 dark:text-slate-600 mt-1">Ολοκληρώστε μια προσομοίωση</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer CTA */}
+                        <div className="mt-4 flex items-center gap-2 text-purple-600 dark:text-purple-400 font-black text-xs uppercase tracking-widest relative z-10 group-hover:gap-3 transition-all">
+                            Λεπτομέρειες <ArrowRight size={14} />
+                        </div>
+                    </Link>
+
+                </div>
+            </section>
+
+            {/* 4. HERO SECTION (ВІДЕО) */}
             <section className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-blue-100/50 dark:shadow-blue-900/10 border border-blue-50/50 dark:border-slate-800/50 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-3xl -mr-20 -mt-20 opacity-70 dark:opacity-30 pointer-events-none"></div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
@@ -216,79 +341,6 @@ export default function UserDashboardPage() {
                 </div>
             </section>
 
-            {/* 4. OVERVIEW & STATS (BENTO GRID) */}
-            <section>
-                <div className="flex items-center justify-between mb-6 px-2 mt-4">
-                    <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2"><BarChart3 size={20} className="text-slate-400" /> Επισκόπηση & Πόροι</h2>
-                    {stats.totalExams > 0 && (
-                        <Link href="/dashboard/stats" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 transition-colors group bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-800/50 hover:border-blue-200 dark:hover:border-blue-700">
-                            Αναλυτική Στατιστική <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-                    )}
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    {/* BLOCK 1: EXAM PERFORMANCE */}
-                    <Link href="/dashboard/stats" className="group bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:border-purple-200 dark:hover:border-purple-900/50 hover:shadow-md transition-all cursor-pointer relative overflow-hidden lg:col-span-1">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 dark:bg-purple-900/10 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><Trophy size={24} /></div>
-                            <div>
-                                <h3 className="text-lg font-black text-slate-900 dark:text-white">Η Πρόοδός μου</h3>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stats.totalExams} Ολοκληρωμένα Τεστ</p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl group-hover:bg-purple-50/50 dark:group-hover:bg-purple-900/10 transition-colors border border-slate-100 dark:border-slate-800 group-hover:border-purple-100 dark:group-hover:border-purple-900/50">
-                                <div className="text-2xl font-black text-slate-900 dark:text-white mb-1">{stats.averageScore}%</div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Μέσος Όρος</div>
-                            </div>
-                            <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-2xl group-hover:bg-purple-50/50 dark:group-hover:bg-purple-900/10 transition-colors border border-slate-100 dark:border-slate-800 group-hover:border-purple-100 dark:group-hover:border-purple-900/50">
-                                <div className="text-2xl font-black text-slate-900 dark:text-white mb-1">{stats.successRate}%</div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Επιτυχία</div>
-                            </div>
-                        </div>
-                    </Link>
-
-                    {/* BLOCK 2: QUESTIONS BASE */}
-                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-2xl -ml-10 -mb-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="flex items-center gap-4 mb-4 relative z-10">
-                            <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center"><Layers size={24} /></div>
-                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Βάση Ερωτήσεων</h3>
-                        </div>
-                        <div className="relative z-10">
-                            <div className="text-4xl font-black text-slate-900 dark:text-white mb-1 font-serif">{contentStats.totalQuestions}</div>
-                            <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                Διαθέσιμες Ασκήσεις <CheckCircle size={14} className="text-emerald-500" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* BLOCK 3: THEORY FILES */}
-                    <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-50 dark:bg-blue-900/10 rounded-full blur-2xl -mr-10 -mb-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="flex items-center gap-4 mb-4 relative z-10">
-                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center"><FileText size={24} /></div>
-                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Υλικό Θεωρίας</h3>
-                        </div>
-                        <div className="relative z-10">
-                            <div className="text-4xl font-black text-slate-900 dark:text-white mb-1 font-serif">{contentStats.totalTheoryFiles}</div>
-                            <div className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                Ενότητες & Αρχεία <CheckCircle size={14} className="text-blue-500" />
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
         </div>
     );
 }
-
-// Helper icons
-import { CheckCircle } from "lucide-react";
