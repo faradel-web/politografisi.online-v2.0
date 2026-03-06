@@ -66,7 +66,7 @@ export default function ExamWelcomePage() {
                 {/* LEFT: INFO */}
                 <div className="flex-1 space-y-8">
                     <div>
-                        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 shadow-sm">
+                        <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400 shadow-sm">
                             <ShieldCheck size={32} />
                         </div>
                         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-2 leading-tight">Προσομοίωση Εξέτασης</h1>

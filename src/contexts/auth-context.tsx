@@ -226,7 +226,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={{ user, loading, isPremium, loginWithGoogle, loginWithEmailOrPhone, logout }}>
       {!loading ? children : (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
           <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
         </div>
       )}

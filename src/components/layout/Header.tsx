@@ -190,7 +190,7 @@ export default function Header() {
                             })}
                         </nav>
 
-                        <div className="h-px bg-slate-100 w-full" />
+                        <div className="h-px bg-slate-100 dark:bg-slate-700 w-full" />
 
                         {/* Mobile Admin/Editor Actions */}
                         <div className="flex flex-col gap-3">

@@ -182,7 +182,7 @@ export default function LoginPage() {
 
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     {error && (
-                                        <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100 animate-in shake">
+                                        <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 dark:bg-red-900/20 p-4 text-sm text-red-600 dark:text-red-400 border border-red-100 dark:border-red-800 animate-in shake">
                                             <AlertCircle className="h-5 w-5 flex-shrink-0" />
                                             <span className="font-medium">{error}</span>
                                         </div>
@@ -254,7 +254,7 @@ export default function LoginPage() {
                                 </button>
 
                                 <div className="mb-6">
-                                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-4">
+                                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
                                         <KeyRound className="h-6 w-6" />
                                     </div>
                                     <h1 className="font-montserrat text-2xl font-bold text-slate-900 dark:text-white mb-2">Ανάκτηση Κωδικού</h1>
@@ -265,14 +265,14 @@ export default function LoginPage() {
 
                                 <form onSubmit={handleResetPassword} className="space-y-4">
                                     {resetStatus === 'success' && (
-                                        <div className="flex items-start gap-3 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-700 border border-emerald-100">
+                                        <div className="flex items-start gap-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 p-4 text-sm text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
                                             <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
                                             <span className="font-medium">{resetMessage}</span>
                                         </div>
                                     )}
 
                                     {resetStatus === 'error' && (
-                                        <div className="flex items-start gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
+                                        <div className="flex items-start gap-3 rounded-xl bg-red-50 dark:bg-red-900/20 p-4 text-sm text-red-600 dark:text-red-400 border border-red-100 dark:border-red-800">
                                             <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
                                             <span className="font-medium">{resetMessage}</span>
                                         </div>
@@ -306,7 +306,7 @@ export default function LoginPage() {
                                         <button
                                             type="button"
                                             onClick={() => setView('login')}
-                                            className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-4 px-6 rounded-xl transition-all"
+                                            className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 font-bold py-4 px-6 rounded-xl transition-all"
                                         >
                                             Επιστροφή στη Σύνδεση
                                         </button>

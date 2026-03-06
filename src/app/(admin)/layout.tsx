@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // --- 7. Лоадер ---
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
@@ -84,7 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* ADMIN HEADER — двохрядкова структура на мобільних */}
       <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
 
@@ -143,8 +143,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all text-sm font-medium duration-200 whitespace-nowrap shrink-0 ${isActive
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
                   }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />

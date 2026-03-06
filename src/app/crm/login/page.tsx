@@ -27,9 +27,10 @@ export default function CrmLoginPage() {
             window.localStorage.removeItem('emailForSignIn');
             // Встановлюємо cookie для авторизації CRM (замість URL-токена)
             const maxAge = 60 * 60 * 8; // 8 годин
-            document.cookie = `politografisi_admin_access=true; path=/; max-age=${maxAge}; samesite=lax`;
+            const isSecure = window.location.protocol === 'https:';
+            document.cookie = `politografisi_admin_access=true; path=/; max-age=${maxAge}; samesite=lax${isSecure ? '; secure' : ''}`;
             setStatus('success');
-            router.push('/');
+            router.push('/crm');
           })
           .catch((error) => {
             console.error(error);
@@ -46,7 +47,9 @@ export default function CrmLoginPage() {
     setErrorMessage("");
 
     const actionCodeSettings = {
-      url: window.location.href,
+      // Використовуємо точний URL сторінки login (без query params) щоб магічне посилання
+      // завжди повертало користувача на правильну сторінку як на localhost так і на продакшені
+      url: `${window.location.origin}/crm/login`,
       handleCodeInApp: true,
     };
 

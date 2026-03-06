@@ -63,7 +63,7 @@ export default function StudyHubPage() {
       <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
         <div>
           <div className="flex justify-between items-start mb-4">
-            <div className={`p-4 rounded-2xl ${cat.bg} dark:bg-opacity-10 dark:bg-slate-800 ${cat.color} dark:text-opacity-90`}>
+            <div className={`p-4 rounded-2xl ${cat.bg} dark:bg-slate-800 ${cat.color} dark:text-slate-300`}>
               <cat.icon className="h-7 w-7" />
             </div>
             {practiceCount > 0 && (

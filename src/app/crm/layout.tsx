@@ -17,18 +17,30 @@ export default function CrmLayout({
   const router = useRouter();
   const { user, loading } = useAuth();
 
+  // 🔐 Сторінка /crm/login не потребує авторизації — рендеримо одразу
+  const isLoginPage = pathname === "/crm/login";
+
   useEffect(() => {
+    if (isLoginPage) return; // login сторінка завжди доступна
+
     if (!loading) {
       if (!user) {
-        router.push("/");
+        // 🔥 ВИПРАВЛЕНО: перенаправляємо на /crm/login, а не на головну
+        router.push("/crm/login");
         return;
       }
       const role = user.role;
       if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) {
+        // Якщо роль не адмін/редактор — відправляємо на дешбоард
         router.push("/dashboard");
       }
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, isLoginPage]);
+
+  // Для сторінки login — відображаємо дітей без перевірки
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   if (loading || !user || (user.role !== USER_ROLES.ADMIN && user.role !== USER_ROLES.EDITOR)) {
     return (

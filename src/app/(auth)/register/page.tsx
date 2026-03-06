@@ -174,7 +174,7 @@ export default function RegisterPage() {
 
                         <form className="space-y-4" onSubmit={handleSubmit}>
                             {error && (
-                                <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 p-4 text-sm text-red-600 border border-red-100">
+                                <div role="alert" className="flex items-center gap-3 rounded-xl bg-red-50 dark:bg-red-900/20 p-4 text-sm text-red-600 dark:text-red-400 border border-red-100 dark:border-red-800 animate-in fade-in">
                                     <AlertCircle className="h-5 w-5 flex-shrink-0" />
                                     <span className="font-medium">{error}</span>
                                 </div>

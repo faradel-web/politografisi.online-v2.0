@@ -80,10 +80,10 @@ export default function AdminDashboard() {
   ];
 
   const categories = [
-    { title: "Ιστορία", count: stats.history, icon: History, bg: "bg-amber-50 text-amber-600" },
-    { title: "Πολιτική", count: stats.politics, icon: Landmark, bg: "bg-indigo-50 text-indigo-600" },
-    { title: "Γεωγραφία", count: stats.geography, icon: Globe, bg: "bg-emerald-50 text-emerald-600" },
-    { title: "Πολιτισμός", count: stats.culture, icon: Palette, bg: "bg-pink-50 text-pink-600" },
+    { title: "Ιστορία", count: stats.history, icon: History, bg: "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400" },
+    { title: "Πολιτική", count: stats.politics, icon: Landmark, bg: "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400" },
+    { title: "Γεωγραφία", count: stats.geography, icon: Globe, bg: "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400" },
+    { title: "Πολιτισμός", count: stats.culture, icon: Palette, bg: "bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400" },
   ];
 
   const languageStats = [
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
               <div className={`p-4 rounded-2xl text-white shadow-lg ${card.color}`}>
                 <card.icon className="h-7 w-7" />
               </div>
-              <div className="bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all flex items-center gap-2">
+              <div className="bg-slate-50 dark:bg-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-300 group-hover:bg-slate-900 dark:group-hover:bg-slate-600 group-hover:text-white transition-all flex items-center gap-2">
                 Διαχείριση <ArrowRight className="h-3 w-3" />
               </div>
             </div>

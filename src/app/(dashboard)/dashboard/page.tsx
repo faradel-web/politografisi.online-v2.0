@@ -126,7 +126,7 @@ export default function UserDashboardPage() {
                 </div>
                 <Link
                     href="/"
-                    className="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 dark:bg-slate-950/50 transition-all shadow-sm hover:shadow-md"
+                    className="px-6 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all shadow-sm hover:shadow-md"
                 >
                     <Home size={18} /> Αρχική Σελίδα
                 </Link>
@@ -221,7 +221,7 @@ export default function UserDashboardPage() {
                 <div className="flex items-center justify-between mb-6 px-2 mt-4">
                     <h2 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2"><BarChart3 size={20} className="text-slate-400" /> Επισκόπηση & Πόροι</h2>
                     {stats.totalExams > 0 && (
-                        <Link href="/dashboard/stats" className="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors group bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:border-blue-200">
+                        <Link href="/dashboard/stats" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 transition-colors group bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-800/50 hover:border-blue-200 dark:hover:border-blue-700">
                             Αναλυτική Στατιστική <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                     )}

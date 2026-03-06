@@ -221,25 +221,25 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
         const { isCorrect, score, maxScore } = calculateQuestionScore(q, userAnswer, idx, section);
 
         // Visual styling for borders based on score
-        let borderStyle = 'bg-red-50/50 border-red-100';
-        if (score === maxScore) borderStyle = 'bg-green-50/50 border-green-100';
-        else if (score > 0) borderStyle = 'bg-amber-50/50 border-amber-100'; // Partial points
+        let borderStyle = 'bg-red-50/50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30';
+        if (score === maxScore) borderStyle = 'bg-green-50/50 dark:bg-green-900/10 border-green-100 dark:border-green-900/30';
+        else if (score > 0) borderStyle = 'bg-amber-50/50 dark:bg-amber-900/10 border-amber-100 dark:border-amber-900/30'; // Partial points
 
         return (
             <div key={idx} className={`p-4 sm:p-6 rounded-[1.5rem] border-2 mb-6 ${borderStyle}`}>
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex gap-3">
-                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm shrink-0 ${score === maxScore ? 'bg-green-200 text-green-800' : score > 0 ? 'bg-amber-200 text-amber-800' : 'bg-red-200 text-red-800'}`}>
+                        <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm shrink-0 ${score === maxScore ? 'bg-green-200 dark:bg-green-900/40 text-green-800 dark:text-green-300' : score > 0 ? 'bg-amber-200 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' : 'bg-red-200 dark:bg-red-900/40 text-red-800 dark:text-red-300'}`}>
                             {idx + 1}
                         </span>
                         <h4 className="font-bold text-slate-800 dark:text-slate-200 text-base sm:text-lg leading-snug break-words">{q.question}</h4>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                         {score === maxScore
-                            ? <div className="text-green-600 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-green-100 px-2 sm:px-3 py-1 rounded-full shrink-0"><CheckCircle size={14} /> <span className="hidden sm:inline">Σωστό</span></div>
+                            ? <div className="text-green-600 dark:text-green-400 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-green-100 dark:bg-green-900/30 px-2 sm:px-3 py-1 rounded-full shrink-0"><CheckCircle size={14} /> <span className="hidden sm:inline">Σωστό</span></div>
                             : score > 0
-                                ? <div className="text-amber-600 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-amber-100 px-2 sm:px-3 py-1 rounded-full shrink-0"><CheckCircle size={14} /> <span className="hidden sm:inline">Μερικώς Σωστό</span></div>
-                                : <div className="text-red-600 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-red-100 px-2 sm:px-3 py-1 rounded-full shrink-0"><XCircle size={14} /> <span className="hidden sm:inline">Λάθος</span></div>
+                                ? <div className="text-amber-600 dark:text-amber-400 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-amber-100 dark:bg-amber-900/30 px-2 sm:px-3 py-1 rounded-full shrink-0"><CheckCircle size={14} /> <span className="hidden sm:inline">Μερικώς Σωστό</span></div>
+                                : <div className="text-red-600 dark:text-red-400 flex items-center gap-1 font-bold text-[10px] sm:text-xs bg-red-100 dark:bg-red-900/30 px-2 sm:px-3 py-1 rounded-full shrink-0"><XCircle size={14} /> <span className="hidden sm:inline">Λάθος</span></div>
                         }
                         <div className="text-xs font-black text-slate-500 dark:text-slate-400 mr-1 mt-1">{score}/{maxScore} pts</div>
                     </div>
@@ -259,12 +259,12 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             const feedback = result?.aiFeedback?.theory?.[idx];
                             if (feedback) {
                                 return (
-                                    <div className={`p-4 rounded-2xl border-2 ${feedback.score === 2 ? 'bg-emerald-50 border-emerald-200' : feedback.score === 1 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200'}`}>
+                                    <div className={`p-4 rounded-2xl border-2 ${feedback.score === 2 ? 'bg-emerald-50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-700' : feedback.score === 1 ? 'bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-700' : 'bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-700'}`}>
                                         <div className="flex justify-between items-center mb-3">
                                             <h4 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-purple-500" /> AI Αξιολόγηση
                                             </h4>
-                                            <span className={`font-black px-3 py-1 rounded-lg text-sm ${feedback.score === 2 ? 'bg-emerald-100 text-emerald-800' : feedback.score === 1 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}>
+                                            <span className={`font-black px-3 py-1 rounded-lg text-sm ${feedback.score === 2 ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300' : feedback.score === 1 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'}`}>
                                                 {feedback.score}/2
                                             </span>
                                         </div>
@@ -309,8 +309,8 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                             }
 
                             let style = "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400";
-                            if (isTarget) style = "bg-green-100 border-green-300 text-green-800 font-bold";
-                            else if (isSelected) style = "bg-red-100 border-red-300 text-red-800 font-bold";
+                            if (isTarget) style = "bg-green-100 dark:bg-green-900/20 border-green-300 dark:border-green-700 text-green-800 dark:text-green-300 font-bold";
+                            else if (isSelected) style = "bg-red-100 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-800 dark:text-red-300 font-bold";
 
                             return (
                                 <div key={i} className={`p-3 rounded-xl border flex items-center gap-3 ${style}`}>
@@ -432,7 +432,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                 {/* E. MAP */}
                 {type.includes('MAP') && (
                     <div className="space-y-4">
-                        <div className="h-[300px] sm:h-[400px] border-4 border-white rounded-2xl overflow-hidden shadow-sm relative">
+                        <div className="h-[300px] sm:h-[400px] border-4 border-white dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm relative">
                             <GreeceMap
                                 markers={[
                                     ...(Array.isArray(userAnswer) ? userAnswer : []).map((userPt: any, i: number) => {
@@ -563,7 +563,7 @@ export default function ExamResultDetailsPage({ params }: { params: Promise<{ id
                     </div>
                 </div>
 
-                <div className="flex bg-slate-200 p-1.5 rounded-2xl w-fit overflow-x-auto max-w-full no-scrollbar">
+                <div className="flex bg-slate-200 dark:bg-slate-800 p-1.5 rounded-2xl w-fit overflow-x-auto max-w-full no-scrollbar">
                     {[
                         { id: 'theory', l: 'Θεωρία', i: BookOpen },
                         { id: 'reading', l: 'Ανάγνωση', i: PenTool },

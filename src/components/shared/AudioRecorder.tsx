@@ -7,9 +7,10 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 interface AudioRecorderProps {
   onUploadComplete: (url: string) => void;
+  userId?: string;
 }
 
-export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) {
+export default function AudioRecorder({ onUploadComplete, userId }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -41,11 +42,11 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
   const startRecording = async () => {
     setError(null);
     setIsSuccess(false);
-    
+
     try {
       // Запитуємо дозвіл на аудіо
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      
+
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
@@ -62,7 +63,7 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
         setAudioBlob(blob);
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
-        
+
         // Важливо: зупиняємо всі треки, щоб браузер "відпустив" мікрофон
         stream.getTracks().forEach(track => track.stop());
       };
@@ -99,11 +100,11 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
 
   const resetRecording = () => {
     if (confirm("Θέλετε σίγουρα να διαγράψετε αυτή την εγγραφή;")) {
-        setAudioBlob(null);
-        setAudioUrl(null);
-        setError(null);
-        setIsSuccess(false);
-        setDuration(0);
+      setAudioBlob(null);
+      setAudioUrl(null);
+      setError(null);
+      setIsSuccess(false);
+      setDuration(0);
     }
   };
 
@@ -113,18 +114,29 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
     setError(null);
 
     try {
-      const filename = `speaking_answers/${Date.now()}_${Math.random().toString(36).substring(7)}.webm`;
+      // Включаємо userId в шлях (потрібно для Storage Rules)
+      const userFolder = userId || 'anonymous';
+      const filename = `speaking_answers/${userFolder}/${Date.now()}_${Math.random().toString(36).substring(7)}.webm`;
       const storageRef = ref(storage, filename);
-      
+
       await uploadBytes(storageRef, audioBlob);
       const url = await getDownloadURL(storageRef);
-      
+
       setIsSuccess(true);
       onUploadComplete(url); // Передаємо URL батьківському компоненту
-      
-    } catch (err) {
+
+    } catch (err: any) {
       console.error("Upload error:", err);
-      setError("Σφάλμα κατά την αποθήκευση (Σφάλμα φόρτωσης).");
+      // Детальне повідомлення про помилку (для діагностики)
+      if (err.code === 'storage/unauthorized') {
+        setError("Δεν έχετε άδεια αποθήκευσης αρχείου. Παρακαλώ εισέλθετε ξανά.");
+      } else if (err.code === 'storage/canceled') {
+        setError("Η μεταφόρτωση ακυρώθηκε.");
+      } else if (err.code === 'storage/retry-limit-exceeded' || err.message?.includes('network')) {
+        setError("Σφάλμα δικτύου. Ελέγξτε τη σύνδεσή σας και ξαναπροσπαθήστε.");
+      } else {
+        setError(`Σφάλμα κατά την αποθήκευση (κωδ.: ${err.code || 'άγνωστος'}).`);
+      }
     } finally {
       setIsUploading(false);
     }
@@ -132,11 +144,11 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm mx-auto p-4">
-      
+
       {/* 1. Блок помилок */}
       {error && (
-        <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 p-4 rounded-xl border border-red-200 w-full text-center animate-in fade-in slide-in-from-top-2">
-          <AlertCircle className="h-5 w-5 flex-shrink-0"/>
+        <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-4 rounded-xl border border-red-200 dark:border-red-800 w-full text-center animate-in fade-in slide-in-from-top-2">
+          <AlertCircle className="h-5 w-5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -144,64 +156,63 @@ export default function AudioRecorder({ onUploadComplete }: AudioRecorderProps) 
       {/* 2. Інтерфейс запису */}
       {!audioUrl ? (
         <div className="flex flex-col items-center gap-4">
-            <div className={`text-4xl font-mono font-bold transition-colors ${isRecording ? "text-red-600" : "text-slate-300"}`}>
-                {formatTime(duration)}
-            </div>
+          <div className={`text-4xl font-mono font-bold transition-colors ${isRecording ? "text-red-600" : "text-slate-300"}`}>
+            {formatTime(duration)}
+          </div>
 
-            <button
-                onClick={isRecording ? stopRecording : startRecording}
-                className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-xl ${
-                    isRecording 
-                    ? "bg-red-500 hover:bg-red-600 animate-pulse ring-8 ring-red-100" 
-                    : "bg-blue-600 hover:bg-blue-700 hover:scale-105 shadow-blue-200"
-                }`}
-            >
-                {isRecording ? (
-                    <Square className="h-10 w-10 text-white fill-current" />
-                ) : (
-                    <Mic className="h-10 w-10 text-white" />
-                )}
-            </button>
-            
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">
-                {isRecording ? "Γίνεται εγγραφή..." : "Πατήστε για εγγραφή"}
-            </p>
+          <button
+            onClick={isRecording ? stopRecording : startRecording}
+            className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-xl ${isRecording
+              ? "bg-red-500 hover:bg-red-600 animate-pulse ring-8 ring-red-100"
+              : "bg-blue-600 hover:bg-blue-700 hover:scale-105 shadow-blue-200"
+              }`}
+          >
+            {isRecording ? (
+              <Square className="h-10 w-10 text-white fill-current" />
+            ) : (
+              <Mic className="h-10 w-10 text-white" />
+            )}
+          </button>
+
+          <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+            {isRecording ? "Γίνεται εγγραφή..." : "Πατήστε για εγγραφή"}
+          </p>
         </div>
       ) : (
         // 3. Інтерфейс передпрослуховування та збереження
         <div className="w-full space-y-4 animate-in zoom-in-95 duration-300">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-bold text-slate-400 uppercase">Προεπισκόπηση</span>
-                    <span className="text-xs font-mono font-bold text-slate-600">{formatTime(duration)}</span>
-                </div>
-                <audio src={audioUrl} controls className="w-full h-10 accent-blue-600" />
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-bold text-slate-400 uppercase">Προεπισκόπηση</span>
+              <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">{formatTime(duration)}</span>
             </div>
-            
-            {!isSuccess ? (
-                <div className="flex gap-3">
-                    <button 
-                        onClick={resetRecording}
-                        className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex items-center justify-center gap-2 transition-all"
-                    >
-                        <RotateCcw className="h-4 w-4"/> Ακύρωση
-                    </button>
-                    
-                    <button 
-                        onClick={uploadRecording}
-                        disabled={isUploading}
-                        className="flex-[2] py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-200 transition-all disabled:opacity-70"
-                    >
-                        {isUploading ? <Loader2 className="animate-spin h-5 w-5"/> : <UploadCloud className="h-5 w-5"/>}
-                        Αποθήκευση Απάντησης
-                    </button>
-                </div>
-            ) : (
-                <div className="bg-green-50 text-green-700 p-4 rounded-xl border border-green-200 text-center font-bold flex items-center justify-center gap-2">
-                    <UploadCloud className="h-5 w-5"/>
-                    Το ηχητικό αποθηκεύτηκε!
-                </div>
-            )}
+            <audio src={audioUrl} controls className="w-full h-10 accent-blue-600" />
+          </div>
+
+          {!isSuccess ? (
+            <div className="flex gap-3">
+              <button
+                onClick={resetRecording}
+                className="flex-1 py-3 border-2 border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-500 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-700 flex items-center justify-center gap-2 transition-all"
+              >
+                <RotateCcw className="h-4 w-4" /> Ακύρωση
+              </button>
+
+              <button
+                onClick={uploadRecording}
+                disabled={isUploading}
+                className="flex-[2] py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-200 transition-all disabled:opacity-70"
+              >
+                {isUploading ? <Loader2 className="animate-spin h-5 w-5" /> : <UploadCloud className="h-5 w-5" />}
+                Αποθήκευση Απάντησης
+              </button>
+            </div>
+          ) : (
+            <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-4 rounded-xl border border-green-200 dark:border-green-800 text-center font-bold flex items-center justify-center gap-2">
+              <UploadCloud className="h-5 w-5" />
+              Το ηχητικό αποθηκεύτηκε!
+            </div>
+          )}
         </div>
       )}
     </div>

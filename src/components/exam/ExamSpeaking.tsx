@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Mic, CheckCircle2, Trash2, Save } from "lucide-react";
 import AudioRecorder from "@/components/shared/AudioRecorder";
+import { useAuth } from "@/contexts/auth-context";
 
 // --- ІНТЕРФЕЙСИ ---
 interface ExamSpeakingProps {
@@ -13,6 +14,7 @@ interface ExamSpeakingProps {
 
 export default function ExamSpeaking({ data, answers, setAnswers }: ExamSpeakingProps) {
     const { lesson0, lessonRandom } = data || {};
+    const { user } = useAuth();
 
     // Локальний стейт для візуальної кнопки "Αποθήκευση розділ"
     const [sectionSaved, setSectionSaved] = useState(false);
@@ -83,6 +85,7 @@ export default function ExamSpeaking({ data, answers, setAnswers }: ExamSpeaking
                                     </div>
                                     <AudioRecorder
                                         onUploadComplete={(url) => setAnswers((prev: any) => ({ ...prev, [item.k]: url }))}
+                                        userId={user?.uid}
                                     />
                                 </div>
                             )}

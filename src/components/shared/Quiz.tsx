@@ -502,7 +502,7 @@ export default function Quiz({
                         )}
 
                         {isQChecked && !isCorrect && correctVal && (
-                          <div className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100 flex items-center gap-2 mt-1 animate-in fade-in slide-in-from-top-1">
+                          <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-2 rounded-lg border border-emerald-100 dark:border-emerald-700 flex items-center gap-2 mt-1 animate-in fade-in slide-in-from-top-1">
                             <CheckCircle2 size={14} />
                             <span>Σωστό: <span className="underline decoration-2 underline-offset-2">{correctVal}</span></span>
                           </div>
@@ -596,9 +596,9 @@ export default function Quiz({
             {requiredPoints.map((pt, i) => {
               const isPlaced = i < userPlacedPoints.length;
               const isCurrent = i === currentStepIndex;
-              let style = "bg-slate-50 text-slate-400 border-slate-200";
-              if (isPlaced) style = "bg-blue-100 text-blue-800 border-blue-200";
-              if (isCurrent && !isFinished && !isQChecked) style = "bg-slate-900 text-white border-slate-900 ring-4 ring-blue-200 animate-pulse";
+              let style = "bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-400 border-slate-200 dark:border-slate-600";
+              if (isPlaced) style = "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700";
+              if (isCurrent && !isFinished && !isQChecked) style = "bg-slate-900 dark:bg-blue-600 text-white border-slate-900 dark:border-blue-500 ring-4 ring-blue-200 dark:ring-blue-500/40 animate-pulse";
               return (
                 <div key={i} className={`px-4 py-2 rounded-lg text-sm font-bold border ${style} transition-all`}>
                   {i + 1}. {pt.label}
@@ -607,13 +607,13 @@ export default function Quiz({
             })}
           </div>
           {!isQChecked && userPlacedPoints.length > 0 && (
-            <button onClick={handleResetMap} className="text-xs font-bold text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors w-fit">
+            <button onClick={handleResetMap} className="text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded-lg flex items-center gap-1 transition-colors w-fit">
               <Undo2 size={14} /> Επαναφορά
             </button>
           )}
         </div>
 
-        <div className="w-full h-[500px] rounded-2xl overflow-hidden relative shadow-inner border-2 border-slate-200 bg-slate-100">
+        <div className="w-full h-[500px] rounded-2xl overflow-hidden relative shadow-inner border-2 border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
           <GreeceMap markers={markersToRender} onSelect={isFinished || isQChecked ? undefined : handleMapClick} />
         </div>
       </div>
@@ -625,23 +625,23 @@ export default function Quiz({
     const feedback = aiFeedback[idx];
     const textAnswer = answers[idx] || "";
 
-    let colorClass = "bg-slate-50 border-slate-100";
-    let textClass = "text-slate-800";
+    let colorClass = "bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700";
+    let textClass = "text-slate-800 dark:text-slate-200";
     let icon = <Bot size={20} />;
 
     if (feedback) {
       if (feedback.score === 2) {
-        colorClass = "bg-emerald-50 border-emerald-200";
-        textClass = "text-emerald-800";
-        icon = <Sparkles size={20} className="text-emerald-600" />;
+        colorClass = "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700";
+        textClass = "text-emerald-800 dark:text-emerald-300";
+        icon = <Sparkles size={20} className="text-emerald-600 dark:text-emerald-400" />;
       } else if (feedback.score === 1) {
-        colorClass = "bg-amber-50 border-amber-200";
-        textClass = "text-amber-800";
-        icon = <AlertTriangle size={20} className="text-amber-600" />;
+        colorClass = "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700";
+        textClass = "text-amber-800 dark:text-amber-300";
+        icon = <AlertTriangle size={20} className="text-amber-600 dark:text-amber-400" />;
       } else {
-        colorClass = "bg-red-50 border-red-200";
-        textClass = "text-red-800";
-        icon = <X size={20} className="text-red-600" />;
+        colorClass = "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700";
+        textClass = "text-red-800 dark:text-red-300";
+        icon = <X size={20} className="text-red-600 dark:text-red-400" />;
       }
     }
 
@@ -671,7 +671,7 @@ export default function Quiz({
         {feedback && (
           <div className={`p-5 rounded-2xl border-2 ${colorClass} animate-in fade-in slide-in-from-top-2`}>
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-white rounded-full shrink-0 shadow-sm">
+              <div className="p-2 bg-white dark:bg-slate-700 rounded-full shrink-0 shadow-sm">
                 {icon}
               </div>
               <div className="space-y-2 w-full">
@@ -679,15 +679,15 @@ export default function Quiz({
                   <h4 className={`font-black text-lg ${textClass}`}>
                     Βαθμολογία: {feedback.score}/2
                   </h4>
-                  {feedback.score === 2 && <span className="px-3 py-1 bg-white rounded-full text-xs font-bold text-emerald-600 shadow-sm border border-emerald-100">Σωστά</span>}
+                  {feedback.score === 2 && <span className="px-3 py-1 bg-white dark:bg-slate-700 rounded-full text-xs font-bold text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-100 dark:border-emerald-700">Σωστά</span>}
                 </div>
 
-                <p className="text-slate-700 font-medium leading-relaxed">{feedback.feedback}</p>
+                <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{feedback.feedback}</p>
 
                 {feedback.score < 2 && feedback.improvedAnswer && (
-                  <div className="mt-3 p-4 bg-white/60 rounded-xl text-sm border border-black/5">
-                    <span className="font-bold text-slate-500 block mb-1 uppercase tracking-wider text-xs">Σωστή απάντηση (Πρότυπο):</span>
-                    <span className="text-slate-800 font-serif italic text-lg">«{feedback.improvedAnswer}»</span>
+                  <div className="mt-3 p-4 bg-white/60 dark:bg-slate-900/40 rounded-xl text-sm border border-black/5 dark:border-white/10">
+                    <span className="font-bold text-slate-500 dark:text-slate-400 block mb-1 uppercase tracking-wider text-xs">Σωστή απάντηση (Πρότυπο):</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-serif italic text-lg">«{feedback.improvedAnswer}»</span>
                   </div>
                 )}
               </div>

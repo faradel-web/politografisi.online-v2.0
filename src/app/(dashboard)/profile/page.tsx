@@ -272,8 +272,8 @@ export default function ProfilePage() {
 
                 {/* FORM */}
                 <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50">
-                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><User className="h-5 w-5" /></div>
+                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50 dark:border-slate-700">
+                        <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl"><User className="h-5 w-5" /></div>
                         <h3 className="font-bold text-slate-900 dark:text-white text-lg">Προσωπικά Στοιχεία</h3>
                     </div>
 
@@ -286,7 +286,7 @@ export default function ProfilePage() {
                                 type="email"
                                 value={user.email || ""}
                                 disabled
-                                className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-950/50/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-400 font-bold cursor-not-allowed appearance-none"
+                                className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-400 font-bold cursor-not-allowed appearance-none"
                             />
                         </div>
                     </div>
@@ -331,7 +331,10 @@ export default function ProfilePage() {
                     </div>
 
                     {message && (
-                        <div className={`p-4 rounded-xl text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+                        <div className={`p-4 rounded-xl text-sm font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success'
+                                ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800'
+                                : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-800'
+                            }`}>
                             {message.type === 'success' ? <Shield className="h-5 w-5" /> : <div className="h-2 w-2 rounded-full bg-red-500 shrink-0"></div>}
                             {message.text}
                         </div>

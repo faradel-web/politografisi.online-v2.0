@@ -255,3 +255,52 @@
 .table-responsive table {
   min-width: 600px;
 }
+
+/* =============================================================
+   LEAFLET MAP: Dark mode overrides for map controls
+   ============================================================= */
+.dark .leaflet-control-zoom a,
+.dark .leaflet-bar a {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+  color: rgb(203 213 225) !important; /* slate-300 */
+  border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.dark .leaflet-control-zoom a:hover,
+.dark .leaflet-bar a:hover {
+  background-color: rgb(51 65 85) !important; /* slate-700 */
+  color: rgb(241 245 249) !important;
+}
+
+.dark .leaflet-tooltip {
+  background-color: rgb(15 23 42) !important; /* slate-950 */
+  border-color: rgb(51 65 85) !important;
+  color: rgb(226 232 240) !important; /* slate-200 */
+}
+
+.dark .leaflet-tooltip::before {
+  border-top-color: rgb(51 65 85) !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background-color: rgb(30 41 59) !important;
+  color: rgb(226 232 240) !important;
+  border-color: rgb(51 65 85) !important;
+}
+
+.dark .leaflet-popup-tip {
+  background-color: rgb(30 41 59) !important;
+}
+
+/* Перекриваємо вбудований інлайн-стиль Leaflet контейнера в темному режимі */
+.dark .leaflet-container {
+  background: rgb(15 23 42) !important; /* slate-950 — темний фон навколо SVG карти */
+}
+
+/* Інвертуємо та затемнюємо SVG-карту в темному режимі.
+   .leaflet-overlay-pane — де рендериться ImageOverlay (наш SVG greece.svg).
+   Маркери знаходяться в .leaflet-marker-pane і не зачіпаються фільтром. */
+.dark .leaflet-overlay-pane img {
+  filter: invert(0.92) brightness(0.82) hue-rotate(190deg) contrast(1.05);
+  transition: filter 0.3s ease;
+}

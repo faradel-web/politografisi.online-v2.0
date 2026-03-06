@@ -1,9 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic"; 
+import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
 // Переконайтеся, що стилі Leaflet підключені (зазвичай у globals.css або тут)
-import "leaflet/dist/leaflet.css"; 
+import "leaflet/dist/leaflet.css";
 
 // --- ТИП ДЛЯ ТОЧКИ ---
 export interface MapMarker {
@@ -56,25 +56,25 @@ const MapCore = dynamic(
     };
 
     // --- 3. ТІЛО КАРТИ ---
-    return function Map({ 
-      markers = [], 
-      onPointSelect 
-    }: { 
+    return function Map({
+      markers = [],
+      onPointSelect
+    }: {
       markers: MapMarker[];
       onPointSelect?: (lat: number, lng: number) => void;
     }) {
       const bounds: [number, number][] = [[0, 0], [1000, 1000]];
 
       return (
-        <MapContainer 
-          crs={L.CRS.Simple} 
-          bounds={bounds as any} 
+        <MapContainer
+          crs={L.CRS.Simple}
+          bounds={bounds as any}
           maxBounds={bounds as any}
           maxBoundsViscosity={1.0}
-          center={[500, 500]} 
-          zoom={0} 
+          center={[500, 500]}
+          zoom={0}
           minZoom={-1}
-          scrollWheelZoom={true} 
+          scrollWheelZoom={true}
           style={{ height: "100%", width: "100%", background: "#f1f5f9" }}
         >
           <ImageOverlay
@@ -89,16 +89,16 @@ const MapCore = dynamic(
 
           {/* Рендеримо маркери */}
           {markers.map((marker, idx) => (
-            <Marker 
+            <Marker
               key={idx}
-              position={[marker.lat, marker.lng]} 
+              position={[marker.lat, marker.lng]}
               icon={createIcon(marker.color || 'blue')} // Вибираємо колір
             >
               {/* Якщо є Label -> показуємо Tooltip. Якщо немає -> тільки точка */}
               {marker.label && (
-                <Tooltip 
+                <Tooltip
                   permanent // Текст видно завжди, без наведення
-                  direction="top" 
+                  direction="top"
                   offset={[0, -10]}
                   opacity={1}
                   className={`
@@ -117,10 +117,10 @@ const MapCore = dynamic(
       );
     };
   },
-  { 
-    ssr: false, 
+  {
+    ssr: false,
     loading: () => (
-      <div className="h-full w-full flex items-center justify-center bg-slate-100 text-slate-400">
+      <div className="h-full w-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500">
         <Loader2 className="animate-spin h-8 w-8" />
         <span className="ml-2 font-bold">Φόρτωση χάρτη...</span>
       </div>
@@ -129,17 +129,17 @@ const MapCore = dynamic(
 );
 
 interface GreeceMapProps {
-  markers?: MapMarker[]; 
+  markers?: MapMarker[];
   onSelect?: (coords: { lat: number; lng: number }) => void;
 }
 
 export default function GreeceMap({ markers = [], onSelect }: GreeceMapProps) {
   return (
-    <div className="w-full h-full min-h-[500px] border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm relative z-0 bg-slate-50">
-       <MapCore 
-          markers={markers} 
-          onPointSelect={onSelect ? (lat, lng) => onSelect({lat, lng}) : undefined} 
-       />
+    <div className="w-full h-full min-h-[500px] border-2 border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden shadow-sm relative z-0 bg-slate-50 dark:bg-slate-800">
+      <MapCore
+        markers={markers}
+        onPointSelect={onSelect ? (lat, lng) => onSelect({ lat, lng }) : undefined}
+      />
     </div>
   );
 }

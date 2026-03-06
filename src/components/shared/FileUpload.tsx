@@ -57,23 +57,23 @@ export default function FileUpload({
 
   return (
     <div className="w-full">
-      <label className="block text-sm font-bold text-gray-700 mb-2">
+      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
         {label}
       </label>
 
       {!preview ? (
-        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 dark:border-slate-600 border-dashed rounded-xl cursor-pointer bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             {isUploading ? (
               <>
                 <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-2" />
-                <p className="text-sm text-gray-500">Φόρτωση...</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Φόρτωση...</p>
               </>
             ) : (
               <>
-                <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-500 font-medium">Κάντε κλικ για επιλογή αρχείου</p>
-                <p className="text-xs text-gray-400">PNG, JPG, MP3 (έως 10MB)</p>
+                <UploadCloud className="w-8 h-8 text-slate-400 mb-2" />
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Κάντε κλικ για επιλογή αρχείου</p>
+                <p className="text-xs text-slate-400">PNG, JPG, MP3 (έως 10MB)</p>
               </>
             )}
           </div>
@@ -86,13 +86,13 @@ export default function FileUpload({
           />
         </label>
       ) : (
-        <div className="relative group w-full h-32 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex items-center justify-center">
+        <div className="relative group w-full h-32 bg-slate-100 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center">
           {/* Якщо це картинка */}
           {preview.includes(".jpg") || preview.includes(".png") || preview.includes(".jpeg") || preview.includes("googleusercontent") ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={preview} alt="uploaded" className="w-full h-full object-cover" />
           ) : (
-            <div className="flex items-center gap-2 text-green-600 font-bold">
+            <div className="flex items-center gap-2 text-green-600 dark:text-green-400 font-bold">
               <CheckCircle className="h-6 w-6" /> Το αρχείο μεταφορτώθηκε
             </div>
           )}
@@ -100,7 +100,7 @@ export default function FileUpload({
           {/* Кнопка видалення */}
           <button
             onClick={handleRemove}
-            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full text-gray-600 hover:text-red-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 bg-white/90 dark:bg-slate-900/90 p-1.5 rounded-full text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <X className="h-4 w-4" />
           </button>

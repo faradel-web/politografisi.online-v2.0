@@ -265,7 +265,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         {lesson.transcript && (
                             <div className={`bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col relative transition-all duration-300 ease-in-out ${showTranscript ? 'flex-1 overflow-hidden min-h-0' : 'flex-none'}`}>
 
-                                <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50/50 flex justify-between items-center shrink-0">
+                                <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 flex justify-between items-center shrink-0">
                                     <span className="font-black text-slate-400 uppercase tracking-widest text-xs flex items-center gap-2">
                                         <AlignLeft size={16} /> Κείμενο (Transcript)
                                     </span>

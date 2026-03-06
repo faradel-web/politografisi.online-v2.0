@@ -190,7 +190,7 @@ export default function Home() {
         <section id="platform" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</h2>
+              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</h2>
               <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Το Κλειδί της Επιτυχίας για το 2026</h3>
               <p className="mt-4 text-blue-800/60 dark:text-slate-400 max-w-2xl mx-auto">Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).</p>
             </div>
@@ -356,7 +356,7 @@ export default function Home() {
         <section id="pricing" className="py-24 bg-white dark:bg-slate-950 border-b border-blue-50 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</h2>
+              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</h2>
               <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Επιλέξτε το πακέτο που σας ταιριάζει</h3>
             </div>
 
@@ -419,7 +419,7 @@ export default function Home() {
         <section id="faq" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 font-bold tracking-wide uppercase text-sm mb-3">FAQ</h2>
+              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">FAQ</h2>
               <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Συχνές Ερωτήσεις</h3>
             </div>
 
