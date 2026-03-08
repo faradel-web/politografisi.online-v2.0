@@ -304,3 +304,18 @@
   filter: invert(0.92) brightness(0.82) hue-rotate(190deg) contrast(1.05);
   transition: filter 0.3s ease;
 }
+
+/* =============================================================
+   ACCESSIBILITY: Respect prefers-reduced-motion
+   Вимикає анімації для користувачів з вестибулярними порушеннями
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

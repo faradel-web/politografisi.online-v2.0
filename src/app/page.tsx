@@ -54,6 +54,18 @@ export default function Home() {
                   "description": "Η Νο1 πλατφόρμα προετοιμασίας για εξετάσεις πολιτογράφησης (ΠΕΓΠ 2026).",
                 },
                 {
+                  "@type": "EducationalOrganization",
+                  "name": "Politografisi.online",
+                  "url": "https://politografisi.online",
+                  "description": "Online πλατφόρμα προετοιμασίας για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).",
+                  "areaServed": {
+                    "@type": "Country",
+                    "name": "Greece"
+                  },
+                  "teaches": ["Ελληνική Ιστορία", "Ελληνική Γεωγραφία", "Πολιτικοί Θεσμοί", "Ελληνικός Πολιτισμός", "Ελληνική Γλώσσα"],
+                  "inLanguage": "el",
+                },
+                {
                   "@type": "Product",
                   "name": "Πακέτα Προετοιμασίας ΠΕΓΠ 2026",
                   "description": "Ολοκληρωμένα πακέτα με θεωρία του Υπουργείου Εσωτερικών, τεστ και AI εξάσκηση για τις εξετάσεις ιθαγένειας.",
@@ -190,8 +202,8 @@ export default function Home() {
         <section id="platform" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Το Κλειδί της Επιτυχίας για το 2026</h3>
+              <p className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Τι περιλαμβάνεται στην πλατφόρμα</p>
+              <h2 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Το Κλειδί της Επιτυχίας για το 2026</h2>
               <p className="mt-4 text-blue-800/60 dark:text-slate-400 max-w-2xl mx-auto">Η online πλατφόρμα μας σας δίνει πρόσβαση στο πιο ολοκληρωμένο υλικό για το Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση (ΠΕΓΠ).</p>
             </div>
 
@@ -204,7 +216,7 @@ export default function Home() {
                     <MonitorPlay className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πλήρες Υλικό 360°</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πλήρες Υλικό 360°</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Όλη η θεωρία (Ιστορία, Γεωγραφία, Πολιτική, Πολιτισμός) και τα αρχεία για την εξάσκηση στην ακουστική κατανόηση, χωρίς ατελείωτο ψάξιμο.
                     </p>
@@ -220,7 +232,7 @@ export default function Home() {
                     <Bot className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Επίσημη Τράπεζα Θεμάτων</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Επίσημη Τράπεζα Θεμάτων</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Πλήρης πρόσβαση στην ανανεωμένη τράπεζα (300 θέματα). Επίκαιρες Ερωτήσεις & Απαντήσεις και υλικό του Υπουργείου Εσωτερικών με την υποστήριξη AI.
                     </p>
@@ -235,7 +247,7 @@ export default function Home() {
                     <Mic className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Προφορικού Λόγου</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Προφορικού Λόγου</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Στοχευμένη προετοιμασία για την Προφορική Εξέταση (25 θέματα). Το AI αξιολογεί την απάντησή σας για μέγιστη βελτίωση.
                     </p>
@@ -250,7 +262,7 @@ export default function Home() {
                     <PenTool className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Γραπτού Λόγου</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Παραγωγή Γραπτού Λόγου</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Πλήρης ανάλυση και παραδείγματα για την έκθεση (100 θέματα). Γράψτε και λάβετε άμεση διόρθωση από το σύστημα.
                     </p>
@@ -265,7 +277,7 @@ export default function Home() {
                     <Headphones className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Ακουστικό Μέρος</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Ακουστικό Μέρος</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Κατανόηση Προφορικού Λόγου (50 θέματα). Όλα τα θέματα με κείμενα και τεστ, καθώς και Audio Podcasts.
                     </p>
@@ -280,7 +292,7 @@ export default function Home() {
                     <Repeat className="h-8 w-8" />
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πρακτική για 100% Αυτοπεποίθηση</h4>
+                    <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-2">Πρακτική για 100% Αυτοπεποίθηση</h3>
                     <p className="text-blue-800/70 dark:text-slate-400 leading-relaxed text-sm">
                       Στην πλατφόρμα μας μπορείτε να κάνετε <strong>ρεαλιστικές προσομοιώσεις εξετάσεων απεριόριστες φορές</strong>. Εξασκηθείτε σε συνθήκες πραγματικού χρόνου μέχρι να νιώθετε απόλυτα σίγουροι για την επιτυχία.
                     </p>
@@ -300,34 +312,34 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-blue-400 font-bold tracking-wide uppercase text-sm mb-2">Διαδικασία</h2>
-                <h3 className="text-3xl md:text-4xl font-black mb-8">Ο σίγουρος δρόμος προς την επιτυχία</h3>
+                <p className="text-blue-400 font-bold tracking-wide uppercase text-sm mb-2">Διαδικασία</p>
+                <h2 className="text-3xl md:text-4xl font-black mb-8">Ο σίγουρος δρόμος προς την επιτυχία</h2>
 
                 <div className="space-y-6">
                   {/* Βήμα 1 */}
                   <div className="flex gap-5 group">
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-900 border border-blue-800 flex items-center justify-center font-bold text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-lg">1</div>
-                    <div><h4 className="font-bold text-lg mb-1 text-white">Εγγραφή</h4><p className="text-blue-300/80 text-sm leading-relaxed">Δημιουργήστε τον λογαριασμό σας και αποκτήστε πρόσβαση.</p></div>
+                    <div><h3 className="font-bold text-lg mb-1 text-white">Εγγραφή</h3><p className="text-blue-300/80 text-sm leading-relaxed">Δημιουργήστε τον λογαριασμό σας και αποκτήστε πρόσβαση.</p></div>
                   </div>
                   {/* Βήμα 2 */}
                   <div className="flex gap-5 group">
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-900 border border-blue-800 flex items-center justify-center font-bold text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-lg">2</div>
-                    <div><h4 className="font-bold text-lg mb-1 text-white">Στοχευμένη Μελέτη</h4><p className="text-blue-300/80 text-sm leading-relaxed">Μελετήστε Ιστορία, Γεωγραφία, Πολιτική και Γλώσσα με Βίντεο & Audio.</p></div>
+                    <div><h3 className="font-bold text-lg mb-1 text-white">Στοχευμένη Μελέτη</h3><p className="text-blue-300/80 text-sm leading-relaxed">Μελετήστε Ιστορία, Γεωγραφία, Πολιτική και Γλώσσα με Βίντεο & Audio.</p></div>
                   </div>
                   {/* Βήμα 3 */}
                   <div className="flex gap-5 group">
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-900 border border-blue-800 flex items-center justify-center font-bold text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-lg">3</div>
-                    <div><h4 className="font-bold text-lg mb-1 text-white">Εξάσκηση στα Επίσημα Θέματα</h4><p className="text-blue-300/80 text-sm leading-relaxed">Λύστε τα τεστ του Υπουργείου ανά κατηγορία.</p></div>
+                    <div><h3 className="font-bold text-lg mb-1 text-white">Εξάσκηση στα Επίσημα Θέματα</h3><p className="text-blue-300/80 text-sm leading-relaxed">Λύστε τα τεστ του Υπουργείου ανά κατηγορία.</p></div>
                   </div>
                   {/* Βήμα 4 */}
                   <div className="flex gap-5 group">
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-900 border border-blue-800 flex items-center justify-center font-bold text-lg text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-lg">4</div>
-                    <div><h4 className="font-bold text-lg mb-1 text-white">Απεριόριστες Προσομοιώσεις</h4><p className="text-blue-300/80 text-sm leading-relaxed">Δώστε εικονικές εξετάσεις όσες φορές χρειαστεί για να μηδενίσετε το άγχος.</p></div>
+                    <div><h3 className="font-bold text-lg mb-1 text-white">Απεριόριστες Προσομοιώσεις</h3><p className="text-blue-300/80 text-sm leading-relaxed">Δώστε εικονικές εξετάσεις όσες φορές χρειαστεί για να μηδενίσετε το άγχος.</p></div>
                   </div>
                   {/* Βήμα 5 */}
                   <div className="flex gap-5 group">
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-green-600 border border-green-500 flex items-center justify-center font-bold text-lg text-white shadow-lg animate-pulse">5</div>
-                    <div><h4 className="font-bold text-lg mb-1 text-green-400">Επιτυχία</h4><p className="text-blue-300/80 text-sm leading-relaxed">Δώστε εξετάσεις με 100% αυτοπεποίθηση.</p></div>
+                    <div><h3 className="font-bold text-lg mb-1 text-green-400">Επιτυχία</h3><p className="text-blue-300/80 text-sm leading-relaxed">Δώστε εξετάσεις με 100% αυτοπεποίθηση.</p></div>
                   </div>
                 </div>
               </div>
@@ -356,15 +368,15 @@ export default function Home() {
         <section id="pricing" className="py-24 bg-white dark:bg-slate-950 border-b border-blue-50 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Επιλέξτε το πακέτο που σας ταιριάζει</h3>
+              <p className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">Συνδρομές</p>
+              <h2 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Επιλέξτε το πακέτο που σας ταιριάζει</h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
 
               {/* 1. FREE - Залишається посилання на /register */}
               <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-slate-600 transition-colors relative h-fit">
-                <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-4">Δοκιμαστικό</h4>
+                <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-4">Δοκιμαστικό</h3>
                 <div className="mb-6"><span className="text-4xl font-black text-blue-950 dark:text-white">ΔΩΡΕΑΝ</span></div>
                 <p className="text-sm text-blue-800/60 dark:text-slate-400 mb-8 pb-8 border-b border-slate-100 dark:border-slate-700">
                   Δοκιμάστε τις λειτουργίες της πλατφόρμας χωρίς καμία δέσμευση.
@@ -380,7 +392,7 @@ export default function Home() {
               {/* 2. 3 MONTHS - ✅ UPDATE: Scroll to form with params */}
               <div className="bg-blue-950 text-white rounded-3xl p-8 border-2 border-blue-900 shadow-2xl relative transform md:-translate-y-6 z-10">
                 <div className="absolute top-0 inset-x-0 -mt-4 flex justify-center"><span className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg uppercase tracking-wider">Δημοφιλεστερο</span></div>
-                <h4 className="text-xl font-bold mb-4">3 Μήνες</h4>
+                <h3 className="text-xl font-bold mb-4">3 Μήνες</h3>
                 <div className="mb-6 flex items-baseline gap-1"><span className="text-5xl font-black">€200</span><span className="text-blue-300">/ εφάπαξ</span></div>
                 <p className="text-sm text-blue-200 mb-8 pb-8 border-b border-blue-800">
                   Η πλήρης εμπειρία. Ολοκληρωμένη προετοιμασία χωρίς άγχος χρόνου.
@@ -397,7 +409,7 @@ export default function Home() {
 
               {/* 3. 1 MONTH - ✅ UPDATE: Scroll to form with params */}
               <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border-2 border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-slate-600 transition-colors relative h-fit">
-                <h4 className="text-xl font-bold text-blue-900 dark:text-white mb-4">1 Μήνας</h4>
+                <h3 className="text-xl font-bold text-blue-900 dark:text-white mb-4">1 Μήνας</h3>
                 <div className="mb-6 flex items-baseline gap-1"><span className="text-4xl font-black text-blue-950 dark:text-white">€100</span><span className="text-slate-500 dark:text-slate-400">/ εφάπαξ</span></div>
                 <p className="text-sm text-blue-800/60 dark:text-slate-400 mb-8 pb-8 border-b border-slate-100 dark:border-slate-700">
                   Ιδανικό для γρήγορη επανάληψη λίγο πριν τις εξετάσεις.
@@ -419,8 +431,8 @@ export default function Home() {
         <section id="faq" className="py-24 bg-white dark:bg-slate-950">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">FAQ</h2>
-              <h3 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Συχνές Ερωτήσεις</h3>
+              <p className="text-blue-500 dark:text-blue-400 font-bold tracking-wide uppercase text-sm mb-3">FAQ</p>
+              <h2 className="text-3xl md:text-4xl font-black text-blue-950 dark:text-white">Συχνές Ερωτήσεις</h2>
             </div>
 
             <div className="space-y-4">
@@ -524,7 +536,7 @@ export default function Home() {
               <div className="bg-blue-900 text-white p-10 md:p-16 md:w-2/5 flex flex-col justify-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full bg-blue-800/50 mix-blend-multiply"></div>
                 <div className="relative z-10">
-                  <h3 className="text-3xl font-black mb-6">Επικοινωνία</h3>
+                  <h2 className="text-3xl font-black mb-6">Επικοινωνία</h2>
                   <p className="text-blue-100 leading-relaxed">
                     Αφήστε το αίτημά σας και οι διαχειριστές μας θα επικοινωνήσουν μαζί σας το συντομότερο δυνατό μέσω email για να σας δώσουν αναλυτικές οδηγίες σχετικά με την απόκτηση premium πρόσβασης στον ιστότοπο.
                   </p>

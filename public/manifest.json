@@ -64,11 +64,48 @@
             "type": "image/png"
         }
     ],
+    "shortcuts": [
+        {
+            "name": "Θεωρία",
+            "short_name": "Θεωρία",
+            "description": "Μελέτη θεωρίας: Ιστορία, Γεωγραφία, Πολιτική, Πολιτισμός",
+            "url": "/theory",
+            "icons": [
+                {
+                    "src": "/icons/apple-icon-96x96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Εξάσκηση",
+            "short_name": "Εξάσκηση",
+            "description": "Τεστ πολλαπλής επιλογής ανά κατηγορία",
+            "url": "/practice",
+            "icons": [
+                {
+                    "src": "/icons/apple-icon-96x96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Εξέταση",
+            "short_name": "Εξέταση",
+            "description": "Ρεαλιστική προσομοίωση εξέτασης ΠΕΓΠ",
+            "url": "/exam",
+            "icons": [
+                {
+                    "src": "/icons/apple-icon-96x96.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ],
     "screenshots": [],
     "prefer_related_applications": false,
-    "related_applications": [],
-    "serviceworker": {
-        "src": "/sw.js",
-        "scope": "/"
-    }
+    "related_applications": []
 }

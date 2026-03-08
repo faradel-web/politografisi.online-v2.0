@@ -3,6 +3,7 @@
 import type { JSONContent } from '@tiptap/core';
 import { AlertCircle, Lightbulb, Info, AlertTriangle } from 'lucide-react';
 import { Fragment } from 'react';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 import './editor.css';
 
@@ -224,8 +225,9 @@ function renderNode(node: JSONContent, index: number): React.ReactNode {
 }
 
 // Sanitize old HTML content (v1 backward compatibility)
+// 🔐 VUL-05 FIX: Using DOMPurify for real XSS protection + cleaning invisible chars
 function sanitizeContent(html: string): string {
-    return html
+    const cleaned = html
         .replace(/&nbsp;/gi, ' ')
         .replace(/\u00A0/g, ' ')
         .replace(/&shy;/gi, '')
@@ -235,6 +237,7 @@ function sanitizeContent(html: string): string {
         .replace(/\u200D/g, '')
         .replace(/\uFEFF/g, '')
         .replace(/<wbr\s*\/?>/gi, '');
+    return sanitizeHtml(cleaned);
 }
 
 export default function TiptapRenderer({ content, className = '' }: TiptapRendererProps) {

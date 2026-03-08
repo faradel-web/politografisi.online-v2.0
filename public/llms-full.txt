@@ -1,0 +1,160 @@
+# Politografisi.online — llms-full.txt
+# Extended Version | Standard: https://llmstxt.org/
+
+> Politografisi.online is the #1 online preparation platform for the Greek Citizenship Exam (PEGP / ΠΕΓΠ — Πιστοποιητικό Επάρκειας Γνώσεων για Πολιτογράφηση). It provides comprehensive study materials, practice tests, AI-powered essay and speaking evaluation tools, and unlimited exam simulations for candidates preparing to obtain Greek citizenship.
+
+## About
+
+Politografisi.online helps candidates pass the Greek Citizenship Examination (ΠΕΓΠ 2026) by providing a complete, all-in-one educational ecosystem. The platform is designed for non-native Greek speakers who possess at least a B1+ level of Greek language proficiency and want targeted preparation for the official exam administered by the Greek Ministry of Interior (Υπουργείο Εσωτερικών).
+
+---
+
+## How It Works
+
+The platform follows a structured 5-step preparation path:
+
+1. **Registration (Εγγραφή):** Create an account and get immediate access. Free trial includes 1 test per category with no credit card required.
+2. **Targeted Study (Στοχευμένη Μελέτη):** Study History, Geography, Political Institutions, and Culture through structured theory materials, video, and audio content.
+3. **Official Question Practice (Εξάσκηση στα Επίσημα Θέματα):** Solve practice tests from the official question bank of the Ministry of Interior, organized by category.
+4. **Unlimited Simulations (Απεριόριστες Προσομοιώσεις):** Take realistic mock exams under timed conditions as many times as needed to build confidence.
+5. **Exam Success (Επιτυχία):** Take the exam with full confidence and knowledge.
+
+---
+
+## Study Materials & Features
+
+### Theory (Θεωρία) — 4 Categories
+
+#### 1. History (Ιστορία)
+Covers Greek history from ancient times to the modern era, including:
+- Ancient Greece (Αρχαία Ελλάδα)
+- Byzantine Empire (Βυζαντινή Αυτοκρατορία)
+- Ottoman period and the Greek War of Independence (Οθωμανική περίοδος, Ελληνική Επανάσταση 1821)
+- Modern Greek history (20th–21st century)
+- Key dates, events, and historical figures
+
+#### 2. Geography (Γεωγραφία)
+Covers the geographical knowledge required for the exam:
+- Greek regions and prefectures (Περιφέρειες και Νομοί)
+- Major cities, mountains, rivers, and islands
+- Interactive map-based learning
+- Climate and natural features
+
+#### 3. Political Institutions (Πολιτική / Πολίτευμα)
+Covers the political structure of Greece:
+- The Greek Constitution (Σύνταγμα)
+- Parliament and legislative process (Βουλή)
+- Government structure (Κυβέρνηση)
+- Judiciary system (Δικαστική Εξουσία)
+- European Union institutions
+- Citizens' rights and obligations
+
+#### 4. Culture (Πολιτισμός)
+Covers Greek culture and civilization:
+- Literature and poetry (Λογοτεχνία)
+- Art, architecture, and music
+- National holidays and traditions (Εθνικές εορτές)
+- UNESCO World Heritage sites in Greece
+- Modern Greek culture and society
+
+### Practice Tests (Εξάσκηση)
+- **300+ official questions** from the updated Ministry of Interior question bank (Τράπεζα Θεμάτων)
+- Multiple-choice format mirroring the real exam
+- Category-based practice (History, Geography, Politics, Culture)
+- Smart random mode prioritizing questions answered incorrectly
+- Progress tracking with visual indicators (correct, incorrect, unanswered)
+
+### AI Writing Evaluation (Παραγωγή Γραπτού Λόγου)
+- **100 essay topics** covering exam-relevant subjects
+- AI-powered instant feedback using Google Gemini
+- Scoring based on official exam criteria
+- Detailed corrections for grammar, vocabulary, structure, and content
+- Sample model answers for reference
+
+### AI Speaking Evaluation (Παραγωγή Προφορικού Λόγου)
+- **25 oral examination topics**
+- Record voice responses directly in-browser
+- AI-powered evaluation of pronunciation, grammar, content, and fluency
+- Personalized improvement suggestions
+- Practice under simulated exam conditions
+
+### Listening Comprehension (Ακουστική Κατανόηση)
+- **50 audio-based exercises** with texts and quizzes
+- Audio podcasts for immersive learning
+- Tests mirroring the listening section of the real exam
+
+### Exam Simulation (Προσομοίωση Εξέτασης)
+- Full realistic mock exams under timed conditions
+- Random question selection from the complete question bank
+- Instant scoring and detailed results analysis
+- Unlimited attempts to build confidence
+
+---
+
+## Exam Structure (ΠΕΓΠ)
+
+The Greek Citizenship Examination (ΠΕΓΠ) consists of:
+- **Written Part:** Multiple-choice questions on History, Geography, Political Institutions, and Culture
+- **Written Essay:** Composition on a given topic (Παραγωγή Γραπτού Λόγου)
+- **Oral Examination:** Speaking test on a given topic (Παραγωγή Προφορικού Λόγου)
+- **Listening Comprehension:** Audio-based questions (Κατανόηση Προφορικού Λόγου)
+
+The exam is administered by the Greek Ministry of Interior (Υπουργείο Εσωτερικών) as part of the naturalization process for obtaining Greek citizenship.
+
+---
+
+## Pricing
+
+| Plan | Price | Duration | Features |
+|------|-------|----------|----------|
+| Free Trial (Δοκιμαστικό) | €0 | Unlimited | 1 test per category, no credit card |
+| 1 Month Premium | €100 | 30 days | Full access to all features |
+| 3 Months Premium (Most Popular) | €200 | 90 days | Full 360° access |
+
+- All payments are **one-time** (εφάπαξ) — no automatic renewal
+- No hidden fees or recurring charges
+
+---
+
+## Key Pages
+
+- [Home](https://politografisi.online/): Landing page with platform overview, pricing, FAQ, and contact form
+- [Login](https://politografisi.online/login): User authentication page
+- [Register](https://politografisi.online/register): Free registration for trial access
+- [Privacy Policy](https://politografisi.online/privacy-policy): Data collection, cookies, GDPR rights, and AI usage policy
+- [Terms of Service](https://politografisi.online/terms): Terms of use, subscriptions, intellectual property
+
+---
+
+## Target Audience
+
+- Non-native Greek speakers seeking Greek citizenship through naturalization
+- Candidates with at least B1+ level of Greek language proficiency
+- Anyone preparing for the ΠΕΓΠ examination administered by the Ministry of Interior
+- Greek language students looking to deepen their knowledge of Greek history and culture
+
+---
+
+## Contact
+
+- Website: https://politografisi.online
+- Support Email: support@politografisi.online
+- Privacy Email: privacy@politografisi.online
+
+---
+
+## Technical Details
+
+- **Framework:** Next.js 16 with App Router (React 19, TypeScript)
+- **Backend:** Firebase (Firestore database, Authentication, Cloud Storage)
+- **AI Engine:** Google Gemini for essay and speaking evaluation
+- **PWA:** Progressive Web App with offline-ready capabilities and service worker
+- **Design:** Fully responsive (mobile-first), dark mode support, Tailwind CSS
+- **Language:** Greek (el) — interface and content
+- **Security:** HSTS, CSP, XSS protection via DOMPurify
+
+---
+
+## Greek Keywords (Ελληνικές Λέξεις-Κλειδιά)
+
+εξετάσεις πολιτογράφησης, ΠΕΓΠ, τράπεζα θεμάτων 2026, υπουργείο εσωτερικών, εξετάσεις ιθαγένειας, τεστ ελληνομάθειας, ερωτήσεις πολιτογράφησης, άδεια διαμονής, ελληνική ιθαγένεια, πιστοποιητικό επάρκειας γνώσεων, πολιτογράφηση, παραγωγή γραπτού λόγου, παραγωγή προφορικού λόγου, ακουστική κατανόηση, ιστορία ελλάδας, γεωγραφία ελλάδας, πολίτευμα, πολιτισμός, online μαθήματα, AI εξάσκηση

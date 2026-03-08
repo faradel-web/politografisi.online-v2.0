@@ -136,6 +136,14 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+
+  // hreflang + canonical
+  alternates: {
+    canonical: 'https://politografisi.online',
+    languages: {
+      'el': 'https://politografisi.online',
+    },
+  },
 };
 
 export default function RootLayout({

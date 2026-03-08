@@ -118,7 +118,7 @@ export default function Navbar() {
           {/* === MOBILE: THEME TOGGLE + HAMBURGER === */}
           <div className="md:hidden flex items-center gap-2">
             <ThemeToggle />
-            <button className="text-slate-700 dark:text-slate-300 p-2" onClick={() => setIsOpen(!isOpen)}>
+            <button aria-label="Toggle mobile menu" className="text-slate-700 dark:text-slate-300 p-2" onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
             </button>
           </div>

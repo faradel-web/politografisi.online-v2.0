@@ -6,10 +6,18 @@ const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 // 🔥 Використовуємо найновішу стабільну модель
-const model = genAI.getGenerativeModel({ 
-  model: "gemini-2.5-flash", 
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash",
   generationConfig: { responseMimeType: "application/json" }
 });
+
+// 🔐 VUL-09: Input limits to reduce prompt injection surface and control costs
+const INPUT_LIMITS = {
+  MAX_ESSAY_LENGTH: 5000,
+  MAX_ANSWER_LENGTH: 2000,
+  MAX_TOPIC_LENGTH: 500,
+  MAX_CONTEXT_LENGTH: 3000,
+};
 
 // --- ДОПОМІЖНА ФУНКЦІЯ: ОЧИЩЕННЯ JSON ---
 function cleanAndParseJSON(text: string) {
@@ -19,7 +27,7 @@ function cleanAndParseJSON(text: string) {
     try {
       const jsonStartIndex = text.indexOf('{');
       const jsonEndIndex = text.lastIndexOf('}');
-      
+
       if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
         const cleanJson = text.substring(jsonStartIndex, jsonEndIndex + 1);
         return JSON.parse(cleanJson);
@@ -37,17 +45,21 @@ function cleanAndParseJSON(text: string) {
 // ============================================================================
 export async function gradeEssay(topic: string, studentText: string) {
   if (!apiKey) return null;
-  
+
   if (!studentText || studentText.trim().length < 5) {
     return { score: 0, feedback: "Το κείμενο είναι πολύ μικρό ή κενό.", corrections: "" };
   }
-  
+
+  // 🔐 VUL-09: Truncate input
+  const safeTopic = (topic || '').slice(0, INPUT_LIMITS.MAX_TOPIC_LENGTH);
+  const safeText = studentText.slice(0, INPUT_LIMITS.MAX_ESSAY_LENGTH);
+
   const prompt = `
     You are a strict Greek language examiner for the Greek Citizenship Exam (PEGP).
     Task: Evaluate the student's Writing (Essay/Email).
     
-    Topic: "${topic}"
-    Student's Text: "${studentText}"
+    Topic: "${safeTopic}"
+    Student's Text: "${safeText}"
 
     **SCORING CRITERIA (Max 12 Points Total):**
     Evaluate based on 4 pillars (0-3 points each):
@@ -69,14 +81,17 @@ export async function gradeEssay(topic: string, studentText: string) {
   try {
     const result = await model.generateContent(prompt);
     const text = result.response.text();
-    return cleanAndParseJSON(text);
-  } catch (e) { 
+    const parsed = cleanAndParseJSON(text);
+    // 🔐 VUL-09: Validate score range
+    parsed.score = Math.max(0, Math.min(12, Number(parsed.score) || 0));
+    return parsed;
+  } catch (e) {
     console.error("AI Essay Error", e);
-    return { 
-      score: 0, 
-      feedback: "Παρουσιάστηκε σφάλμα. Ενδέχεται να υπερβήκατε το όριο χρήσης. Παρακαλώ περιμένετε λίγο και δοκιμάστε ξανά.", 
-      corrections: "" 
-    }; 
+    return {
+      score: 0,
+      feedback: "Παρουσιάστηκε σφάλμα. Ενδέχεται να υπερβήκατε το όριο χρήσης. Παρακαλώ περιμένετε λίγο και δοκιμάστε ξανά.",
+      corrections: ""
+    };
   }
 }
 
@@ -120,15 +135,15 @@ export async function gradeSpeaking(topic: string, audioUrl: string) {
       prompt,
       { inlineData: { mimeType, data: base64Audio } }
     ]);
-    
+
     const text = result.response.text();
     return cleanAndParseJSON(text);
   } catch (error) {
     console.error("AI Speaking Error:", error);
-    return { 
-      score: 0, 
-      feedback: "Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά σε λίγα λεπτά.", 
-      transcription: "" 
+    return {
+      score: 0,
+      feedback: "Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά σε λίγα λεπτά.",
+      transcription: ""
     };
   }
 }
@@ -138,12 +153,17 @@ export async function gradeSpeaking(topic: string, audioUrl: string) {
 // ============================================================================
 export async function gradeShortAnswer(question: string, userAnswer: string, modelAnswer: string) {
   if (!apiKey) return null;
-  
+
   if (!userAnswer || userAnswer.trim().length < 2) {
     return { score: 0, isCorrect: false, feedback: "Δεν δόθηκε απάντηση.", improvedAnswer: modelAnswer };
   }
 
-  const reference = modelAnswer ? `Official Model Answer (SOURCE OF TRUTH): "${modelAnswer}"` : "Evaluate based on general historical/political facts.";
+  // 🔐 VUL-09: Truncate input
+  const safeQuestion = (question || '').slice(0, INPUT_LIMITS.MAX_TOPIC_LENGTH);
+  const safeAnswer = userAnswer.slice(0, INPUT_LIMITS.MAX_ANSWER_LENGTH);
+  const safeModel = (modelAnswer || '').slice(0, INPUT_LIMITS.MAX_ANSWER_LENGTH);
+
+  const reference = safeModel ? `Official Model Answer (SOURCE OF TRUTH): "${safeModel}"` : "Evaluate based on general historical/political facts.";
 
   const prompt = `
     You are a strict teacher preparing students for the Greek citizenship exam.
@@ -151,9 +171,9 @@ export async function gradeShortAnswer(question: string, userAnswer: string, mod
     1. THE TASK:
     Compare the Student's Answer with the Official Model Answer.
     
-    Question: "${question}"
+    Question: "${safeQuestion}"
     ${reference}
-    Student's Answer: "${userAnswer}"
+    Student's Answer: "${safeAnswer}"
 
     2. **SCORING RULES (Max 2 Points):**
     - **2 Points (Άριστα):** The answer conveys the FULL meaning. Minor grammar mistakes ignored.
@@ -177,11 +197,11 @@ export async function gradeShortAnswer(question: string, userAnswer: string, mod
     return cleanAndParseJSON(text);
   } catch (error) {
     console.error("AI Short Answer Error:", error);
-    return { 
-      score: 0, 
-      isCorrect: false, 
-      feedback: "Σφάλμα συστήματος.", 
-      improvedAnswer: modelAnswer 
+    return {
+      score: 0,
+      isCorrect: false,
+      feedback: "Σφάλμα συστήματος.",
+      improvedAnswer: modelAnswer
     };
   }
 }

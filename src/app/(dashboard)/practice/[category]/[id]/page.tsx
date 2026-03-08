@@ -18,6 +18,7 @@ import { GUEST_LIMITS } from "@/lib/constants";
 import AudioRecorder from "@/components/shared/AudioRecorder";
 import { gradeSpeaking, gradeEssay, gradeShortAnswer } from "@/lib/gemini";
 import { updatePracticeResult, updatePracticeStats } from "@/lib/progress";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 const COLLECTION_MAP: Record<string, string> = {
     'history': 'questions_history',
@@ -416,7 +417,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                         </div>
                         {lesson.imageUrls?.[0] && <img src={lesson.imageUrls[0]} className="w-full rounded-2xl mb-6 object-cover" />}
                         {isHtml ? (
-                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: pA_Text || "" }} />
+                            <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200" dangerouslySetInnerHTML={{ __html: sanitizeHtml(pA_Text || "") }} />
                         ) : (
                             <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
                                 {pA_Text || ""}

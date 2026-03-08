@@ -17,6 +17,8 @@ const rateLimitMap = new Map<string, RateLimitRecord>();
 const LIMITS = {
   PER_MINUTE: 10,
   PER_HOUR: 50,
+  MAX_MESSAGE_LENGTH: 5000,        // 🔐 VUL-07: Max message length
+  MAX_CONTEXT_LENGTH: 100000,      // 🔐 VUL-07: Max context length
 };
 
 function checkRateLimit(ip: string): { allowed: boolean; message?: string } {
@@ -71,7 +73,8 @@ export async function POST(req: Request) {
 
   // В dev-режимі дозволяємо localhost
   const isDev = process.env.NODE_ENV === "development";
-  const isAllowedOrigin = isDev || !origin || allowedOrigins.includes(origin);
+  // 🔐 VUL-08 FIX: In production, reject requests without Origin header
+  const isAllowedOrigin = isDev || (origin && allowedOrigins.includes(origin));
 
   if (!isAllowedOrigin) {
     return NextResponse.json(
@@ -84,12 +87,26 @@ export async function POST(req: Request) {
   if (!limitCheck.allowed) {
     return NextResponse.json({
       text: `${limitCheck.message} Για περισσότερες πληροφορίες: https://gemini.google.com/`
-    });
+    }, { status: 429 });
   }
 
   try {
     const body = await req.json();
     const { message, context } = body;
+
+    // 🔐 VUL-07 FIX: Input validation
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      return NextResponse.json({ text: 'Παρακαλώ εισάγετε ένα μήνυμα.' }, { status: 400 });
+    }
+
+    if (message.length > LIMITS.MAX_MESSAGE_LENGTH) {
+      return NextResponse.json(
+        { text: `Το μήνυμα είναι πολύ μεγάλο. Μέγιστο: ${LIMITS.MAX_MESSAGE_LENGTH} χαρακτήρες.` },
+        { status: 400 }
+      );
+    }
+
+    const safeContext = context ? String(context).slice(0, LIMITS.MAX_CONTEXT_LENGTH) : '';
 
     if (!model) throw new Error("Το GEMINI_API_KEY δεν βρέθηκε");
 
@@ -105,7 +122,7 @@ export async function POST(req: Request) {
       5. Αν η απάντηση ΔΕΝ υπάρχει στο κείμενο, πες: "Δεν υπάρχει αυτή η πληροφορία στο διδακτικό υλικό."
       
       ΠΛΑΙΣΙΟ ΔΕΔΟΜΕΝΩΝ (CONTEXT):
-      ${context ? context.slice(0, 100000) : "Κανένα πλαίσιο."}
+      ${safeContext || "Κανένα πλαίσιο."}
       
       ΕΡΩΤΗΣΗ ΦΟΙΤΗΤΗ:
       ${message}

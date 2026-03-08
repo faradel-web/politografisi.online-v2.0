@@ -3,6 +3,7 @@
 import { useState, useEffect, memo } from "react";
 import { BookOpen, PenTool, CheckCircle2, Save, AlignLeft, ListChecks } from "lucide-react";
 import Quiz, { Question } from "@/components/shared/Quiz";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 // --- ОПТИМІЗОВАНИЙ РЕДАКТОР ЕСЕ ---
 // Тримає текст локально, оновлює глобальний стейт тільки при втраті фокусу (onBlur)
@@ -78,7 +79,7 @@ export default function ExamReading({ data, answers, setAnswers }: ExamReadingPr
                         {lesson.data.textContent && /<[a-z][\s\S]*>/i.test(lesson.data.textContent) ? (
                             <div
                                 className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words dark:text-slate-300"
-                                dangerouslySetInnerHTML={{ __html: lesson.data.textContent }}
+                                dangerouslySetInnerHTML={{ __html: sanitizeHtml(lesson.data.textContent) }}
                             />
                         ) : (
                             <div className="prose prose-lg prose-slate dark:prose-invert max-w-none font-serif leading-relaxed break-words dark:text-slate-300 whitespace-pre-wrap">

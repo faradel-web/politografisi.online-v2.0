@@ -1,87 +1,83 @@
 // Politografisi Online — Service Worker
-// Required for PWA (installability on iOS and Android)
+// Powered by Workbox for a "Gold Standard" PWA experience
 
-const CACHE_NAME = 'politografisi-v1';
-const OFFLINE_URL = '/offline';
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js');
 
-// Assets to precache for offline shell
-const PRECACHE_ASSETS = [
-    '/',
-    '/manifest.json',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png',
-    '/icons/apple-icon-180x180.png',
-];
+if (workbox) {
+    console.log(`Yay! Workbox is loaded 🎉`);
 
-// Install — precache critical assets
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(PRECACHE_ASSETS);
+    // Force active the new service worker
+    workbox.core.skipWaiting();
+    workbox.core.clientsClaim();
+
+    // 1. Caching Images (Stale While Revalidate)
+    workbox.routing.registerRoute(
+        ({ request }) => request.destination === 'image',
+        new workbox.strategies.StaleWhileRevalidate({
+            cacheName: 'images-cache',
+            plugins: [
+                new workbox.expiration.ExpirationPlugin({
+                    maxEntries: 50,
+                    maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                }),
+            ],
         })
     );
-    self.skipWaiting();
-});
 
-// Activate — clean old caches
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames
-                    .filter((name) => name !== CACHE_NAME)
-                    .map((name) => caches.delete(name))
-            );
+    // 2. Caching CSS, JS, and Web Workers (Stale While Revalidate)
+    workbox.routing.registerRoute(
+        ({ request }) =>
+            request.destination === 'script' ||
+            request.destination === 'style' ||
+            request.destination === 'worker',
+        new workbox.strategies.StaleWhileRevalidate({
+            cacheName: 'static-resources',
         })
     );
-    self.clients.claim();
-});
 
-// Fetch — network-first strategy with cache fallback
-self.addEventListener('fetch', (event) => {
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
-
-    // Skip Chrome extensions, etc.
-    if (!event.request.url.startsWith('http')) return;
-
-    // Skip API calls and Firebase requests
-    if (
-        event.request.url.includes('/api/') ||
-        event.request.url.includes('firestore.googleapis.com') ||
-        event.request.url.includes('identitytoolkit.googleapis.com') ||
-        event.request.url.includes('securetoken.googleapis.com')
-    ) {
-        return;
-    }
-
-    event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                // Cache successful responses
-                if (response.status === 200) {
-                    const responseClone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
-                }
-                return response;
-            })
-            .catch(() => {
-                // Fallback to cache
-                return caches.match(event.request).then((cachedResponse) => {
-                    if (cachedResponse) {
-                        return cachedResponse;
-                    }
-                    // For navigation requests, show offline page
-                    if (event.request.mode === 'navigate') {
-                        return caches.match(OFFLINE_URL);
-                    }
-                    return new Response('Offline', {
-                        status: 503,
-                        statusText: 'Service Unavailable',
-                    });
-                });
-            })
+    // 3. Caching Google Fonts
+    workbox.routing.registerRoute(
+        ({ url }) => url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com',
+        new workbox.strategies.StaleWhileRevalidate({
+            cacheName: 'google-fonts',
+            plugins: [
+                new workbox.expiration.ExpirationPlugin({
+                    maxEntries: 20,
+                }),
+            ],
+        })
     );
-});
+
+    // 4. HTML/Navigation (Network First)
+    workbox.routing.registerRoute(
+        ({ request }) => request.mode === 'navigate',
+        new workbox.strategies.NetworkFirst({
+            cacheName: 'pages-cache',
+            plugins: [
+                new workbox.cacheableResponse.CacheableResponsePlugin({
+                    statuses: [200],
+                }),
+            ],
+        })
+    );
+
+    // Fallback to offline page
+    const OFFLINE_URL = '/offline';
+    workbox.routing.setCatchHandler(async ({ event }) => {
+        if (event.request.mode === 'navigate') {
+            return caches.match(OFFLINE_URL) || Response.error();
+        }
+        return Response.error();
+    });
+
+    // Precache offline fallback route explicitly
+    workbox.precaching.precacheAndRoute([
+        { url: '/offline', revision: '1' },
+        { url: '/manifest.json', revision: '1' },
+        { url: '/icons/icon-192.png', revision: '1' },
+        { url: '/icons/icon-512.png', revision: '1' }
+    ]);
+
+} else {
+    console.log(`Boo! Workbox didn't load 😬`);
+}

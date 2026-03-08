@@ -9,16 +9,16 @@ export default function Footer() {
 
         {/* Social Icons */}
         <div className="flex gap-8 mb-8">
-          <a href="#" aria-label="Facebook" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
+          <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
             <Facebook className="h-6 w-6" />
           </a>
-          <a href="#" aria-label="Instagram" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
+          <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
             <Instagram className="h-6 w-6" />
           </a>
-          <a href="#" aria-label="YouTube" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
+          <a href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
             <Youtube className="h-6 w-6" />
           </a>
-          <a href="#" aria-label="Twitter" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
+          <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-blue-300 hover:text-white transition-colors transform hover:scale-110 duration-200">
             <Twitter className="h-6 w-6" />
           </a>
         </div>
