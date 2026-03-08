@@ -235,7 +235,40 @@ export async function updatePracticeStats(
     }
 }
 
+/**
+ * Отримати per-question результати для конкретної категорії.
+ * Повертає Map<questionId, isCorrect> — дозволяє на клієнті визначити:
+ *   - Які питання вже відповідені (ключ існує)
+ *   - Правильно чи ні (значення true/false)
+ *
+ * @param userId   - UID поточного користувача
+ * @param category - Категорія (history, geography, тощо)
+ * @returns Record<questionId, boolean>
+ */
+export async function getPracticeResultsForCategory(
+    userId: string,
+    category: string
+): Promise<Record<string, boolean>> {
+    try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) return {};
 
+        const practiceResults: Record<string, { category: string; isCorrect: boolean }> =
+            userSnap.data()?.progress?.practiceResults || {};
+
+        const filtered: Record<string, boolean> = {};
+        for (const [qId, result] of Object.entries(practiceResults)) {
+            if (result?.category === category) {
+                filtered[qId] = result.isCorrect;
+            }
+        }
+        return filtered;
+    } catch (error) {
+        console.error("Error fetching practice results for category:", error);
+        return {};
+    }
+}
 
 // =====================================================================
 // 3. MISTAKES (Робота над помилками)

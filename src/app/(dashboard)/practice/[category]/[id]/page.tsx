@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { collection, query, getDocs, orderBy } from "firebase/firestore";
@@ -55,6 +56,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
     const [isGradingEssay, setIsGradingEssay] = useState(false);
     const [essayFeedback, setEssayFeedback] = useState<any>(null);
 
+    const searchParams = useSearchParams();
+    const customOrder = searchParams.get('order');
+
     useEffect(() => {
         async function fetchData() {
             if (authLoading) return;
@@ -66,8 +70,22 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                 const q = query(colRef, orderBy("order", "asc"));
                 const snapshot = await getDocs(q);
 
-                const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                let docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 docs.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+
+                // Apply custom order from smart-random mode
+                if (customOrder) {
+                    const orderIds = customOrder.split(',');
+                    const docsMap = new Map(docs.map(d => [d.id, d]));
+                    const reordered = orderIds
+                        .filter(oid => docsMap.has(oid))
+                        .map(oid => docsMap.get(oid)!);
+                    // Add any remaining docs not in the order list
+                    const usedIds = new Set(orderIds);
+                    const remaining = docs.filter(d => !usedIds.has(d.id));
+                    docs = [...reordered, ...remaining];
+                }
+
                 setAllLessons(docs);
 
                 let targetIndex = docs.findIndex((d: any) => d.id === id);
@@ -86,14 +104,16 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
             finally { setLoading(false); }
         }
         fetchData();
-    }, [category, id, authLoading, isRestricted, LIMIT]);
+    }, [category, id, authLoading, isRestricted, LIMIT, customOrder]);
 
     const goToLesson = (index: number) => {
         if (index < 0 || index >= allLessons.length) return;
         if (isRestricted && index >= LIMIT) return alert("Διαθέσιμο μόνο για Premium χρήστες");
 
         const nextLesson = allLessons[index];
-        window.history.pushState(null, '', `/practice/${category}/${nextLesson.id}`);
+        // Preserve custom order in URL if present
+        const orderParam = customOrder ? `?order=${encodeURIComponent(customOrder)}` : '';
+        window.history.pushState(null, '', `/practice/${category}/${nextLesson.id}${orderParam}`);
         setCurrentIndex(index);
         setLesson(nextLesson);
 
@@ -205,6 +225,51 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
         return norm;
     };
 
+    // === Utility: перевірка правильності відповіді для list-layout ===
+    const checkListAnswer = (q: Question, ans: any): boolean => {
+        if (ans === undefined || ans === null) return false;
+        const qType = (q.type || 'SINGLE').toUpperCase();
+
+        if (qType === 'SINGLE') return ans === q.correctAnswerIndex;
+        if (qType === 'MULTI') {
+            if (!Array.isArray(ans)) return false;
+            const correctIds = q.correctIndices || [];
+            return ans.length === correctIds.length && ans.every((v: number) => correctIds.includes(v));
+        }
+        if (qType.includes('TRUE')) {
+            if (!q.items || !q.items.length) return false;
+            const userMap = (typeof ans === 'object') ? ans : { '0': ans };
+            return q.items.every((item, idx) => userMap[String(idx)] === item.isTrue);
+        }
+        if (qType.includes('FILL') || qType === 'INLINE-CHOICE') {
+            if (!q.correctAnswers || typeof ans !== 'object') return false;
+            return Object.keys(q.correctAnswers).every(key => {
+                const correctData = q.correctAnswers[key];
+                const userVal = String(ans[key] || '').trim().toLowerCase();
+                if (Array.isArray(correctData)) {
+                    return correctData.some((v: string) => String(v).trim().toLowerCase() === userVal);
+                }
+                return String(correctData || '').trim().toLowerCase() === userVal;
+            });
+        }
+        if (qType.includes('MATCH')) {
+            if (!q.pairs || typeof ans !== 'object') return false;
+            return q.pairs.every((p, idx) => ans[idx] === p.right);
+        }
+        // OPEN, MAP, тощо — вважаємо спробованим
+        return true;
+    };
+
+    // === Utility: зберегти результати list-layout Quiz ===
+    const saveListQuizResults = (questions: Question[], answers: Record<number, any>, lessonId: string, partSuffix: string) => {
+        if (!user?.uid || !answers) return;
+        const results = questions.map((q, i) => ({
+            questionId: `${lessonId}_${partSuffix}${i}`,
+            isCorrect: checkListAnswer(q, answers[i]),
+        }));
+        updatePracticeStats(user.uid, category, results).catch(console.error);
+    };
+
     if (loading || authLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-blue-600 h-10 w-10" /></div>;
     if (!lesson) return <div className="p-10 text-center">Δεν βρέθηκε μάθημα</div>;
 
@@ -298,18 +363,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                     Μέρος Α
                                 </div>
                                 <Quiz key={`list-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" onComplete={(answers) => {
-                                    if (user?.uid && answers) {
-                                        // Зберігаємо per-question результати з стабільними ID
-                                        const results = questionsA.map((q, i) => {
-                                            const ans = answers[i];
-                                            const isCorr = ans === undefined ? false
-                                                : q.type === 'SINGLE' ? ans === q.correctAnswerIndex
-                                                    : q.type === 'MULTI' ? Array.isArray(ans) && (q.correctIndices || []).length === ans.length && ans.every((v: number) => (q.correctIndices || []).includes(v))
-                                                        : true;
-                                            return { questionId: `${lesson.id}_A${i}`, isCorrect: isCorr };
-                                        });
-                                        updatePracticeStats(user.uid, category, results).catch(console.error);
-                                    }
+                                    saveListQuizResults(questionsA, answers, lesson.id, 'A');
                                 }} />
                             </div>
                         )}
@@ -319,7 +373,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β
                                 </div>
-                                <Quiz key={`list-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" />
+                                <Quiz key={`list-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" onComplete={(answers) => {
+                                    saveListQuizResults(questionsB, answers, lesson.id, 'B');
+                                }} />
                             </div>
                         )}
                     </div>
@@ -375,7 +431,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Α (Κατανόηση Κειμένου)
                                 </div>
-                                <Quiz key={`read-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" />
+                                <Quiz key={`read-A-${lesson.id}`} questions={questionsA} mode="practice" layout="list" onComplete={(answers) => {
+                                    saveListQuizResults(questionsA, answers, lesson.id, 'A');
+                                }} />
                             </div>
                         )}
 
@@ -384,7 +442,9 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                                 <div className="px-4 py-2 bg-blue-100 text-blue-800 rounded-xl font-black uppercase tracking-widest text-sm inline-block shadow-sm">
                                     Μέρος Β (Χρήση Γλώσσας)
                                 </div>
-                                <Quiz key={`read-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" />
+                                <Quiz key={`read-B-${lesson.id}`} questions={questionsB} mode="practice" layout="list" onComplete={(answers) => {
+                                    saveListQuizResults(questionsB, answers, lesson.id, 'B');
+                                }} />
                             </div>
                         )}
 

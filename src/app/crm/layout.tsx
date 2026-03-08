@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldAlert, LayoutDashboard, Wallet, Users, Archive, Settings } from "lucide-react";
+import { ShieldAlert, LayoutDashboard, Wallet, Users, Archive, Settings, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,35 +17,30 @@ export default function CrmLayout({
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  // 🔐 Сторінка /crm/login не потребує авторизації — рендеримо одразу
-  const isLoginPage = pathname === "/crm/login";
-
+  // 🔐 CRM доступний ТІЛЬКИ для ADMIN (не для EDITOR)
+  // Якщо немає прав — повертаємо в адмінку (не на login)
   useEffect(() => {
-    if (isLoginPage) return; // login сторінка завжди доступна
-
     if (!loading) {
-      if (!user) {
-        // 🔥 ВИПРАВЛЕНО: перенаправляємо на /crm/login, а не на головну
-        router.push("/crm/login");
-        return;
-      }
-      const role = user.role;
-      if (role !== USER_ROLES.ADMIN && role !== USER_ROLES.EDITOR) {
-        // Якщо роль не адмін/редактор — відправляємо на дешбоард
-        router.push("/dashboard");
+      if (!user || user.role !== USER_ROLES.ADMIN) {
+        router.replace("/admin");
       }
     }
-  }, [user, loading, router, isLoginPage]);
+  }, [user, loading, router]);
 
-  // Для сторінки login — відображаємо дітей без перевірки
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
-
-  if (loading || !user || (user.role !== USER_ROLES.ADMIN && user.role !== USER_ROLES.EDITOR)) {
+  // Показуємо лоадер поки перевіряємо авторизацію
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  // Захист від рендерингу до перенаправлення
+  if (!user || user.role !== USER_ROLES.ADMIN) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
   }
