@@ -5,6 +5,8 @@ import {
   User as FirebaseUser,
   onAuthStateChanged,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   signOut,
   signInWithEmailAndPassword
@@ -86,6 +88,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   }, [user]);
 
+  // Detect if running inside native mobile WebView shell
+  const isNativeApp = typeof window !== 'undefined' && !!(window as any).IS_NATIVE_APP;
+
+  useEffect(() => {
+    // Handle redirect result from signInWithRedirect (mobile WebView flow)
+    getRedirectResult(auth).then(async (result) => {
+      if (!result?.user) return;
+      const firebaseUser = result.user;
+      const userDocRef = doc(db, "users", firebaseUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (!userDocSnap.exists()) {
+        const fullName = firebaseUser.displayName || "";
+        const nameParts = fullName.split(" ");
+        await setDoc(userDocRef, {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          firstName: nameParts[0] || "",
+          lastName: nameParts.slice(1).join(" ") || "",
+          displayName: fullName,
+          phoneNumber: null,
+          role: "guest",
+          createdAt: new Date().toISOString(),
+          progress: {}
+        });
+      }
+      router.push("/dashboard");
+    }).catch(() => { });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     // 1. Слухаємо зміни стану авторизації (Είσοδος/Έξοδος)
     const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
@@ -128,10 +160,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribeAuth();
   }, []);
 
-  // --- ЛОГІКА GOOGLE (Popup — COOP warnings не блокують авторизацію) ---
+  // --- ЛОГІКА GOOGLE ---
+  // Web browser: signInWithPopup (instant, no page reload)
+  // Native WebView: signInWithRedirect (full-page redirect — works in WebView, popup does not)
   const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
+
+      if (isNativeApp) {
+        // Mobile WebView: use redirect flow (result handled by getRedirectResult above)
+        await signInWithRedirect(auth, provider);
+        return; // Page will redirect; result handled on return
+      }
+
+      // Web browser: use popup flow
       const result = await signInWithPopup(auth, provider);
       const firebaseUser = result.user;
 
@@ -141,14 +183,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!userDocSnap.exists()) {
         const fullName = firebaseUser.displayName || "";
         const nameParts = fullName.split(" ");
-        const firstName = nameParts[0] || "";
-        const lastName = nameParts.slice(1).join(" ") || "";
-
         await setDoc(userDocRef, {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
-          firstName: firstName,
-          lastName: lastName,
+          firstName: nameParts[0] || "",
+          lastName: nameParts.slice(1).join(" ") || "",
           displayName: fullName,
           phoneNumber: null,
           role: "guest",
@@ -156,7 +195,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           progress: {}
         });
       }
-
       router.push("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
