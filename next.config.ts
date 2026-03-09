@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
               "media-src 'self' https://firebasestorage.googleapis.com blob:",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://accounts.google.com https://*.firebaseapp.com",
+              "form-action 'self' https://accounts.google.com https://*.firebaseapp.com https://www.facebook.com",
             ].join('; '),
           },
           {
