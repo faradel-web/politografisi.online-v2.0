@@ -58,8 +58,8 @@ export default function Header() {
                                 className="object-contain mix-blend-multiply border border-slate-100 dark:border-slate-800 rounded-full dark:mix-blend-normal"
                             />
                         </div>
-                        {/* Текст: прихований до sm, видимий від sm */}
-                        <span className="hidden sm:block font-montserrat font-black text-base md:text-xl text-blue-950 dark:text-white tracking-tight leading-none">
+                        {/* Текст: завжди видимий, менший шрифт на мобільних */}
+                        <span className="font-montserrat font-black text-sm sm:text-base md:text-xl text-blue-950 dark:text-white tracking-tight leading-none">
                             POLITOGRAFISI<span className="text-blue-600">.ONLINE</span>
                         </span>
                     </Link>
