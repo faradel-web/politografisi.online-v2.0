@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geologica, Vollkorn } from "next/font/google";
 import "./globals.css";
+import "./native-app.css";
 
 // --- Providers & Shared ---
 import { AuthProvider } from "@/contexts/auth-context";

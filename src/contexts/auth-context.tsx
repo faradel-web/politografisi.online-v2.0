@@ -114,7 +114,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
       }
       router.push("/dashboard");
-    }).catch(() => { });
+    }).catch((error) => {
+      // Log redirect errors for debugging (especially in WebView)
+      if (error?.code !== 'auth/popup-closed-by-user') {
+        console.error("getRedirectResult error:", error?.code, error?.message);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

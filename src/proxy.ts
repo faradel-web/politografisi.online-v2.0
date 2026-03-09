@@ -5,9 +5,9 @@ import type { NextRequest } from "next/server";
  * Next.js Proxy — серверний захист маршрутів і заголовки безпеки.
  * 
  * 🔐 SECURITY:
- * - Блокує прямий доступ до /crm/* у production
- * - Перевіряє CRM cookie ЗА ЗНАЧЕННЯМ (не тільки наявність) — VUL-06 FIX
- * - Встановлює Security Headers на ВСІ відповіді — VUL-10 FIX
+ * - CRM доступ: роль перевіряється на клієнті в CrmLayout (тільки ADMIN)
+ * - CRM subdomain: перенаправляє на /crm/* маршрути
+ * - Встановлює Security Headers на ВСІ відповіді
  */
 export function proxy(request: NextRequest) {
     const { pathname, search } = request.nextUrl;
@@ -15,35 +15,13 @@ export function proxy(request: NextRequest) {
 
     let response = NextResponse.next();
 
-    // --- 1. ЗАХИСТ ДОСТУПУ ДО /crm/* ---
+    // --- 1. CRM SUBDOMAIN REWRITE ---
+    // Якщо запит через crm.politografisi.online — rewrite на /crm/*
     const isCrmSubdomain = hostname.startsWith('crm.');
-    const isDirectCrmAccess = pathname.startsWith('/crm') && !isCrmSubdomain;
-    const isDevelopment = hostname.includes('localhost') || hostname.includes('127.0.0.1');
 
-    if (isDirectCrmAccess) {
-        // У development (localhost) дозволяємо прямий доступ до /crm/*
-        // Перевірка ролі відбувається на клієнті в CrmLayout
-        if (!isDevelopment) {
-            // У production блокуємо прямий доступ — CRM тільки через субдомен
-            response = NextResponse.redirect(new URL('/', request.url));
-            addSecurityHeaders(response);
-            return response;
-        }
-        // У development — пропускаємо далі (NextResponse.next())
-    } else if (isCrmSubdomain) {
-        // 🔐 VUL-06 FIX: Перевіряємо не тільки наявність, а й ЗНАЧЕННЯ cookie
-        const adminCookie = request.cookies.get('politografisi_admin_access');
-        const expectedSecret = process.env.CRM_ACCESS_SECRET || '';
-
-        const hasValidToken = adminCookie && expectedSecret && adminCookie.value === expectedSecret;
-
-        if (!hasValidToken) {
-            if (pathname === '/crm/login' || pathname === '/login') {
-                response = NextResponse.rewrite(new URL('/crm/login' + search, request.url));
-            } else {
-                response = NextResponse.redirect(new URL('/crm/login', request.url));
-            }
-        } else {
+    if (isCrmSubdomain) {
+        // Rewrite subdomain requests to /crm/* routes
+        if (!pathname.startsWith('/crm')) {
             response = NextResponse.rewrite(new URL(`/crm${pathname}${search}`, request.url));
         }
     }
@@ -67,7 +45,7 @@ function addSecurityHeaders(response: NextResponse) {
     // Permissions Policy — обмеження API браузера
     response.headers.set("Permissions-Policy", "camera=(self), microphone=(self), geolocation=()");
 
-    // 🔐 VUL-10 FIX: XSS Protection (legacy, але не зашкодить)
+    // XSS Protection (legacy, але не зашкодить)
     response.headers.set("X-XSS-Protection", "1; mode=block");
 
     // Prevent MIME sniffing
@@ -79,3 +57,4 @@ export const config = {
         "/((?!api|_next/static|_next/image|favicon.ico|manifest.json|robots.txt|llms.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|mp3|wav|ogg)$).*)",
     ],
 };
+

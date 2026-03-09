@@ -1,0 +1,49 @@
+/* ============================================================
+   Native App Overrides
+   Applied when the web app runs inside the native WebView shell.
+   The class "is-native-app" is injected on <html> by the mobile
+   wrapper BEFORE page content loads.
+   ============================================================ */
+
+/* Hide cookie consent banner — native apps don't need cookie popups */
+.is-native-app [data-cookie-consent],
+.is-native-app #cookie-consent {
+    display: none !important;
+}
+
+/* Hide any PWA install prompts or banners */
+.is-native-app [data-pwa-prompt],
+.is-native-app .pwa-install-banner {
+    display: none !important;
+}
+
+/* Hide service worker update toast if any */
+.is-native-app [data-sw-update] {
+    display: none !important;
+}
+
+/* Prevent overscroll bounce on iOS — more native feel */
+.is-native-app body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Remove safe-area padding managed by the native shell */
+.is-native-app {
+    --safe-area-inset-top: 0px;
+    --safe-area-inset-bottom: 0px;
+}
+
+/* Disable text selection on long-press for a more native feel */
+.is-native-app * {
+    -webkit-touch-callout: none;
+}
+
+/* Allow text selection specifically in inputs and textareas */
+.is-native-app input,
+.is-native-app textarea,
+.is-native-app [contenteditable="true"] {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    user-select: text;
+}

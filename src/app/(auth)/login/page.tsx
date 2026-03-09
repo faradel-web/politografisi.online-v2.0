@@ -158,7 +158,10 @@ export default function LoginPage() {
                                 </div>
 
                                 <button
-                                    onClick={loginWithGoogle}
+                                    onClick={async () => {
+                                        try { await loginWithGoogle(); }
+                                        catch { setError("Σφάλμα σύνδεσης με Google. Δοκιμάστε ξανά."); }
+                                    }}
                                     disabled={submitting}
                                     className="w-full flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 text-slate-700 dark:text-slate-200 font-bold py-3 px-6 rounded-xl transition-all duration-200 mb-6"
                                 >
