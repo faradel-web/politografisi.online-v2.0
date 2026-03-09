@@ -54,7 +54,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://firebasestorage.googleapis.com https://*.tile.openstreetmap.org https://*.googleusercontent.com https://*.google.com https://www.facebook.com",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.google-analytics.com https://*.analytics.google.com wss://*.firebaseio.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://accounts.google.com https://www.facebook.com https://connect.facebook.net",
-              "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com https://apis.google.com",
+              "frame-src 'self' https://accounts.google.com https://*.firebaseapp.com https://apis.google.com https://www.facebook.com",
               "media-src 'self' https://firebasestorage.googleapis.com blob:",
               "object-src 'none'",
               "base-uri 'self'",
