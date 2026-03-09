@@ -11,11 +11,19 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  /* Chart tooltip theme */
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #1e293b;
   /* Safe area для пристроїв з notch (iPhone X+) */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
+}
+
+.dark {
+  --tooltip-bg: #1e293b;
+  --tooltip-text: #f1f5f9;
 }
 
 /* =============================================================
