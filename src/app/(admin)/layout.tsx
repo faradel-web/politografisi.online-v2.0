@@ -86,7 +86,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* ADMIN HEADER — двохрядкова структура на мобільних */}
-      <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
+      <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800 pt-safe">
 
         {/* Рядок 1: Лого + утиліти (ніколи не переповнюється) */}
         <div className="flex items-center justify-between px-4 py-2.5">

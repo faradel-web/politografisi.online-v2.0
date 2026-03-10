@@ -53,8 +53,7 @@
     hyphens: none;
     -webkit-hyphens: none;
     -ms-hyphens: none;
-    /* Safe area padding для PWA/WebView */
-    padding-top: var(--safe-top);
+    /* Safe area padding для PWA/WebView — top handled per-header */
     padding-left: var(--safe-left);
     padding-right: var(--safe-right);
     min-height: 100vh;

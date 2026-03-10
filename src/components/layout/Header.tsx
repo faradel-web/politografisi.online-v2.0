@@ -43,7 +43,7 @@ export default function Header() {
     return (
         <>
             {/* Зменшена висота хедера на мобільних (h-14), стандартна на md+ (h-16) */}
-            <header className="sticky top-0 z-50 flex h-14 md:h-16 items-center justify-between bg-white dark:bg-slate-900 px-3 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200 shadow-sm">
+            <header className="sticky top-0 z-50 flex h-14 md:h-16 items-center justify-between bg-white dark:bg-slate-900 px-3 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800 transition-colors duration-200 shadow-sm pt-safe">
 
                 {/* Логотип */}
                 <div className="flex items-center shrink-0">

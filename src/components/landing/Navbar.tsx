@@ -55,7 +55,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b ${scrolled
+      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b pt-safe ${scrolled
         ? "bg-white/95 backdrop-blur-md border-slate-200 shadow-sm py-3 dark:bg-slate-900/95 dark:border-slate-800"
         : "bg-white border-transparent py-5 dark:bg-slate-900 dark:border-transparent"
         }`}

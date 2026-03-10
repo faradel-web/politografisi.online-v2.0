@@ -55,7 +55,7 @@ export default function CrmLayout({
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
       {/* Верхня панель CRM */}
-      <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800">
+      <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800 pt-safe">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 p-3 md:p-4">
           <Link href="/crm" className="flex items-center gap-2 font-black tracking-wider text-lg hover:opacity-80 transition-opacity">
             <ShieldAlert className="text-red-500" size={24} />
