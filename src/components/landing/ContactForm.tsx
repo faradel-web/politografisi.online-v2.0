@@ -106,6 +106,23 @@ function ContactFormContent() {
 
       await addDoc(collection(db, "leads"), leadData);
 
+      // 📧 Fire-and-forget admin email notification
+      fetch('/api/notify-admin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-secret': process.env.NEXT_PUBLIC_NOTIFICATION_SECRET || '',
+        },
+        body: JSON.stringify({
+          fullName: leadData.fullName,
+          email: leadData.email,
+          phone: leadData.phone,
+          topic: leadData.topic,
+          message: leadData.message,
+          source: leadData.source,
+        }),
+      }).catch(() => { }); // Silent — don't block UX
+
       setStatus('success');
       setFormData({
         firstName: "",
