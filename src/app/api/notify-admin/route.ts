@@ -15,6 +15,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn('RESEND_API_KEY not set, skipping notification');
+      return NextResponse.json({ skipped: true });
+    }
+
+    const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || 'support@politografisi.online';
+
     const body = await request.json();
     const { fullName, email, phone, topic, message, source } = body;
 
@@ -70,23 +78,28 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
-    // Dynamic import — Resend only loaded at runtime, not build time
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || 'support@politografisi.online';
-
-    const { data, error } = await resend.emails.send({
-      from: 'Politografisi.online <onboarding@resend.dev>',
-      to: [ADMIN_EMAIL],
-      subject: `📬 Νέα Αίτηση: ${fullName} — ${topicLabel}`,
-      html: htmlContent,
+    // Use Resend REST API directly via fetch — no npm package needed at build time
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Politografisi.online <onboarding@resend.dev>',
+        to: [ADMIN_EMAIL],
+        subject: `📬 Νέα Αίτηση: ${fullName} — ${topicLabel}`,
+        html: htmlContent,
+      }),
     });
 
-    if (error) {
-      console.error('Resend error:', error);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      console.error('Resend API error:', errData);
       return NextResponse.json({ error: 'Failed to send' }, { status: 500 });
     }
 
+    const data = await res.json();
     return NextResponse.json({ success: true, id: data?.id });
   } catch (error) {
     console.error('Notification error:', error);
