@@ -56,44 +56,51 @@ export default function CrmLayout({
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
       {/* Верхня панель CRM */}
       <header className="bg-slate-900 dark:bg-slate-950 text-white shadow-md sticky top-0 z-50 border-b border-slate-700 dark:border-slate-800 pt-safe">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 p-3 md:p-4">
-          <Link href="/crm" className="flex items-center gap-2 font-black tracking-wider text-lg hover:opacity-80 transition-opacity">
+
+        {/* Рядок 1: Лого + утиліти (Admin link + ThemeToggle) */}
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <Link href="/crm" className="flex items-center gap-2 font-black tracking-wider text-lg hover:opacity-80 transition-opacity shrink-0">
             <ShieldAlert className="text-red-500" size={24} />
             <span className="text-slate-200">POLITOGRAFISI</span>
             <span className="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded uppercase">CRM</span>
           </Link>
 
-          <nav className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 no-scrollbar text-xs md:text-sm font-bold">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-1 whitespace-nowrap transition-colors px-2.5 py-1.5 rounded-lg shrink-0 ${isActive
-                    ? "text-white bg-slate-800 border border-red-500/50"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                    }`}
-                >
-                  <Icon size={16} />
-                  {link.label}
-                </Link>
-              );
-            })}
+          <div className="flex items-center gap-0.5 shrink-0">
             <Link
               href="/admin"
-              className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors whitespace-nowrap border-l border-slate-700 pl-3 ml-1 shrink-0"
+              className="flex items-center gap-1 px-2 py-1.5 text-red-400 hover:text-red-300 hover:bg-slate-800 rounded-lg transition-all text-xs font-bold whitespace-nowrap"
             >
-              <Settings size={16} /> Admin
+              <Settings className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Admin</span>
             </Link>
-          </nav>
 
-          {/* Theme Toggle */}
-          <div className="shrink-0">
-            <ThemeToggle />
+            <div className="ml-1 shrink-0">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
+
+        {/* Рядок 2: Навігація — горизонтальний скрол */}
+        <nav className="flex items-center gap-1 overflow-x-auto px-3 pb-2 no-scrollbar border-t border-slate-800 text-xs md:text-sm font-bold">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-1 whitespace-nowrap transition-colors px-2.5 py-1.5 rounded-lg shrink-0 ${isActive
+                  ? "text-white bg-slate-800 border border-red-500/50"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                  }`}
+              >
+                <Icon size={16} />
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
+
       </header>
 
       {/* Основний контент */}
