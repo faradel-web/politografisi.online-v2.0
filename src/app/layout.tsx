@@ -159,6 +159,9 @@ export default function RootLayout({
   return (
     <html lang="el" suppressHydrationWarning>
       <head>
+        {/* Google Search Console verification */}
+        <meta name="google-site-verification" content="BIwe8j9C1oLcZS84YzGHW2Tktr9o7A047E_z5j_smNU" />
+
         {/* Favicon for search engines and browsers */}
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
