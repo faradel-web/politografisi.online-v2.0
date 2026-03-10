@@ -505,7 +505,7 @@ export default function StudyLessonPage({ params }: { params: Promise<{ category
                             </div>
                         )}
 
-                        <div className="bg-slate-50 dark:bg-slate-950/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 mb-10 text-slate-800 dark:text-slate-200 font-medium leading-relaxed break-words">
+                        <div className="bg-slate-50 dark:bg-slate-950/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 mb-10 text-slate-800 dark:text-slate-200 font-medium leading-relaxed break-words whitespace-pre-line">
                             {prompt}
                         </div>
 

@@ -43,7 +43,7 @@ export default function ExamSpeaking({ data, answers, setAnswers }: ExamSpeaking
                             {item.l?.title || "Προφορική Εξέταση"}
                         </h3>
 
-                        <div className="prose text-slate-600 dark:text-slate-400 mb-8 break-words flex-1 leading-relaxed">
+                        <div className="prose text-slate-600 dark:text-slate-400 mb-8 break-words flex-1 leading-relaxed whitespace-pre-line">
                             {item.l?.prompt || "Παρακαλώ απαντήστε στην ερώτηση..."}
                         </div>
 
