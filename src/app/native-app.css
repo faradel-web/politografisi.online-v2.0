@@ -34,6 +34,11 @@
     --safe-area-inset-bottom: 0px;
 }
 
+/* Override pt-safe in native app — env() can't be overridden by CSS vars */
+.is-native-app .pt-safe {
+    padding-top: 0px !important;
+}
+
 /* Disable text selection on long-press for a more native feel */
 .is-native-app * {
     -webkit-touch-callout: none;
