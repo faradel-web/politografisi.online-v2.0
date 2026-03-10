@@ -90,7 +90,7 @@ export default function CrmLayout({
           </nav>
 
           {/* Theme Toggle */}
-          <div className="hidden md:block">
+          <div className="shrink-0">
             <ThemeToggle />
           </div>
         </div>
