@@ -1,10 +1,6 @@
-import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Prevent Next.js from pre-rendering this route at build time
 export const dynamic = 'force-dynamic';
-
-// Lazy init — avoid build-time crash when env var is not set
 
 const TOPIC_LABELS: Record<string, string> = {
   pack_3_months: '📦 Πακέτο 3 Μηνών',
@@ -14,7 +10,6 @@ const TOPIC_LABELS: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
-    // Simple auth check
     const authHeader = request.headers.get('x-api-secret');
     if (authHeader !== process.env.NOTIFICATION_SECRET) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -32,7 +27,6 @@ export async function POST(request: NextRequest) {
           <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 800;">📬 Νέα Αίτηση</h1>
           <p style="color: #93c5fd; margin: 8px 0 0; font-size: 14px;">Politografisi.online</p>
         </div>
-        
         <div style="background: white; padding: 32px; border-radius: 0 0 16px 16px; border: 1px solid #e2e8f0; border-top: none;">
           <table style="width: 100%; border-collapse: collapse;">
             <tr>
@@ -58,13 +52,11 @@ export async function POST(request: NextRequest) {
             </tr>
             ` : ''}
           </table>
-
           <div style="margin-top: 24px; padding: 16px; background: #f0f9ff; border-radius: 12px; border: 1px solid #bae6fd;">
             <p style="margin: 0; color: #64748b; font-size: 12px;">
               📍 Πηγή: ${source || 'Landing Page'} &nbsp;|&nbsp; 🕐 ${timestamp}
             </p>
           </div>
-
           <div style="margin-top: 24px; text-align: center;">
             <a href="https://politografisi.online/crm/leads" 
                style="display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 14px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px;">
@@ -72,13 +64,14 @@ export async function POST(request: NextRequest) {
             </a>
           </div>
         </div>
-
         <p style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 16px;">
           Αυτόματη ειδοποίηση από Politografisi.online
         </p>
       </div>
     `;
 
+    // Dynamic import — Resend only loaded at runtime, not build time
+    const { Resend } = await import('resend');
     const resend = new Resend(process.env.RESEND_API_KEY);
     const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || 'support@politografisi.online';
 
