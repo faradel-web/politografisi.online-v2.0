@@ -1,31 +1,29 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || 'support@politografisi.online';
+// Lazy init — avoid build-time crash when env var is not set
 
 const TOPIC_LABELS: Record<string, string> = {
-    pack_3_months: '📦 Πακέτο 3 Μηνών',
-    pack_1_month: '📦 Πακέτο 1 Μήνα',
-    general: '✉️ Γενική Ερώτηση',
+  pack_3_months: '📦 Πακέτο 3 Μηνών',
+  pack_1_month: '📦 Πακέτο 1 Μήνα',
+  general: '✉️ Γενική Ερώτηση',
 };
 
 export async function POST(request: NextRequest) {
-    try {
-        // Simple auth check
-        const authHeader = request.headers.get('x-api-secret');
-        if (authHeader !== process.env.NOTIFICATION_SECRET) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+  try {
+    // Simple auth check
+    const authHeader = request.headers.get('x-api-secret');
+    if (authHeader !== process.env.NOTIFICATION_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-        const body = await request.json();
-        const { fullName, email, phone, topic, message, source } = body;
+    const body = await request.json();
+    const { fullName, email, phone, topic, message, source } = body;
 
-        const topicLabel = TOPIC_LABELS[topic] || topic;
-        const timestamp = new Date().toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
+    const topicLabel = TOPIC_LABELS[topic] || topic;
+    const timestamp = new Date().toLocaleString('el-GR', { timeZone: 'Europe/Athens' });
 
-        const htmlContent = `
+    const htmlContent = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); padding: 32px; border-radius: 16px 16px 0 0; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 800;">📬 Νέα Αίτηση</h1>
@@ -78,21 +76,24 @@ export async function POST(request: NextRequest) {
       </div>
     `;
 
-        const { data, error } = await resend.emails.send({
-            from: 'Politografisi.online <onboarding@resend.dev>',
-            to: [ADMIN_EMAIL],
-            subject: `📬 Νέα Αίτηση: ${fullName} — ${topicLabel}`,
-            html: htmlContent,
-        });
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || 'support@politografisi.online';
 
-        if (error) {
-            console.error('Resend error:', error);
-            return NextResponse.json({ error: 'Failed to send' }, { status: 500 });
-        }
+    const { data, error } = await resend.emails.send({
+      from: 'Politografisi.online <onboarding@resend.dev>',
+      to: [ADMIN_EMAIL],
+      subject: `📬 Νέα Αίτηση: ${fullName} — ${topicLabel}`,
+      html: htmlContent,
+    });
 
-        return NextResponse.json({ success: true, id: data?.id });
-    } catch (error) {
-        console.error('Notification error:', error);
-        return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+    if (error) {
+      console.error('Resend error:', error);
+      return NextResponse.json({ error: 'Failed to send' }, { status: 500 });
     }
+
+    return NextResponse.json({ success: true, id: data?.id });
+  } catch (error) {
+    console.error('Notification error:', error);
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+  }
 }
