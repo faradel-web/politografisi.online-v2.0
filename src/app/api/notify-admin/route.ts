@@ -1,6 +1,9 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Prevent Next.js from pre-rendering this route at build time
+export const dynamic = 'force-dynamic';
+
 // Lazy init — avoid build-time crash when env var is not set
 
 const TOPIC_LABELS: Record<string, string> = {
